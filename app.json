@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "valentina-app",
-    "slug": "valentina-app",
+    "name": "valentina-academy-app",
+    "slug": "valentina-academy-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
