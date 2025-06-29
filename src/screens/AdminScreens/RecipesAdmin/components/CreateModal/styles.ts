@@ -1,0 +1,98 @@
+// src/modules/admin/components/CreateRecipeModal/styles.ts
+import { StyleSheet, Dimensions } from 'react-native'
+import { colors } from '../../../../../constants/colors'
+import { typography } from '../../../../../constants/typography'
+import { metrics } from '../../../../../constants/metrics'
+
+const { width, height } = Dimensions.get('window')
+const INPUT_WIDTH = width * 0.85
+
+export default StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    padding: metrics.padding,
+  },
+  header: {
+    fontSize: typography.fontSize.large,
+    color: colors.primary,
+    marginBottom: metrics.padding,
+    textAlign: 'center',
+  },
+  input: {
+    width: INPUT_WIDTH,
+    backgroundColor: colors.darkMoreOpaque,
+    color: colors.primary,
+    padding: metrics.padding,
+    borderRadius: metrics.borderRadius,
+    marginVertical: metrics.padding * 0.5,
+  },
+  textarea: {
+    height: height * 0.1,
+    textAlignVertical: 'top',
+  },
+  subheading: {
+    fontSize: typography.fontSize.normal,
+    color: colors.primary,
+    alignSelf: 'flex-start',
+    marginTop: metrics.padding,
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: INPUT_WIDTH,
+    marginVertical: metrics.padding * 0.3,
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderWidth: 1,
+    borderColor: colors.primary,
+    marginRight: metrics.padding * 0.5,
+    borderRadius: 4,
+  },
+  checkboxSelected: {
+    backgroundColor: colors.primary,
+  },
+  checkboxLabel: {
+    fontSize: typography.fontSize.normal,
+    color: colors.white,
+  },
+  stepsHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: INPUT_WIDTH,
+    alignItems: 'center',
+    marginTop: metrics.padding,
+    marginBottom: metrics.padding * 0.5,
+  },
+  stepButtons: {
+    flexDirection: 'row',
+    width: 80,
+    justifyContent: 'space-between',
+  },
+  button: {
+    width: INPUT_WIDTH,
+    padding: metrics.padding,
+    backgroundColor: colors.primary,
+    borderRadius: metrics.borderRadius,
+    alignItems: 'center',
+    marginVertical: metrics.padding,
+  },
+  buttonText: {
+    color: colors.dark,
+    fontSize: typography.fontSize.normal,
+    fontFamily: typography.fontFamily,
+  },
+  error: {
+    color: colors.error,
+    marginBottom: metrics.padding,
+  },
+  center: {
+    alignItems: 'center',
+    padding: metrics.padding,
+  },
+  status: {
+    color: colors.primary,
+    marginTop: metrics.padding,
+  },
+})

@@ -1,0 +1,75 @@
+// src/modules/admin/components/DeleteRecipeModal.tsx
+import React, { useState } from 'react'
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native'
+import { useNavigation, NavigationProp } from '@react-navigation/native'
+import Modal from '../../../../../components/Modal/Modal'
+import ApiService from '../../../../../services/Api'
+import { BACKEND_ROUTES } from '../../../../../constants/routes'
+import { colors } from '../../../../../constants/colors'
+import type { RootStackParamList } from '../../../../../navigation/types'
+
+import styles from './styles'
+
+interface Props {
+  visible: boolean
+  onClose: () => void
+  recipeId: string | number | null
+}
+
+export default function DeleteRecipeModal({
+  visible,
+  onClose,
+  recipeId,
+}: Props) {
+  const [deleting, setDeleting] = useState(false)
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>()
+
+  const handleDelete = async () => {
+    if (!recipeId) return
+    setDeleting(true)
+    try {
+      await ApiService.delete(`${BACKEND_ROUTES.recipes}/${recipeId}`)
+      onClose()
+      navigation.reset({ index: 0, routes: [{ name: 'RecipesAdmin' }] })
+    } catch (e) {
+      console.warn('Delete error:', e)
+      setDeleting(false)
+    }
+  }
+
+  if (!visible) return null
+
+  return (
+    <Modal showModal={visible} onClose={onClose}>
+      {deleting ? (
+        <View style={styles.center}>
+          <ActivityIndicator size="large" color={colors.primary} />
+          <Text style={styles.status}>Eliminando receta...</Text>
+        </View>
+      ) : (
+        <View style={styles.container}>
+          <Text style={styles.header}>¿Eliminar esta receta?</Text>
+          <View style={styles.buttons}>
+            <TouchableOpacity
+              style={[styles.button, styles.cancel]}
+              onPress={onClose}
+            >
+              <Text style={[styles.btnText, styles.cancelText]}>Cancelar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.button, styles.delete]}
+              onPress={handleDelete}
+            >
+              <Text style={[styles.btnText, styles.deleteText]}>Eliminar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+    </Modal>
+  )
+}

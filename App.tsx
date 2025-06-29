@@ -1,22 +1,26 @@
+// App.tsx
 import 'react-native-gesture-handler';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet} from 'react-native';
+import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import NavigationStack from "./src/navigation/NavigationStack"
+import AppNavigator from './src/navigation/AppNavigator';
+import { ContextApp } from './src/context/ContextApp';
+import { ROLES } from './src/constants/roles';
 
 export default function App() {
+  const [user, setUser] = useState({
+    id: '',
+    email: '',
+    first_name: '',
+    last_name: '',
+    username: ''
+  });
+  const [completed, setCompleted] = useState(false);
+
   return (
-    <NavigationContainer>
-      <NavigationStack />
-    </NavigationContainer>
+    <ContextApp.Provider value={{ user, setUser, completed, setCompleted }}>
+      <NavigationContainer>
+        <AppNavigator />
+      </NavigationContainer>
+    </ContextApp.Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
