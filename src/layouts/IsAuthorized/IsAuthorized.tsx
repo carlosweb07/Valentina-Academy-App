@@ -4,9 +4,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useNavigation, NavigationProp } from '@react-navigation/native'
 import { ContextApp } from '../../context/ContextApp'
 import { BACKEND_ROUTES } from '../../constants/routes'
-import { fetchToApi } from '../../services/Api'
-import Loading from '../../shared/components/Loading/Loading'
+import ApiService from '../../services/Api'
+import Loading from '../../components/Loading/Loading'
 import type { RootStackParamList } from '../../navigation/types'
+import { User } from '../../interfaces/Models'
 
 interface Props {
   children: React.ReactNode
@@ -28,7 +29,8 @@ export default function IsAuthorized({ children }: Props) {
           return
         }
 
-        const response = await fetchToApi(`${BACKEND_ROUTES.auth}/${token}`)
+        type Response = { user?: User }
+        const response = await ApiService.get<Response>(`${BACKEND_ROUTES.auth}/${token}`)
         const user = response?.user
 
         if (!user) {

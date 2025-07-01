@@ -13,7 +13,7 @@ import { Picker } from '@react-native-picker/picker'
 import Modal from '../../../../../components/Modal/Modal'
 import ApiService from '../../../../../services/Api'
 import { BACKEND_ROUTES } from '../../../../../constants/routes'
-import { Ingredient } from '../../../../../interfaces/App'
+import { Ingredient } from '../../../../../interfaces/Models'
 import { colors } from '../../../../../constants/colors'
 
 import styles from './styles'

@@ -9,7 +9,7 @@ import {
 import Modal from '../../../../../components/Modal/Modal'
 import ApiService from '../../../../../services/Api'
 import { BACKEND_ROUTES } from '../../../../../constants/routes'
-import { User } from '../../../../../interfaces/App'
+import { User } from '../../../../../interfaces/Models'
 import { colors } from '../../../../../constants/colors'
 
 import styles from './styles'

@@ -8,7 +8,7 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native'
-import { Video, ResizeMode } from 'expo-av'
+import { Video, ResizeMode } from 'react-native-video'
 import { FontAwesome5 } from '@expo/vector-icons'
 import ApiService from '../../../services/Api'
 import { BACKEND_ROUTES } from '../../../constants/routes'
@@ -17,7 +17,7 @@ import CreateCourseModal from './components/CreateModal/CreateModal'
 import EditCourseModal from './components/EditModal/EditModal'
 import DeleteCourseModal from './components/DeleteModal/DeleteModal'
 import AdminSkeleton from '../skeleton/AdminSkeleton'
-import { Category, Course, User, Recipe } from '../../../interfaces/App'
+import { Category, Course, User, Recipe } from '../../../interfaces/Models'
 
 import styles from './styles'
 
@@ -193,7 +193,6 @@ export default function CoursesAdminScreen() {
                     />
                     <Video
                       source={{ uri: course.media.url_video }}
-                      useNativeControls
                       resizeMode={ResizeMode.COVER}
                       style={styles.video}
                     />

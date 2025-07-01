@@ -15,9 +15,9 @@ import Footer from '../../components/Footer/Footer'
 import { metrics } from '../../constants/metrics'
 
 // Ajusta rutas a tus assets
-import present1 from '../../assets/presentacion_1.png'
-import present2 from '../../assets/presentacion_2.jpg'
-import present3 from '../../assets/presentacion_3.jpg'
+import present1 from '../../../assets/presentacion_1.png'
+import present2 from '../../../assets/presentacion_2.jpg'
+import present3 from '../../../assets/presentacion_3.jpg'
 
 import styles from './styles'
 
@@ -29,18 +29,18 @@ export default function Landing() {
       <Navbar />
       <ScrollView contentContainerStyle={styles.scroll}>
         <View style={styles.carouselContainer}>
-          <Carousel height={metrics.screenHeight * 0.4}>
+          <Carousel height={metrics.screenHeight * 0.5}>
             <HeaderCard
               presentation="Bienvenido a la Academia Valentina, ¿Listo para descubrir lo que ofrecemos?"
-              img={present1 as any}
+              img={present1}
             />
             <HeaderCard
               presentation="Aquí aprenderás a crear todo tipo de recetas de la forma más profesional posible"
-              img={present2 as any}
+              img={present2}
             />
             <HeaderCard
               presentation="Así mismo, podrás aprender a como crear los más sabrosos y dulces postres para disfrutar"
-              img={present3 as any}
+              img={present3}
             />
           </Carousel>
         </View>

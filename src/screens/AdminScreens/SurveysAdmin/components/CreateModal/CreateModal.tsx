@@ -12,7 +12,7 @@ import { FontAwesome5 } from '@expo/vector-icons'
 import Modal from '../../../../../components/Modal/Modal'
 import ApiService from '../../../../../services/Api'
 import { BACKEND_ROUTES } from '../../../../../constants/routes'
-import { Course } from '../../../../../interfaces/App'
+import { Course } from '../../../../../interfaces/Models'
 import { colors } from '../../../../../constants/colors'
 
 import styles from './styles'

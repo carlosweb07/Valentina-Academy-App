@@ -3,6 +3,7 @@ import {
   Text,
   TouchableOpacity,
   ImageBackground,
+  ImageSourcePropType
 } from 'react-native'
 import { useNavigation, NavigationProp } from '@react-navigation/native'
 import type { RootStackParamList } from '../../navigation/types'
@@ -37,7 +38,7 @@ export default function CourseCard({
       onPress={handlePress}
     >
       <ImageBackground
-        source={{ uri: img }}
+        source={img as ImageSourcePropType}
         style={styles.image}
         imageStyle={styles.imageRounded}
       >

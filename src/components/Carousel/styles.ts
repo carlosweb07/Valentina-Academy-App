@@ -9,6 +9,7 @@ export default StyleSheet.create({
     width: '100%',
     backgroundColor: colors.dark,   // puedes cambiar o quitar
     overflow: 'hidden',
+    paddingTop: 15
   },
   slide: {
     justifyContent: 'center',

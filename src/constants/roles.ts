@@ -1,6 +1,16 @@
-export const ROLES = ["student", "teacher", "admin"]
-export const SPANISH_ROLES = {
-  student: "Estudiante",
-  teacher: "Profesor",
-  admin: "Administrador"
-}
+import { Roles } from "../interfaces/App";
+
+export const ROLES: Roles = {
+  student: {
+    name: "student",
+    translate: "Estudiante",
+  },
+  teacher: {
+    name: "teacher",
+    translate: "Profesor",
+  },
+  admin: {
+    name: "admin",
+    translate: "Administrador",
+  },
+};

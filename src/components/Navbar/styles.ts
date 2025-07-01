@@ -16,7 +16,7 @@ export default StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: metrics.padding,
-    paddingVertical: metrics.padding * 0.5,
+    paddingVertical: metrics.padding * 1,
     zIndex: 10,
   },
   logoContainer: {

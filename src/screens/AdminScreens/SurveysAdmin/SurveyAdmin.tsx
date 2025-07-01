@@ -14,7 +14,7 @@ import EditSurveyModal from './components/EditModal/EditModal'
 import DeleteSurveyModal from './components/DeleteModal/DeleteModal'
 import ApiService from '../../../services/Api'
 import { BACKEND_ROUTES } from '../../../constants/routes'
-import { Survey, Course } from '../../../interfaces/App'
+import { Survey, Course } from '../../../interfaces/Models'
 
 import styles from './styles'
 

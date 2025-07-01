@@ -1,8 +1,12 @@
-import { ContextApp } from '@context/ContextApp'
+import { ContextApp } from '../../context/ContextApp'
 import { useContext } from 'react'
 import "./styles.ts"
 
-export default function Header({ setCategory }) {
+type Props = {
+  setCategory: (category: number) => void
+}
+
+export default function Header({ setCategory }: Props) {
   const { user } = useContext(ContextApp)
   return (
     <header className="header">

@@ -4,6 +4,7 @@ import {
   View,
   Text,
   ImageBackground,
+  ImageSourcePropType,
 } from 'react-native'
 import styles from './styles'
 
@@ -13,10 +14,11 @@ interface Props {
 }
 
 export default function HeaderCard({ presentation, img }: Props) {
+  console.log(img.toString());
   return (
     <View style={styles.card}>
       <ImageBackground
-        source={{ uri: img }}
+        source={img as ImageSourcePropType}
         style={styles.image}
         imageStyle={styles.imageStyle}
       >

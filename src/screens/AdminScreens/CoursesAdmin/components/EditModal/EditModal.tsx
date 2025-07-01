@@ -13,7 +13,7 @@ import Modal from '../../../../../components/Modal/Modal'
 import ApiService from '../../../../../services/Api'
 import { BACKEND_ROUTES } from '../../../../../constants/routes'
 import { colors } from '../../../../../constants/colors'
-import { Category, Recipe, User } from '../../../../../interfaces/App'
+import { Category, Recipe, User } from '../../../../../interfaces/Models'
 
 import styles from './styles'
 

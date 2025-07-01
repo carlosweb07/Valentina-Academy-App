@@ -7,26 +7,23 @@ import {
   TouchableOpacity,
   Linking
 } from 'react-native'
-import { Video, ResizeMode } from 'expo-av'
+import { Video, ResizeMode } from 'react-native-video'
 import { useNavigation } from '@react-navigation/native'
 import type { StackNavigationProp } from '@react-navigation/stack'
 import { BACKEND_ROUTES } from '../../../constants/routes'
 import ApiService from '../../../services/Api'
-import { Course } from '../../../interfaces/App'
+import { Course } from '../../../interfaces/Models'
 
 // Ajusta los imports a tu estructura
 import pdfIcon from '../../../../assets/pdf.png'
 import userImg from '../../../../assets/usuario.png'
 
 import styles from './styles'
+import { RootStackParamList } from '../../../navigation/types'
 
 interface Props {
   course: Course
-  setCompleted: (done?: boolean) => void
-}
-type RootStackParamList = {
-  Survey: { course_id: string }
-  // ...add other routes as needed
+  setCompleted: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export default function CoursePage({ course, setCompleted }: Props) {
@@ -46,15 +43,10 @@ export default function CoursePage({ course, setCompleted }: Props) {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Video
-      source={{ uri: course.media.url_video }}
-      useNativeControls
-      resizeMode={ResizeMode.COVER}
-      style={styles.video}
-      onPlaybackStatusUpdate={(status) => {
-        if ('didJustFinish' in status && status.didJustFinish) {
-          onVideoEnd()
-        }
-      }}
+        source={{ uri: course.media.url_video }}
+        resizeMode={ResizeMode.COVER}
+        style={styles.video}
+        onEnd={onVideoEnd}
       />
 
       <View style={styles.detailsContainer}>

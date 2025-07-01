@@ -17,7 +17,7 @@ import { BACKEND_ROUTES } from '../../../../../constants/routes'
 import { colors } from '../../../../../constants/colors'
 
 import styles from './styles'
-import { Category, Recipe, User } from '../../../../../interfaces/App'
+import { Category, Recipe, User } from '../../../../../interfaces/Models'
 
 interface Props {
   visible: boolean

@@ -70,7 +70,7 @@ export default StyleSheet.create({
   },
   message: {
     position: 'absolute',
-    bottom: metrics.padding * 2,
+    bottom: metrics.padding - 100,
     alignSelf: 'center',
     backgroundColor: colors.dark,
     padding: metrics.padding,

@@ -15,7 +15,7 @@ import EditRecipeModal from './components/EditModal/EditModal'
 import DeleteRecipeModal from './components/DeleteModal/DeleteModal'
 import ApiService from '../../../services/Api'
 import { BACKEND_ROUTES } from '../../../constants/routes'
-import { Recipe, Ingredient } from '../../../interfaces/App'
+import { Recipe, Ingredient } from '../../../interfaces/Models'
 
 import styles from './styles'
 

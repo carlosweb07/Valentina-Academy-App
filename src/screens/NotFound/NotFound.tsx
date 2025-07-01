@@ -15,7 +15,7 @@ import type { RootStackParamList } from '../../navigation/types'
 import styles from './styles'
 
 // Ajusta la ruta según dónde pongas tu asset
-import confusedImg from '../../assets/confundido.png'
+import confusedImg from '../../../assets/confundido.png'
 
 export default function NotFoundScreen() {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>()
@@ -26,7 +26,7 @@ export default function NotFoundScreen() {
       <ScrollView contentContainerStyle={styles.scroll}>
         <View style={styles.container}>
           <View style={styles.imageContainer}>
-            <Image source={confusedImg as any} style={styles.image} />
+            <Image source={confusedImg} style={styles.image} />
           </View>
           <View style={styles.infoContainer}>
             <Text style={styles.title}>Página no encontrada</Text>

@@ -15,7 +15,7 @@ import EditIngredientModal from './components/EditModal/EditModal'
 import DeleteIngredientModal from './components/DeleteModal/DeleteModal'
 import ApiService from '../../../services/Api'
 import { BACKEND_ROUTES } from '../../../constants/routes'
-import { Ingredient } from '../../../interfaces/App'
+import { Ingredient } from '../../../interfaces/Models'
 import styles from './styles'
 
 export default function IngredientsAdmin() {

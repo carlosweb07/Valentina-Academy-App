@@ -15,7 +15,7 @@ import DeleteUserModal from './components/DeleteModal/DeleteModal'
 import ApiService from '../../../services/Api'
 import { BACKEND_ROUTES } from '../../../constants/routes'
 import { SPANISH_ROLES } from '../../../constants/roles'
-import { User } from '../../../interfaces/App'
+import { User } from '../../../interfaces/Models'
 
 import styles from './styles'
 

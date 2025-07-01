@@ -1,5 +1,7 @@
 // src/screens/CourseScreen.tsx
 import React, { useContext, useEffect, useState } from 'react'
+import type { RootStackParamList } from '../../navigation/types'
+import type { StackNavigationProp } from '@react-navigation/stack'
 import {
   View,
   ActivityIndicator,
@@ -9,19 +11,18 @@ import {
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native'
 import ApiService from '../../services/Api'
 import { ContextApp } from '../../context/ContextApp'
-import type { RootStackParamList } from '../../navigation/types'
 import PaymentPage from './PaymentScreen/PayCourseScreen'
 import CourseContent from './CourseScreen/CourseScreen'
 
 type CourseRouteProp = RouteProp<RootStackParamList, 'Course'>
 
 interface Props {
-  setCompleted: (done?: boolean) => void
+  setCompleted: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export default function Course({ setCompleted }: Props) {
   const { params } = useRoute<CourseRouteProp>()
-  const navigation = useNavigation()
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Course'>>()
   const { user } = useContext(ContextApp)
 
   const [loading, setLoading] = useState(true)

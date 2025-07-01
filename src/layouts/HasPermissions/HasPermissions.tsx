@@ -3,19 +3,20 @@ import { View, ActivityIndicator, StyleSheet } from 'react-native'
 import { useNavigation, NavigationProp } from '@react-navigation/native'
 import { ContextApp } from '../../context/ContextApp'
 import { BACKEND_ROUTES } from '../../constants/routes'
-import { fetchToApi } from '../../services/Api'
+import ApiService from '../../services/Api'
 import type { RootStackParamList } from '../../navigation/types'
+import { RoleItem } from '../../interfaces/App'
 
 interface Props {
   children: React.ReactNode
-  /** Un string o array de strings con los roles permitidos */
-  role: string | string[]
+  role: RoleItem
 }
 
 export default function HasPermissions({ children, role }: Props) {
   const { user } = useContext(ContextApp)
   const navigation = useNavigation<NavigationProp<RootStackParamList>>()
   const [loading, setLoading] = useState(true)
+  const roles = Object.keys(role);
 
   useEffect(() => {
     let isMounted = true
@@ -29,7 +30,8 @@ export default function HasPermissions({ children, role }: Props) {
         }
 
         // Llamada al backend para obtener el rol
-        const resp = await fetchToApi(`${BACKEND_ROUTES.roles}/${user.id}`)
+        type Response = { role?: string }
+        const resp = await ApiService.get<Response>(`${BACKEND_ROUTES.roles}/${user.id}`)
         const serverRole: string | undefined = resp?.role
 
         if (!serverRole) {
@@ -38,9 +40,7 @@ export default function HasPermissions({ children, role }: Props) {
         }
 
         // Chequeo según tipo de "role" (string o array)
-        const allowed = Array.isArray(role)
-          ? role.includes(serverRole)
-          : serverRole === role
+        const allowed = roles.includes(serverRole)
 
         if (!allowed) {
           navigation.navigate('Landing')

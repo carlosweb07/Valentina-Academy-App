@@ -32,7 +32,14 @@ export default function Navbar() {
       console.warn('Logout error:', e)
     }
     await AsyncStorage.removeItem('access_token')
-    setUser(null)
+    setUser({
+      id: '',
+      email: '',
+      first_name: '',
+      last_name: '',
+      username: '',
+      role: 'student'
+    })
     navigation.navigate('Landing')
   }
 
@@ -44,7 +51,6 @@ export default function Navbar() {
     <View style={styles.navbar}>
       <View style={styles.logoContainer}>
         <Image source={logoImg} style={styles.logo} />
-        <Text style={styles.title}>Academia Valentina</Text>
       </View>
 
       <View style={styles.navItems}>

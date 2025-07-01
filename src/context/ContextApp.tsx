@@ -1,6 +1,6 @@
 // src/context/ContextApp.tsx
 import React, { useState } from 'react';
-import { User } from '../interfaces/App';
+import { User } from '../interfaces/Models';
 
 export interface AppContextProps {
   user: User;
@@ -10,7 +10,7 @@ export interface AppContextProps {
 }
 
 export const ContextApp = React.createContext<AppContextProps>({
-  user: { id:'', email:'', first_name:'', last_name:'', username:'' },
+  user: { id:'', email:'', first_name:'', last_name:'', username:'', role: 'student' },
   setUser: () => {},
   completed: false,
   setCompleted: () => {}
@@ -22,7 +22,8 @@ export const ContextAppProvider: React.FC<{children: React.ReactNode}> = ({ chil
     email: '',
     first_name: '',
     last_name: '',
-    username: ''
+    username: '',
+    role: 'student'
   });
   const [completed, setCompleted] = useState(false);
 

@@ -5,6 +5,7 @@ import {
   Text,
   ImageBackground,
   Dimensions,
+  ImageSourcePropType,
 } from 'react-native'
 
 import styles from './styles'
@@ -28,7 +29,7 @@ const BACKGROUND_URI =
 export default function PrevCertificate({ data }: Props) {
   return (
     <ImageBackground
-      source={{ uri: BACKGROUND_URI }}
+      source={BACKGROUND_URI as ImageSourcePropType}
       style={styles.container}
       imageStyle={styles.backgroundImage}
     >

@@ -13,7 +13,6 @@ export default function IsCourseCompleted({ children, completed }: Props) {
 
   useEffect(() => {
     if (!completed) {
-      // Redirige al inicio (Dashboard)
       navigation.navigate('Home')
     }
   }, [completed, navigation])
