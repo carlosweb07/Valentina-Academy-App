@@ -1,6 +1,6 @@
 // src/shared/components/Footer/styles.ts
 import { StyleSheet, Dimensions } from 'react-native'
-import { colors } from '../../constants/colors'
+import { COLORS } from '../../constants/colors'
 import { typography } from '../../constants/typography'
 import { metrics } from '../../constants/metrics'
 
@@ -10,13 +10,13 @@ export default StyleSheet.create({
   footer: {
     width: '100%',
     height: height * 0.3,
-    backgroundColor: colors.dark,
+    backgroundColor: COLORS.dark,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: metrics.padding,
   },
   text: {
-    color: colors.white,
+    color: COLORS.white,
     fontSize: typography.fontSize.normal,
     textAlign: 'center',
     marginVertical: metrics.padding * 0.2,
@@ -31,10 +31,10 @@ export default StyleSheet.create({
   },
   instagramIcon: {
     marginRight: metrics.padding * 0.3,
-    color: colors.white,
+    color: COLORS.white,
   },
   instagramText: {
-    color: colors.white,
+    color: COLORS.white,
     textDecorationLine: 'underline',
     fontSize: typography.fontSize.normal,
   },

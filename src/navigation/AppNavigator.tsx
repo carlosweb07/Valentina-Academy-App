@@ -24,77 +24,98 @@ import HasPermissions from '../layouts/HasPermissions/HasPermissions'
 import IsCourseCompleted from '../layouts/IsCourseCompleted/IsCourseCompleted'
 
 import type { RootStackParamList } from './types'
+import { Text, TouchableOpacity } from 'react-native'
+import { NavigationProp, useNavigation } from '@react-navigation/native'
 
 const Stack = createNativeStackNavigator<RootStackParamList>()
 
 export default function AppNavigator() {
   const { completed, setCompleted } = useContext(ContextApp)
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>()
 
   return (
-    <Stack.Navigator initialRouteName="Landing">
+    <Stack.Navigator
+      initialRouteName="Landing"
+      screenOptions={{
+        contentStyle: { backgroundColor: 'transparent' },
+        headerTintColor: "#fff",
+        headerTransparent: true,
+        headerRight: () => (
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Landing")}
+          >
+            <Text
+              style={{ color: '#fff', width: "100%", fontSize: 18, textAlign: 'center' }}
+            >
+              🏠
+            </Text>
+          </TouchableOpacity>
+        )
+      }}
+    >
       <Stack.Screen
-        name="Landing"
-        component={LandingPage}
-        options={{ headerShown: false }}
+      name="Landing"
+      component={LandingPage}
+      options={{ headerShown: false }}
       />
 
-      <Stack.Screen name="Login" component={LoginPage} />
+      <Stack.Screen name="Login" component={LoginPage}  />
       <Stack.Screen name="Register" component={RegisterPage} />
 
       <Stack.Screen name="Home" options={{ title: 'Inicio' }}>
-        {() => (
-          <IsAuthorized>
-            <HasPermissions role={ROLES.student}>
-              <HomePage />
-            </HasPermissions>
-          </IsAuthorized>
-        )}
+      {() => (
+        <IsAuthorized>
+        <HasPermissions role={ROLES.student}>
+          <HomePage />
+        </HasPermissions>
+        </IsAuthorized>
+      )}
       </Stack.Screen>
 
       <Stack.Screen name="Course" options={{ title: 'Curso' }}>
-        {() => (
-          <IsAuthorized>
-            <HasPermissions role={ROLES.student}>
-              <CoursePage setCompleted={setCompleted} />
-            </HasPermissions>
-          </IsAuthorized>
-        )}
+      {() => (
+        <IsAuthorized>
+        <HasPermissions role={ROLES.student}>
+          <CoursePage setCompleted={setCompleted} />
+        </HasPermissions>
+        </IsAuthorized>
+      )}
       </Stack.Screen>
 
       <Stack.Screen name="Survey" options={{ title: 'Encuesta' }}>
-        {() => (
-          <IsAuthorized>
-            <HasPermissions role={ROLES.student}>
-              <IsCourseCompleted completed={completed}>
-                <SurveyPage />
-              </IsCourseCompleted>
-            </HasPermissions>
-          </IsAuthorized>
-        )}
+      {() => (
+        <IsAuthorized>
+        <HasPermissions role={ROLES.student}>
+          <IsCourseCompleted completed={completed}>
+          <SurveyPage />
+          </IsCourseCompleted>
+        </HasPermissions>
+        </IsAuthorized>
+      )}
       </Stack.Screen>
 
       <Stack.Screen name="Admin">
-        {() => (
-          <IsAuthorized>
-            <HasPermissions role={ROLES.admin}>
-              <AdminPage />
-            </HasPermissions>
-          </IsAuthorized>
-        )}
+      {() => (
+        <IsAuthorized>
+        <HasPermissions role={ROLES.admin}>
+          <AdminPage />
+        </HasPermissions>
+        </IsAuthorized>
+      )}
       </Stack.Screen>
 
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
-        <Stack.Screen name="UsersAdmin" component={UsersAdmin} />
-        <Stack.Screen name="CoursesAdmin" component={CoursesAdmin} />
-        <Stack.Screen name="RecipesAdmin" component={RecipesAdmin} />
-        <Stack.Screen name="IngredientsAdmin" component={IngredientsAdmin} />
-        <Stack.Screen name="SurveysAdmin" component={SurveysAdmin} />
+      <Stack.Screen name="UsersAdmin" component={UsersAdmin} />
+      <Stack.Screen name="CoursesAdmin" component={CoursesAdmin} />
+      <Stack.Screen name="RecipesAdmin" component={RecipesAdmin} />
+      <Stack.Screen name="IngredientsAdmin" component={IngredientsAdmin} />
+      <Stack.Screen name="SurveysAdmin" component={SurveysAdmin} />
       </Stack.Group>
 
       <Stack.Screen
-        name="NotFound"
-        component={NotFoundPage}
-        options={{ title: 'No encontrado' }}
+      name="NotFound"
+      component={NotFoundPage}
+      options={{ title: 'No encontrado' }}
       />
     </Stack.Navigator>
   )

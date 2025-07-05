@@ -1,6 +1,6 @@
 // src/modules/admin/components/CreateIngredientModal/styles.ts
 import { StyleSheet, Dimensions } from 'react-native'
-import { colors } from '../../../../../constants/colors'
+import { COLORS } from '../../../../../constants/colors'
 import { typography } from '../../../../../constants/typography'
 import { metrics } from '../../../../../constants/metrics'
 
@@ -14,39 +14,39 @@ export default StyleSheet.create({
   },
   header: {
     fontSize: typography.fontSize.large,
-    color: colors.primary,
+    color: COLORS.primary,
     marginBottom: metrics.padding,
     textAlign: 'center',
   },
   input: {
     width: INPUT_WIDTH,
-    backgroundColor: colors.darkMoreOpaque,
-    color: colors.primary,
+    backgroundColor: COLORS.darkMoreOpaque,
+    color: COLORS.primary,
     padding: metrics.padding,
     borderRadius: metrics.borderRadius,
     marginVertical: metrics.padding * 0.5,
   },
   picker: {
     width: INPUT_WIDTH,
-    backgroundColor: colors.darkMoreOpaque,
-    color: colors.primary,
+    backgroundColor: COLORS.darkMoreOpaque,
+    color: COLORS.primary,
     marginVertical: metrics.padding * 0.5,
   },
   button: {
     width: INPUT_WIDTH,
     padding: metrics.padding,
-    backgroundColor: colors.primary,
+    backgroundColor: COLORS.primary,
     borderRadius: metrics.borderRadius,
     alignItems: 'center',
     marginTop: metrics.padding,
   },
   btnText: {
-    color: colors.dark,
+    color: COLORS.dark,
     fontSize: typography.fontSize.normal,
     fontFamily: typography.fontFamily,
   },
   error: {
-    color: colors.error,
+    color: COLORS.error,
     marginBottom: metrics.padding,
   },
   center: {
@@ -54,7 +54,7 @@ export default StyleSheet.create({
     padding: metrics.padding,
   },
   status: {
-    color: colors.primary,
+    color: COLORS.primary,
     marginTop: metrics.padding,
   },
 })

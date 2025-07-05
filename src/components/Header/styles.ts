@@ -1,8 +1,8 @@
 // src/modules/Course/components/styles.ts
 import { StyleSheet, Dimensions } from 'react-native'
-import { colors } from '../../constants/colors'
-import { typography } from '../../constants/typography'
+import { COLORS } from '../../constants/colors'
 import { metrics } from '../../constants/metrics'
+import { typography } from '../../constants/typography'
 
 const { width, height } = Dimensions.get('window')
 const CATEGORY_HEIGHT = height * 0.25
@@ -10,7 +10,7 @@ const CATEGORY_WIDTH = width * 0.45
 
 export default StyleSheet.create({
   header: {
-    backgroundColor: colors.darkOpaque,
+    backgroundColor: COLORS.darkOpaque,
     paddingBottom: metrics.padding,
   },
   headerInfo: {
@@ -18,13 +18,13 @@ export default StyleSheet.create({
     paddingTop: height * 0.15,
   },
   greeting: {
-    color: colors.primary,
+    color: COLORS.primary,
     fontFamily: typography.fontFamily,
     fontSize: typography.fontSize.xxlarge,
     marginBottom: metrics.padding * 0.5,
   },
   subTitle: {
-    color: colors.primary,
+    color: COLORS.primary,
     fontFamily: typography.fontFamily,
     fontSize: typography.fontSize.normal,
     lineHeight: typography.fontSize.normal * 1.4,
@@ -50,15 +50,15 @@ export default StyleSheet.create({
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: colors.primaryMoreOpaqueVariant,
+    backgroundColor: COLORS.primaryOpaque,
     justifyContent: 'center',
     alignItems: 'center',
   },
   label: {
-    color: colors.white,
+    color: COLORS.white,
     fontFamily: typography.fontFamily,
     fontSize: typography.fontSize.large,
-    backgroundColor: colors.dark + 'CC', // semi-transparente
+    backgroundColor: COLORS.darkOpaque, 
     paddingHorizontal: metrics.padding * 0.3,
     paddingVertical: metrics.padding * 0.1,
     borderRadius: metrics.borderRadius * 0.5,

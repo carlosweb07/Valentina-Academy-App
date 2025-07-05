@@ -9,7 +9,7 @@ import {
 import Modal from '../../../../../components/Modal/Modal'
 import ApiService from '../../../../../services/Api'
 import { BACKEND_ROUTES } from '../../../../../constants/routes'
-import { colors } from '../../../../../constants/colors'
+import { COLORS } from '../../../../../constants/colors'
 
 import styles from './styles'
 
@@ -56,7 +56,7 @@ export default function CreateUserModal({ visible, onClose }: Props) {
     <Modal showModal={visible} onClose={onClose}>
       {loading ? (
         <View style={styles.center}>
-          <ActivityIndicator size="large" color={colors.primary} />
+          <ActivityIndicator size="large" color={COLORS.primary} />
           <Text style={styles.status}>Creando usuario...</Text>
         </View>
       ) : (
@@ -66,14 +66,14 @@ export default function CreateUserModal({ visible, onClose }: Props) {
           <TextInput
             style={styles.input}
             placeholder="Username"
-            placeholderTextColor={colors.primaryOpaque}
+            placeholderTextColor={COLORS.primaryOpaque}
             value={username}
             onChangeText={setUsername}
           />
           <TextInput
             style={styles.input}
             placeholder="Email"
-            placeholderTextColor={colors.primaryOpaque}
+            placeholderTextColor={COLORS.primaryOpaque}
             keyboardType="email-address"
             value={email}
             onChangeText={setEmail}
@@ -81,21 +81,21 @@ export default function CreateUserModal({ visible, onClose }: Props) {
           <TextInput
             style={styles.input}
             placeholder="Nombre"
-            placeholderTextColor={colors.primaryOpaque}
+            placeholderTextColor={COLORS.primaryOpaque}
             value={first}
             onChangeText={setFirst}
           />
           <TextInput
             style={styles.input}
             placeholder="Apellido"
-            placeholderTextColor={colors.primaryOpaque}
+            placeholderTextColor={COLORS.primaryOpaque}
             value={last}
             onChangeText={setLast}
           />
           <TextInput
             style={styles.input}
             placeholder="Contraseña"
-            placeholderTextColor={colors.primaryOpaque}
+            placeholderTextColor={COLORS.primaryOpaque}
             secureTextEntry
             value={password}
             onChangeText={setPassword}

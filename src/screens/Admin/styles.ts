@@ -1,6 +1,6 @@
 // src/screens/styles.ts (or src/screens/AdminScreen/styles.ts)
 import { StyleSheet, Dimensions } from 'react-native'
-import { colors } from '../../constants/colors'
+import { COLORS } from '../../constants/colors'
 import { typography } from '../../constants/typography'
 import { metrics } from '../../constants/metrics'
 
@@ -10,7 +10,7 @@ const CARD_WIDTH = width * 0.45
 export default StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: colors.darkOpaque,
+    backgroundColor: COLORS.darkOpaque,
   },
   container: {
     padding: metrics.padding,
@@ -19,13 +19,13 @@ export default StyleSheet.create({
   title: {
     fontSize: typography.fontSize.xxlarge,
     fontFamily: typography.fontFamily,
-    color: colors.primary,
+    color: COLORS.primary,
     marginTop: metrics.padding,
   },
   subtitle: {
     fontSize: typography.fontSize.normal,
     fontFamily: typography.fontFamily,
-    color: colors.white,
+    color: COLORS.white,
     marginVertical: metrics.padding,
     textAlign: 'center',
   },
@@ -39,7 +39,7 @@ export default StyleSheet.create({
   },
   card: {
     width: CARD_WIDTH,
-    backgroundColor: colors.primaryOpaque,
+    backgroundColor: COLORS.primaryOpaque,
     borderRadius: metrics.borderRadius,
     paddingVertical: metrics.padding,
     alignItems: 'center',
@@ -54,6 +54,6 @@ export default StyleSheet.create({
   cardText: {
     fontSize: typography.fontSize.large,
     fontFamily: typography.fontFamily,
-    color: colors.dark,
+    color: COLORS.dark,
   },
 })

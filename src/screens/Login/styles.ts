@@ -1,31 +1,29 @@
 // src/screens/styles.ts
 import { StyleSheet, Dimensions } from 'react-native'
-import { colors } from '../../constants/colors'
+import { COLORS } from '../../constants/colors'
 import { typography } from '../../constants/typography'
 import { metrics } from '../../constants/metrics'
 
-const { width, height } = Dimensions.get('window')
+const { width } = Dimensions.get('window')
 const BOX_WIDTH = width * 0.8
-const BOX_HEIGHT = height
 
 export default StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.55)',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: metrics.padding,
+    width: '100%',
   },
   box: {
     width: BOX_WIDTH,
     padding: metrics.padding * 1.5,
-    backgroundColor: colors.darkMoreOpaque,
+    backgroundColor: COLORS.darkOpaque,
     borderRadius: metrics.borderRadius,
   },
   title: {
     fontSize: typography.fontSize.xlarge,
     fontFamily: typography.fontFamily,
-    color: colors.primary,
+    color: COLORS.primary,
     marginBottom: metrics.padding,
     textAlign: 'center',
   },
@@ -33,7 +31,7 @@ export default StyleSheet.create({
     marginVertical: metrics.padding * 0.5,
   },
   label: {
-    color: colors.primary,
+    color: COLORS.primary,
     fontSize: typography.fontSize.normal,
     fontFamily: typography.fontFamily,
     marginBottom: metrics.padding * 0.2,
@@ -42,29 +40,29 @@ export default StyleSheet.create({
     width: '100%',
     padding: metrics.padding * 0.8,
     borderRadius: metrics.borderRadius * 1.5,
-    backgroundColor: colors.dark,
-    color: colors.primary,
+    backgroundColor: COLORS.dark,
+    color: COLORS.primary,
     fontSize: typography.fontSize.normal,
   },
   inputPlaceholder: {
-    color: colors.darkMoreOpaque,
+    color: COLORS.darkMoreOpaque,
   },
   redirect: {
-    color: colors.primary,
+    color: COLORS.primary,
     textDecorationLine: 'underline',
     fontSize: typography.fontSize.normal,
     marginVertical: metrics.padding,
     textAlign: 'center',
   },
   button: {
-    backgroundColor: colors.primary,
+    backgroundColor: COLORS.primary,
     padding: metrics.padding,
     borderRadius: metrics.borderRadius,
     alignItems: 'center',
     marginVertical: metrics.padding,
   },
   buttonText: {
-    color: colors.dark,
+    color: COLORS.dark,
     fontSize: typography.fontSize.normal,
     fontFamily: typography.fontFamily,
   },
@@ -72,7 +70,7 @@ export default StyleSheet.create({
     position: 'absolute',
     bottom: metrics.padding - 100,
     alignSelf: 'center',
-    backgroundColor: colors.dark,
+    backgroundColor: COLORS.dark,
     padding: metrics.padding,
     borderRadius: metrics.borderRadius,
   },

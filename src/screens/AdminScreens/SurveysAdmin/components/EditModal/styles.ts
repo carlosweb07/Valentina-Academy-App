@@ -1,6 +1,6 @@
 // src/modules/admin/components/EditSurveyModal/styles.ts
 import { StyleSheet, Dimensions } from 'react-native'
-import { colors } from '../../../../../constants/colors'
+import { COLORS } from '../../../../../constants/colors'
 import { typography } from '../../../../../constants/typography'
 import { metrics } from '../../../../../constants/metrics'
 
@@ -14,12 +14,12 @@ export default StyleSheet.create({
   },
   header: {
     fontSize: typography.fontSize.large,
-    color: colors.primary,
+    color: COLORS.primary,
     marginBottom: metrics.padding,
   },
   label: {
     alignSelf: 'flex-start',
-    color: colors.primary,
+    color: COLORS.primary,
     marginBottom: metrics.padding * 0.3,
   },
   pickerContainer: {
@@ -29,24 +29,24 @@ export default StyleSheet.create({
   },
   courseBtn: {
     padding: metrics.padding * 0.5,
-    backgroundColor: colors.darkMoreOpaque,
+    backgroundColor: COLORS.darkMoreOpaque,
     borderRadius: metrics.borderRadius * 0.5,
     marginRight: metrics.padding * 0.5,
   },
   courseBtnSelected: {
-    backgroundColor: colors.primary,
+    backgroundColor: COLORS.primary,
   },
   courseBtnText: {
-    color: colors.white,
+    color: COLORS.white,
     fontSize: typography.fontSize.normal,
   },
   courseBtnTextSelected: {
-    color: colors.dark,
+    color: COLORS.dark,
   },
   input: {
     width: INPUT_W,
-    backgroundColor: colors.darkMoreOpaque,
-    color: colors.white,
+    backgroundColor: COLORS.darkMoreOpaque,
+    color: COLORS.white,
     padding: metrics.padding,
     borderRadius: metrics.borderRadius,
     marginVertical: metrics.padding * 0.5,
@@ -57,7 +57,7 @@ export default StyleSheet.create({
   },
   questionBlock: {
     width: INPUT_W,
-    backgroundColor: colors.darkOpaque,
+    backgroundColor: COLORS.darkOpaque,
     padding: metrics.padding,
     borderRadius: metrics.borderRadius,
     marginVertical: metrics.padding,
@@ -70,7 +70,7 @@ export default StyleSheet.create({
   },
   subheading: {
     fontSize: typography.fontSize.large,
-    color: colors.primary,
+    color: COLORS.primary,
   },
   questionBtns: {
     flexDirection: 'row',
@@ -86,16 +86,16 @@ export default StyleSheet.create({
     width: 20,
     height: 20,
     borderWidth: 1,
-    borderColor: colors.primary,
+    borderColor: COLORS.primary,
     marginRight: metrics.padding * 0.5,
     borderRadius: 4,
   },
   checkboxSelected: {
-    backgroundColor: colors.primary,
+    backgroundColor: COLORS.primary,
   },
   answerInput: {
     flex: 1,
-    backgroundColor: colors.darkMoreOpaque,
+    backgroundColor: COLORS.darkMoreOpaque,
     padding: metrics.padding * 0.5,
     borderRadius: metrics.borderRadius,
   },
@@ -107,14 +107,14 @@ export default StyleSheet.create({
   },
   button: {
     width: INPUT_W,
-    backgroundColor: colors.primary,
+    backgroundColor: COLORS.primary,
     padding: metrics.padding,
     borderRadius: metrics.borderRadius,
     alignItems: 'center',
     marginTop: metrics.padding,
   },
   buttonText: {
-    color: colors.dark,
+    color: COLORS.dark,
     fontSize: typography.fontSize.normal,
   },
   center: {
@@ -123,10 +123,10 @@ export default StyleSheet.create({
   },
   status: {
     marginTop: metrics.padding,
-    color: colors.primary,
+    color: COLORS.primary,
   },
   error: {
-    color: colors.error,
+    color: COLORS.error,
     marginBottom: metrics.padding,
     textAlign: 'center',
   },

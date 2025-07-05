@@ -2,7 +2,7 @@
 import React from 'react'
 import { View, ScrollView, Dimensions } from 'react-native'
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder'
-import { colors } from '../../../../constants/colors'
+import { COLORS } from '../../../../constants/colors'
 import styles from './styles'
 
 const { width } = Dimensions.get('window')
@@ -13,8 +13,8 @@ export default function CoursePageSkeleton() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <SkeletonPlaceholder
-        backgroundColor={colors.skeletonDark}
-        highlightColor={colors.skeletonLight}
+        backgroundColor={COLORS.skeletonDark}
+        highlightColor={COLORS.skeletonLight}
       >
         {/* Video skeleton */}
         <View style={styles.videoContainer}>

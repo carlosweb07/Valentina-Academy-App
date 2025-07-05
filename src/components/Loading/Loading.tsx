@@ -1,11 +1,11 @@
 import React from 'react'
 import { View, ActivityIndicator, StyleSheet } from 'react-native'
-import { colors } from '../../constants/colors'
+import { COLORS } from '../../constants/colors'
 
 export default function Loading() {
   return (
     <View style={styles.container}>
-      <ActivityIndicator size="large" color={colors.primary} />
+      <ActivityIndicator size="large" color={COLORS.primary} />
     </View>
   )
 }

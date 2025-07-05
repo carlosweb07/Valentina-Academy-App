@@ -12,7 +12,7 @@ import { Video, ResizeMode } from 'react-native-video'
 import { FontAwesome5 } from '@expo/vector-icons'
 import ApiService from '../../../services/Api'
 import { BACKEND_ROUTES } from '../../../constants/routes'
-import { colors } from '../../../constants/colors'
+import { COLORS } from '../../../constants/colors'
 import CreateCourseModal from './components/CreateModal/CreateModal'
 import EditCourseModal from './components/EditModal/EditModal'
 import DeleteCourseModal from './components/DeleteModal/DeleteModal'
@@ -77,7 +77,7 @@ export default function CoursesAdminScreen() {
       <View style={styles.header}>
         <Text style={styles.heading}>Administración de cursos</Text>
         <TouchableOpacity onPress={() => setShowCreate(true)}>
-          <FontAwesome5 name="plus" size={24} color={colors.primary} />
+          <FontAwesome5 name="plus" size={24} color={COLORS.primary} />
         </TouchableOpacity>
       </View>
 
@@ -97,7 +97,7 @@ export default function CoursesAdminScreen() {
                   <FontAwesome5
                     name="pen-to-square"
                     size={20}
-                    color={colors.primary}
+                    color={COLORS.primary}
                     style={styles.icon}
                   />
                 </TouchableOpacity>
@@ -110,7 +110,7 @@ export default function CoursesAdminScreen() {
                   <FontAwesome5
                     name="trash"
                     size={20}
-                    color={colors.error}
+                    color={COLORS.error}
                     style={styles.icon}
                   />
                 </TouchableOpacity>
@@ -118,7 +118,7 @@ export default function CoursesAdminScreen() {
                   <FontAwesome5
                     name="caret-right"
                     size={20}
-                    color={colors.primary}
+                    color={COLORS.primary}
                     style={[
                       styles.icon,
                       expanded.has(course.id) && styles.caretRotated,

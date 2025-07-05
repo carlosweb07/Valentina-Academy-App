@@ -1,6 +1,6 @@
 // src/screens/NotFoundScreen/styles.ts
 import { StyleSheet, Dimensions } from 'react-native'
-import { colors } from '../../constants/colors'
+import { COLORS } from '../../constants/colors'
 import { typography } from '../../constants/typography'
 import { metrics } from '../../constants/metrics'
 
@@ -9,7 +9,7 @@ const { width } = Dimensions.get('window')
 export default StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: colors.darkOpaque,
+    backgroundColor: COLORS.darkOpaque,
   },
   scroll: {
     flexGrow: 1,
@@ -36,13 +36,13 @@ export default StyleSheet.create({
   title: {
     fontSize: typography.fontSize.xxlarge,
     fontFamily: typography.fontFamily,
-    color: colors.primary,
+    color: COLORS.primary,
     marginBottom: metrics.padding,
   },
   text: {
     fontSize: typography.fontSize.normal,
     fontFamily: typography.fontFamily,
-    color: colors.white,
+    color: COLORS.white,
     marginBottom: metrics.padding * 0.5,
   },
   bold: {
@@ -51,7 +51,7 @@ export default StyleSheet.create({
   link: {
     fontSize: typography.fontSize.normal,
     fontFamily: typography.fontFamily,
-    color: colors.primary,
+    color: COLORS.primary,
     textDecorationLine: 'underline',
     marginBottom: metrics.padding * 0.5,
   },

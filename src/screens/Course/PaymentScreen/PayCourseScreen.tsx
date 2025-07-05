@@ -13,7 +13,7 @@ import { useNavigation } from '@react-navigation/native'
 import ApiService from '../../../services/Api'
 import { ContextApp } from '../../../context/ContextApp'
 import { BACKEND_ROUTES } from '../../../constants/routes'
-import { colors } from '../../../constants/colors'
+import { COLORS } from '../../../constants/colors'
 import PayCourseSkeleton from './skeleton/PayCourseSkeleton'
 import styles from './styles'
 
@@ -54,14 +54,14 @@ export default function PayCoursePage({ course }: { course: any }) {
           </Text>
 
           <TouchableOpacity onPress={onBuy} style={styles.button}>
-            <FontAwesome5 name="cart-shopping" size={20} color={colors.dark} />
+            <FontAwesome5 name="cart-shopping" size={20} color={COLORS.dark} />
             <Text style={styles.buttonText}>Comprar ahora</Text>
           </TouchableOpacity>
 
           {errorMsg ? (
             <TouchableOpacity onPress={() => setErrorMsg('')}>
-              <View style={[styles.message, { backgroundColor: colors.error }]}>
-                <FontAwesome5 name="exclamation" size={16} color={colors.white} />
+              <View style={[styles.message, { backgroundColor: COLORS.error }]}>
+                <FontAwesome5 name="exclamation" size={16} color={COLORS.white} />
                 <Text style={styles.messageText}>{errorMsg}</Text>
               </View>
             </TouchableOpacity>

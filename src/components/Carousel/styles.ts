@@ -1,13 +1,13 @@
 // src/shared/components/Carousel/styles.ts
 import { StyleSheet } from 'react-native'
-import { colors } from '../../constants/colors'
+import { COLORS } from '../../constants/colors'
 import { typography } from '../../constants/typography'
 
 export default StyleSheet.create({
   container: {
     position: 'relative',
     width: '100%',
-    backgroundColor: colors.dark,   // puedes cambiar o quitar
+    backgroundColor: COLORS.dark,   // puedes cambiar o quitar
     overflow: 'hidden',
     paddingTop: 15
   },
@@ -23,7 +23,6 @@ export default StyleSheet.create({
     width: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#00000080',
   },
   left: {
     left: 0,
@@ -32,7 +31,7 @@ export default StyleSheet.create({
     right: 0,
   },
   arrowText: {
-    color: colors.primary,
+    color: COLORS.primary,
     fontSize: typography.fontSize.xxlarge,
     fontFamily: typography.fontFamily,
   },

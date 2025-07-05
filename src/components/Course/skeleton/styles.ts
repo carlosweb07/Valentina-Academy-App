@@ -1,5 +1,5 @@
 import { StyleSheet, Dimensions } from 'react-native'
-import { colors } from '../../../constants/colors'
+import { COLORS } from '../../../constants/colors'
 import { typography } from '../../../constants/typography'
 import { metrics } from '../../../constants/metrics'
 
@@ -16,7 +16,7 @@ export default StyleSheet.create({
   },
   imgContainer: {
     padding: metrics.padding * 0.5,
-    backgroundColor: colors.skeletonLight, // sólo para fallback
+    backgroundColor: COLORS.skeletonLight, // sólo para fallback
     borderTopLeftRadius: metrics.borderRadius * 2,
     borderTopRightRadius: metrics.borderRadius * 2,
     justifyContent: 'center',
@@ -29,7 +29,7 @@ export default StyleSheet.create({
   },
   infoSkeleton: {
     padding: metrics.padding * 0.5,
-    backgroundColor: colors.skeletonDark, // fallback
+    backgroundColor: COLORS.skeletonDark, // fallback
     minHeight: IMAGE_HEIGHT * 0.45,
   },
   titleSkeleton: {

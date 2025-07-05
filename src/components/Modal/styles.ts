@@ -1,6 +1,6 @@
 // src/shared/components/Modal/styles.ts
 import { StyleSheet, Dimensions } from 'react-native'
-import { colors } from '../../constants/colors'
+import { COLORS } from '../../constants/colors'
 import { typography } from '../../constants/typography'
 import { metrics } from '../../constants/metrics'
 
@@ -16,7 +16,7 @@ export default StyleSheet.create({
   modal: {
     width: width * 0.9,
     maxHeight: height * 0.8,
-    backgroundColor: colors.dark,
+    backgroundColor: COLORS.dark,
     borderRadius: metrics.borderRadius,
     padding: metrics.padding,
   },
@@ -28,7 +28,7 @@ export default StyleSheet.create({
   },
   closeText: {
     fontSize: typography.fontSize.xlarge,
-    color: colors.error,
+    color: COLORS.error,
   },
   contentContainer: {
     paddingTop: typography.fontSize.xlarge * 1.2,

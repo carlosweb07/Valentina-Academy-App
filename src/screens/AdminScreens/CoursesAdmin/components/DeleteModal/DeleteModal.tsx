@@ -10,7 +10,7 @@ import { useNavigation, NavigationProp } from '@react-navigation/native'
 import Modal from '../../../../../components/Modal/Modal'
 import ApiService from '../../../../../services/Api'
 import { BACKEND_ROUTES } from '../../../../../constants/routes'
-import { colors } from '../../../../../constants/colors'
+import { COLORS } from '../../../../../constants/colors'
 import type { RootStackParamList } from '../../../../../navigation/types'
 
 import styles from './styles'
@@ -49,7 +49,7 @@ export default function DeleteCourseModal({
     <Modal showModal={visible} onClose={onClose}>
       {deleting ? (
         <View style={styles.center}>
-          <ActivityIndicator size="large" color={colors.primary} />
+          <ActivityIndicator size="large" color={COLORS.primary} />
           <Text style={styles.statusText}>Eliminando curso...</Text>
         </View>
       ) : (

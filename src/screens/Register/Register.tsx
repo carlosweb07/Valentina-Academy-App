@@ -9,13 +9,16 @@ import {
   Platform,
   Animated,
   ScrollView,
+  ImageBackground,
 } from 'react-native'
 import { useNavigation, NavigationProp } from '@react-navigation/native'
 import ApiService from '../../services/Api'
 import { translateError } from '../../utils/errorTranslate'
 import { BACKEND_ROUTES } from '../../constants/routes'
-import { COLORS } from '../../constants/message'
+import { COLORS } from '../../constants/colors'
 import type { RootStackParamList } from '../../navigation/types'
+
+import background from '../../../assets/background.jpg'
 
 import styles from './styles'
 
@@ -63,24 +66,28 @@ export default function Register() {
       showMessage()
       return
     }
+
+    const values = Object.values(user)
+
+    if(values.includes("")) {
+      setMessage({ value: "Faltan campos por llenar", color: COLORS.error })
+      showMessage()
+      return
+    }
+
     setMessage({ value: 'Registrando...', color: COLORS.success })
     showMessage()
     try {
-      const resp = await ApiService.post<{ user?: any; username?: string[] }>(
+      const resp = await ApiService.post<{ user?: any; username?: string[]; email?: string[] }>(
         BACKEND_ROUTES.register,
         user
       )
+
       if (resp.user) {
         navigation.navigate('Login')
-      } else if (resp.username) {
-        setMessage({
-          value: translateError(resp.username[0]),
-          color: COLORS.error,
-        })
-        showMessage()
       } else {
         setMessage({
-          value: 'Error inesperado, intente más tarde',
+          value: translateError(Object.values(resp)[0][0]),
           color: COLORS.error,
         })
         showMessage()
@@ -97,66 +104,72 @@ export default function Register() {
       behavior={Platform.select({ ios: 'padding', android: undefined })}
     >
       <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.box}>
-          <Text style={styles.title}>Registro</Text>
+        <ImageBackground 
+          source={background} 
+          style={styles.container} 
+          resizeMode='cover'
+        >
+          <View style={styles.box}>
+            <Text style={styles.title}>Registro</Text>
 
-          {(
-            [
-              { label: 'Nombres', key: 'first_name' },
-              { label: 'Apellidos', key: 'last_name' },
-              { label: 'Nombre de usuario', key: 'username' },
-              { label: 'Correo', key: 'email' },
-              { label: 'Contraseña', key: 'password' },
-            ] as const
-          ).map(({ label, key }) => (
-            <View style={styles.field} key={key}>
-              <Text style={styles.label}>{label}</Text>
+            {(
+              [
+                { label: 'Nombres', key: 'first_name' },
+                { label: 'Apellidos', key: 'last_name' },
+                { label: 'Nombre de usuario', key: 'username' },
+                { label: 'Correo', key: 'email' },
+                { label: 'Contraseña', key: 'password' },
+              ] as const
+            ).map(({ label, key }) => (
+              <View style={styles.field} key={key}>
+                <Text style={styles.label}>{label} <Text style={{ color: COLORS.error }}>*</Text></Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder={label}
+                  placeholderTextColor={styles.inputPlaceholder.color}
+                  secureTextEntry={key === 'password'}
+                  keyboardType={key === 'email' ? 'email-address' : 'default'}
+                  autoCapitalize="none"
+                  value={(user as any)[key]}
+                  onChangeText={val => onChange(key, val)}
+                />
+              </View>
+            ))}
+
+            <View style={styles.field}>
+              <Text style={styles.label}>Confirmar Contraseña <Text style={{ color: COLORS.error }}>*</Text></Text>
               <TextInput
                 style={styles.input}
-                placeholder={label}
+                placeholder="Confirmar Contraseña"
                 placeholderTextColor={styles.inputPlaceholder.color}
-                secureTextEntry={key === 'password'}
-                keyboardType={key === 'email' ? 'email-address' : 'default'}
-                autoCapitalize="none"
-                value={(user as any)[key]}
-                onChangeText={val => onChange(key, val)}
+                secureTextEntry
+                value={confirm}
+                onChangeText={setConfirm}
               />
             </View>
-          ))}
 
-          <View style={styles.field}>
-            <Text style={styles.label}>Confirmar Contraseña</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Confirmar Contraseña"
-              placeholderTextColor={styles.inputPlaceholder.color}
-              secureTextEntry
-              value={confirm}
-              onChangeText={setConfirm}
-            />
-          </View>
-
-          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-            <Text style={styles.redirect}>
-              ¿Ya tienes cuenta? Inicia sesión aquí
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.button} onPress={onSubmit}>
-            <Text style={styles.buttonText}>Enviar</Text>
-          </TouchableOpacity>
-
-          <Animated.View
-            style={[styles.message, { opacity: msgOpacity }]}
-            pointerEvents="none"
-          >
-            <TouchableOpacity onPress={hideMessage}>
-              <Text style={[styles.messageText, { color: message.color }]}>
-                {message.value}
+            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+              <Text style={styles.redirect}>
+                ¿Ya tienes cuenta? Inicia sesión aquí
               </Text>
             </TouchableOpacity>
-          </Animated.View>
-        </View>
+
+            <TouchableOpacity style={styles.button} onPress={onSubmit}>
+              <Text style={styles.buttonText}>Enviar</Text>
+            </TouchableOpacity>
+
+            <Animated.View
+              style={[styles.message, { opacity: msgOpacity }]}
+              pointerEvents="none"
+            >
+              <TouchableOpacity onPress={hideMessage}>
+                <Text style={[styles.messageText, { color: message.color }]}>
+                  {message.value}
+                </Text>
+              </TouchableOpacity>
+            </Animated.View>
+          </View>
+        </ImageBackground>
       </ScrollView>
     </KeyboardAvoidingView>
   )

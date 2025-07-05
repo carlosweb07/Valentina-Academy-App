@@ -14,7 +14,6 @@ interface Props {
 }
 
 export default function HeaderCard({ presentation, img }: Props) {
-  console.log(img.toString());
   return (
     <View style={styles.card}>
       <ImageBackground

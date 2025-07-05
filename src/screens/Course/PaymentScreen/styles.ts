@@ -1,6 +1,6 @@
 // src/modules/Course/screens/styles.ts
 import { StyleSheet, Dimensions } from 'react-native'
-import { colors } from '../../../constants/colors'
+import { COLORS } from '../../../constants/colors'
 import { typography } from '../../../constants/typography'
 import { metrics } from '../../../constants/metrics'
 
@@ -9,49 +9,49 @@ const { width } = Dimensions.get('window')
 export default StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: colors.primaryOpaque,
+    backgroundColor: COLORS.primaryOpaque,
   },
   container: {
     padding: metrics.padding,
-    backgroundColor: colors.primaryOpaque,
+    backgroundColor: COLORS.primaryOpaque,
   },
   details: {
-    backgroundColor: colors.dark,
+    backgroundColor: COLORS.dark,
     padding: metrics.padding,
     borderRadius: metrics.borderRadius,
   },
   title: {
     fontSize: typography.fontSize.xlarge,
     fontFamily: typography.fontFamily,
-    color: colors.primary,
+    color: COLORS.primary,
     marginBottom: metrics.padding * 0.5,
   },
   desc: {
     fontSize: typography.fontSize.normal,
     fontFamily: typography.fontFamily,
-    color: colors.white,
+    color: COLORS.white,
     marginBottom: metrics.padding,
   },
   price: {
     fontSize: typography.fontSize.large,
-    color: colors.white,
+    color: COLORS.white,
     marginBottom: metrics.padding,
   },
   priceBold: {
     fontWeight: 'bold' as const,
-    color: colors.primary,
+    color: COLORS.primary,
   },
   button: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.primary,
+    backgroundColor: COLORS.primary,
     padding: metrics.padding,
     borderRadius: metrics.borderRadius,
     marginBottom: metrics.padding,
   },
   buttonText: {
     fontSize: typography.fontSize.normal,
-    color: colors.dark,
+    color: COLORS.dark,
     marginLeft: metrics.padding * 0.5,
     fontFamily: typography.fontFamily,
   },
@@ -63,7 +63,7 @@ export default StyleSheet.create({
     marginTop: metrics.padding,
   },
   messageText: {
-    color: colors.white,
+    color: COLORS.white,
     fontSize: typography.fontSize.normal,
     marginLeft: metrics.padding * 0.3,
     fontFamily: typography.fontFamily,

@@ -1,6 +1,6 @@
 // src/modules/admin/components/DeleteCourseModal/styles.ts
 import { StyleSheet } from 'react-native'
-import { colors } from '../../../../../constants/colors'
+import { COLORS } from '../../../../../constants/colors'
 import { typography } from '../../../../../constants/typography'
 import { metrics } from '../../../../../constants/metrics'
 
@@ -11,7 +11,7 @@ export default StyleSheet.create({
   },
   statusText: {
     marginTop: metrics.padding,
-    color: colors.primary,
+    color: COLORS.primary,
     fontSize: typography.fontSize.normal,
   },
   content: {
@@ -21,7 +21,7 @@ export default StyleSheet.create({
   header: {
     fontSize: typography.fontSize.large,
     fontFamily: typography.fontFamily,
-    color: colors.primary,
+    color: COLORS.primary,
     marginBottom: metrics.padding * 1.5,
     textAlign: 'center',
   },
@@ -38,19 +38,19 @@ export default StyleSheet.create({
     marginHorizontal: metrics.padding * 0.5,
   },
   cancelBtn: {
-    backgroundColor: colors.darkOpaque,
+    backgroundColor: COLORS.darkOpaque,
   },
   deleteBtn: {
-    backgroundColor: colors.error,
+    backgroundColor: COLORS.error,
   },
   btnText: {
     fontSize: typography.fontSize.normal,
     fontFamily: typography.fontFamily,
   },
   cancelText: {
-    color: colors.primary,
+    color: COLORS.primary,
   },
   deleteText: {
-    color: colors.light,
+    color: COLORS.light,
   },
 })

@@ -11,7 +11,7 @@ import { Picker } from '@react-native-picker/picker'
 import Modal from '../../../../../components/Modal/Modal'
 import ApiService from '../../../../../services/Api'
 import { BACKEND_ROUTES } from '../../../../../constants/routes'
-import { colors } from '../../../../../constants/colors'
+import { COLORS } from '../../../../../constants/colors'
 import styles from './styles'
 
 interface Props {
@@ -88,7 +88,7 @@ export default function EditIngredientModal({
     <Modal showModal={visible} onClose={onClose}>
       {loading || updating ? (
         <View style={styles.center}>
-          <ActivityIndicator size="large" color={colors.primary} />
+          <ActivityIndicator size="large" color={COLORS.primary} />
           <Text style={styles.status}>
             {loading ? 'Cargando...' : 'Actualizando...'}
           </Text>
@@ -101,7 +101,7 @@ export default function EditIngredientModal({
           <TextInput
             style={styles.input}
             placeholder="Nombre"
-            placeholderTextColor={colors.primaryOpaque}
+            placeholderTextColor={COLORS.primaryOpaque}
             value={name}
             onChangeText={setName}
           />
@@ -109,7 +109,7 @@ export default function EditIngredientModal({
           <TextInput
             style={styles.input}
             placeholder="Cantidad"
-            placeholderTextColor={colors.primaryOpaque}
+            placeholderTextColor={COLORS.primaryOpaque}
             keyboardType="numeric"
             value={quantity}
             onChangeText={setQuantity}

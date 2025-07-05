@@ -1,5 +1,5 @@
 import { StyleSheet, Dimensions } from 'react-native'
-import { colors } from '../../constants/colors'
+import { COLORS } from '../../constants/colors'
 import { typography } from '../../constants/typography'
 import { metrics } from '../../constants/metrics'
 
@@ -8,31 +8,31 @@ const { width, height } = Dimensions.get('window')
 export default StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: colors.darkOpaque,
+    backgroundColor: COLORS.darkOpaque,
     padding: metrics.padding,
     minHeight: height,
   },
   heading: {
     fontSize: typography.fontSize.xlarge,
-    color: colors.primary,
+    color: COLORS.primary,
     marginBottom: metrics.padding,
     textAlign: 'center',
   },
   paragraph: {
     fontSize: typography.fontSize.normal,
-    color: colors.dark,
+    color: COLORS.dark,
     marginBottom: metrics.padding * 1.5,
     textAlign: 'center',
   },
   btn: {
-    backgroundColor: colors.dark,
+    backgroundColor: COLORS.dark,
     padding: metrics.padding,
     borderRadius: metrics.borderRadius,
     alignItems: 'center',
     marginVertical: metrics.padding,
   },
   btnText: {
-    color: colors.primary,
+    color: COLORS.primary,
     fontSize: typography.fontSize.normal,
   },
   center: {
@@ -42,16 +42,16 @@ export default StyleSheet.create({
   },
   counter: {
     fontSize: typography.fontSize.xxlarge || 80,
-    color: colors.primary,
+    color: COLORS.primary,
   },
   timer: {
     fontSize: typography.fontSize.xxlarge,
-    color: colors.dark,
+    color: COLORS.dark,
     marginBottom: metrics.padding,
     textAlign: 'center',
   },
   error: {
-    color: colors.white,
+    color: COLORS.white,
     padding: metrics.padding * 0.5,
     borderRadius: metrics.borderRadius,
     textAlign: 'center',
@@ -63,7 +63,7 @@ export default StyleSheet.create({
   },
   percentage: {
     fontSize: typography.fontSize.xxlarge,
-    color: colors.dark,
+    color: COLORS.dark,
     marginVertical: metrics.padding,
   },
 })

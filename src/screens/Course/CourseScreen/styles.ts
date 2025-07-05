@@ -1,5 +1,5 @@
 import { StyleSheet, Dimensions } from 'react-native'
-import { colors } from '../../../constants/colors'
+import { COLORS } from '../../../constants/colors'
 import { typography } from '../../../constants/typography'
 import { metrics } from '../../../constants/metrics'
 
@@ -9,7 +9,7 @@ const VIDEO_HEIGHT = width * 0.5625 // proporción 16:9
 export default StyleSheet.create({
   container: {
     paddingBottom: metrics.padding,
-    backgroundColor: colors.darkOpaque,
+    backgroundColor: COLORS.darkOpaque,
   },
   video: {
     width: '100%',
@@ -21,26 +21,26 @@ export default StyleSheet.create({
   },
   section: {
     marginBottom: metrics.padding * 1.5,
-    backgroundColor: colors.darkOpaque,
+    backgroundColor: COLORS.darkOpaque,
     borderRadius: metrics.borderRadius,
     padding: metrics.padding,
   },
   heading: {
     fontSize: typography.fontSize.xlarge,
     fontFamily: typography.fontFamily,
-    color: colors.primary,
+    color: COLORS.primary,
     marginBottom: metrics.padding * 0.5,
   },
   subheading: {
     fontSize: typography.fontSize.large,
     fontFamily: typography.fontFamily,
-    color: colors.primary,
+    color: COLORS.primary,
     marginBottom: metrics.padding * 0.5,
   },
   paragraph: {
     fontSize: typography.fontSize.normal,
     fontFamily: typography.fontFamily,
-    color: colors.white,
+    color: COLORS.white,
     marginBottom: metrics.padding,
   },
   bold: {
@@ -56,17 +56,17 @@ export default StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: colors.primary,
+    backgroundColor: COLORS.primary,
   },
   authorName: {
     fontSize: typography.fontSize.large,
     fontFamily: typography.fontFamily,
-    color: colors.primary,
+    color: COLORS.primary,
   },
   pdfContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.white + "99", // semitransparente
+    backgroundColor: COLORS.white + "99", // semitransparente
     borderRadius: metrics.borderRadius,
     padding: metrics.padding * 0.5,
   },
@@ -77,7 +77,7 @@ export default StyleSheet.create({
   },
   pdfText: {
     fontSize: typography.fontSize.normal,
-    color: colors.dark,
+    color: COLORS.dark,
   },
   recipeContainer: {
     flexDirection: 'row',
@@ -91,7 +91,7 @@ export default StyleSheet.create({
   },
   listItem: {
     fontSize: typography.fontSize.normal,
-    color: colors.white,
+    color: COLORS.white,
     marginBottom: metrics.padding * 0.3,
   },
 })

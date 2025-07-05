@@ -1,6 +1,6 @@
 // src/modules/admin/components/EditCourseModal/styles.ts
 import { StyleSheet, Dimensions } from 'react-native'
-import { colors } from '../../../../../constants/colors'
+import { COLORS } from '../../../../../constants/colors'
 import { typography } from '../../../../../constants/typography'
 import { metrics } from '../../../../../constants/metrics'
 
@@ -10,7 +10,7 @@ const INPUT_WIDTH = width * 0.85
 export default StyleSheet.create({
   header: {
     fontSize: typography.fontSize.large,
-    color: colors.primary,
+    color: COLORS.primary,
     fontFamily: typography.fontFamily,
     marginBottom: metrics.padding,
     textAlign: 'center',
@@ -21,7 +21,7 @@ export default StyleSheet.create({
   },
   statusText: {
     marginTop: metrics.padding,
-    color: colors.primary,
+    color: COLORS.primary,
     fontSize: typography.fontSize.normal,
   },
   form: {
@@ -30,8 +30,8 @@ export default StyleSheet.create({
   },
   input: {
     width: INPUT_WIDTH,
-    backgroundColor: colors.darkMoreOpaque,
-    color: colors.primary,
+    backgroundColor: COLORS.darkMoreOpaque,
+    color: COLORS.primary,
     padding: metrics.padding,
     borderRadius: metrics.borderRadius,
     marginVertical: metrics.padding * 0.5,
@@ -42,36 +42,36 @@ export default StyleSheet.create({
   },
   picker: {
     width: INPUT_WIDTH,
-    backgroundColor: colors.darkMoreOpaque,
+    backgroundColor: COLORS.darkMoreOpaque,
     marginVertical: metrics.padding * 0.5,
-    color: colors.primary,
+    color: COLORS.primary,
   },
   mediaButton: {
     width: INPUT_WIDTH,
     padding: metrics.padding,
-    backgroundColor: colors.darkOpaque,
+    backgroundColor: COLORS.darkOpaque,
     borderRadius: metrics.borderRadius,
     alignItems: 'center',
     marginVertical: metrics.padding * 0.5,
   },
   mediaText: {
-    color: colors.primary,
+    color: COLORS.primary,
     fontSize: typography.fontSize.normal,
   },
   error: {
-    color: colors.error,
+    color: COLORS.error,
     fontSize: typography.fontSize.normal,
     marginBottom: metrics.padding,
   },
   button: {
     width: INPUT_WIDTH,
     padding: metrics.padding,
-    backgroundColor: colors.primary,
+    backgroundColor: COLORS.primary,
     borderRadius: metrics.borderRadius,
     alignItems: 'center',
   },
   buttonText: {
-    color: colors.dark,
+    color: COLORS.dark,
     fontSize: typography.fontSize.normal,
     fontFamily: typography.fontFamily,
   },

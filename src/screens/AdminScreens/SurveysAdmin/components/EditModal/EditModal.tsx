@@ -13,7 +13,7 @@ import Modal from '../../../../../components/Modal/Modal'
 import ApiService from '../../../../../services/Api'
 import { BACKEND_ROUTES } from '../../../../../constants/routes'
 import { Survey, Course } from '../../../../../interfaces/Models'
-import { colors } from '../../../../../constants/colors'
+import { COLORS } from '../../../../../constants/colors'
 
 import styles from './styles'
 
@@ -206,7 +206,7 @@ export default function EditSurveyModal({
     <Modal showModal={visible} onClose={onClose}>
       {(loading || updating) ? (
         <View style={styles.center}>
-          <ActivityIndicator size="large" color={colors.primary} />
+          <ActivityIndicator size="large" color={COLORS.primary} />
           <Text style={styles.status}>
             {loading ? 'Cargando encuesta...' : 'Actualizando encuesta...'}
           </Text>
@@ -244,14 +244,14 @@ export default function EditSurveyModal({
           <TextInput
             style={styles.input}
             placeholder="Título"
-            placeholderTextColor={colors.primaryOpaque}
+            placeholderTextColor={COLORS.primaryOpaque}
             value={title}
             onChangeText={setTitle}
           />
           <TextInput
             style={[styles.input, styles.textarea]}
             placeholder="Descripción"
-            placeholderTextColor={colors.primaryOpaque}
+            placeholderTextColor={COLORS.primaryOpaque}
             multiline
             value={description}
             onChangeText={setDescription}
@@ -264,17 +264,17 @@ export default function EditSurveyModal({
                 <Text style={styles.subheading}>Pregunta {qi + 1}</Text>
                 <View style={styles.questionBtns}>
                   <TouchableOpacity onPress={() => addAnswer(qi)}>
-                    <FontAwesome5 name="plus" size={16} color={colors.primary} />
+                    <FontAwesome5 name="plus" size={16} color={COLORS.primary} />
                   </TouchableOpacity>
                   <TouchableOpacity onPress={() => removeAnswer(qi)}>
-                    <FontAwesome5 name="minus" size={16} color={colors.primary} />
+                    <FontAwesome5 name="minus" size={16} color={COLORS.primary} />
                   </TouchableOpacity>
                 </View>
               </View>
               <TextInput
                 style={[styles.input, styles.textarea]}
                 placeholder="Texto de la pregunta"
-                placeholderTextColor={colors.primaryOpaque}
+                placeholderTextColor={COLORS.primaryOpaque}
                 value={q.question}
                 onChangeText={t => onQuestionChange(qi, t)}
               />
@@ -290,7 +290,7 @@ export default function EditSurveyModal({
                   <TextInput
                     style={[styles.input, styles.answerInput]}
                     placeholder={`Respuesta ${ai + 1}`}
-                    placeholderTextColor={colors.primaryOpaque}
+                    placeholderTextColor={COLORS.primaryOpaque}
                     value={a.answer}
                     onChangeText={t => onAnswerChange(qi, ai, t)}
                   />
@@ -302,10 +302,10 @@ export default function EditSurveyModal({
           {/* Añadir/Quitar preguntas */}
           <View style={styles.addRemove}>
             <TouchableOpacity onPress={addQuestion}>
-              <FontAwesome5 name="plus" size={20} color={colors.primary} />
+              <FontAwesome5 name="plus" size={20} color={COLORS.primary} />
             </TouchableOpacity>
             <TouchableOpacity onPress={removeQuestion}>
-              <FontAwesome5 name="minus" size={20} color={colors.primary} />
+              <FontAwesome5 name="minus" size={20} color={COLORS.primary} />
             </TouchableOpacity>
           </View>
 

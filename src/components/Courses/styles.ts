@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native'
-import { colors } from '../../constants/colors'
+import { COLORS } from '../../constants/colors'
 import { typography } from '../../constants/typography'
 import { metrics } from '../../constants/metrics'
 
@@ -7,7 +7,7 @@ export const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     padding: metrics.padding,
-    backgroundColor: colors.primaryOpaque,
+    backgroundColor: COLORS.primaryOpaque,
   },
   header: {
     flexDirection: 'row',
@@ -17,7 +17,7 @@ export const styles = StyleSheet.create({
   title: {
     fontSize: typography.fontSize.xxlarge,
     fontFamily: typography.fontFamily,
-    color: colors.dark,
+    color: COLORS.dark,
   },
   reloadButton: {
     marginLeft: metrics.padding * 0.5,

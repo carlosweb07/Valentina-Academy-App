@@ -1,12 +1,12 @@
 // src/modules/admin/skeleton/styles.ts
 import { StyleSheet } from 'react-native'
-import { colors } from '../../../constants/colors'
+import { COLORS } from '../../../constants/colors'
 import { metrics } from '../../../constants/metrics'
 
 export default StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: colors.darkOpaque,
+    backgroundColor: COLORS.darkOpaque,
   },
   container: {
     padding: metrics.padding,

@@ -10,7 +10,7 @@ import {
 } from 'react-native'
 import { FontAwesome5 } from '@expo/vector-icons'
 import { styles } from './styles'
-import { colors } from '../../constants/colors'
+import { COLORS } from '../../constants/colors'
 
 interface Props {
   children: ReactNode[]
@@ -46,7 +46,7 @@ export default function Courses({ children, setCategory }: Props) {
         <Text style={styles.title}>Cursos</Text>
         <Animated.View style={{ transform: [{ rotate: spin }] }}>
           <TouchableOpacity onPress={onReload} style={styles.reloadButton}>
-            <FontAwesome5 name="redo-alt" size={24} color={colors.primary} />
+            <FontAwesome5 name="redo-alt" size={24} color={COLORS.primary} />
           </TouchableOpacity>
         </Animated.View>
       </View>

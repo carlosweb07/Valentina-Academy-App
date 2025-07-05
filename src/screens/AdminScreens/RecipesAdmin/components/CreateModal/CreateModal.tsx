@@ -14,7 +14,7 @@ import Modal from '../../../../../components/Modal/Modal'
 import ApiService from '../../../../../services/Api'
 import { BACKEND_ROUTES } from '../../../../../constants/routes'
 import { Ingredient } from '../../../../../interfaces/Models'
-import { colors } from '../../../../../constants/colors'
+import { COLORS } from '../../../../../constants/colors'
 
 import styles from './styles'
 
@@ -83,7 +83,7 @@ export default function CreateRecipeModal({
     <Modal showModal={visible} onClose={onClose}>
       {loading ? (
         <View style={styles.center}>
-          <ActivityIndicator size="large" color={colors.primary} />
+          <ActivityIndicator size="large" color={COLORS.primary} />
           <Text style={styles.status}>Creando receta...</Text>
         </View>
       ) : (
@@ -94,14 +94,14 @@ export default function CreateRecipeModal({
           <TextInput
             style={styles.input}
             placeholder="Nombre"
-            placeholderTextColor={colors.primaryOpaque}
+            placeholderTextColor={COLORS.primaryOpaque}
             value={name}
             onChangeText={setName}
           />
           <TextInput
             style={[styles.input, styles.textarea]}
             placeholder="Descripción"
-            placeholderTextColor={colors.primaryOpaque}
+            placeholderTextColor={COLORS.primaryOpaque}
             multiline
             value={description}
             onChangeText={setDescription}
@@ -135,7 +135,7 @@ export default function CreateRecipeModal({
                   }
                 }}
               >
-                <FontAwesome5 name="minus" size={20} color={colors.primary} />
+                <FontAwesome5 name="minus" size={20} color={COLORS.primary} />
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
@@ -143,7 +143,7 @@ export default function CreateRecipeModal({
                   setSteps(ss => [...ss, ''])
                 }}
               >
-                <FontAwesome5 name="plus" size={20} color={colors.primary} />
+                <FontAwesome5 name="plus" size={20} color={COLORS.primary} />
               </TouchableOpacity>
             </View>
           </View>
@@ -153,7 +153,7 @@ export default function CreateRecipeModal({
               key={idx}
               style={[styles.input, styles.textarea]}
               placeholder={`Paso ${idx + 1}`}
-              placeholderTextColor={colors.primaryOpaque}
+              placeholderTextColor={COLORS.primaryOpaque}
               multiline
               value={steps[idx]}
               onChangeText={text => onStepChange(idx, text)}

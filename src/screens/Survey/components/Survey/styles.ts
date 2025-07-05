@@ -1,6 +1,6 @@
 // src/modules/Survey/components/styles.ts
 import { StyleSheet, Dimensions } from 'react-native'
-import { colors } from '../../../../constants/colors'
+import { COLORS } from '../../../../constants/colors'
 import { typography } from '../../../../constants/typography'
 import { metrics } from '../../../../constants/metrics'
 
@@ -13,20 +13,20 @@ export default StyleSheet.create({
     paddingVertical: metrics.padding,
   },
   question: {
-    backgroundColor: colors.dark,
+    backgroundColor: COLORS.dark,
     borderRadius: metrics.borderRadius,
     padding: metrics.padding,
     marginBottom: metrics.padding,
   },
   questionText: {
     fontSize: typography.fontSize.large,
-    color: colors.primary,
+    color: COLORS.primary,
     marginBottom: metrics.padding,
     textAlign: 'center',
   },
   answer: {
     width: ANSWER_WIDTH,
-    backgroundColor: colors.primaryOpaque,
+    backgroundColor: COLORS.primaryOpaque,
     padding: metrics.padding * 0.5,
     borderRadius: metrics.borderRadius,
     marginVertical: metrics.padding * 0.3,
@@ -34,15 +34,15 @@ export default StyleSheet.create({
   },
   answerSelected: {
     borderWidth: 2,
-    borderColor: colors.white,
+    borderColor: COLORS.white,
   },
   answerText: {
     fontSize: typography.fontSize.normal,
-    color: colors.dark,
+    color: COLORS.dark,
     textAlign: 'center',
   },
   answerTextSelected: {
-    color: colors.primary,
+    color: COLORS.primary,
     fontWeight: 'bold' as const,
   },
 })

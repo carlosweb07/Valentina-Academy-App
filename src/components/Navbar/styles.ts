@@ -1,6 +1,6 @@
 // src/shared/components/Navbar/styles.ts
 import { StyleSheet, Dimensions } from 'react-native'
-import { colors } from '../../constants/colors'
+import { COLORS } from '../../constants/colors'
 import { typography } from '../../constants/typography'
 import { metrics } from '../../constants/metrics'
 
@@ -11,7 +11,7 @@ export default StyleSheet.create({
     position: 'absolute',
     top: 0,
     width: '100%',
-    backgroundColor: colors.darkOpaque,
+    backgroundColor: COLORS.darkOpaque,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -30,7 +30,7 @@ export default StyleSheet.create({
     marginRight: metrics.padding * 0.5,
   },
   title: {
-    color: colors.white,
+    color: COLORS.white,
     fontFamily: typography.fontFamily,
     fontSize: typography.fontSize.xxlarge,
   },
@@ -39,7 +39,7 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   navText: {
-    color: colors.white,
+    color: COLORS.white,
     fontFamily: typography.fontFamily,
     fontSize: typography.fontSize.normal,
     marginHorizontal: metrics.padding * 0.5,
@@ -54,7 +54,7 @@ export default StyleSheet.create({
     position: 'absolute',
     top: height * 0.08,
     right: metrics.padding,
-    backgroundColor: colors.dark,
+    backgroundColor: COLORS.dark,
     borderRadius: metrics.borderRadius,
     padding: metrics.padding * 0.5,
     shadowColor: '#000',
@@ -64,12 +64,12 @@ export default StyleSheet.create({
     elevation: 5,
   },
   submenuItem: {
-    color: colors.white,
+    color: COLORS.white,
     fontFamily: typography.fontFamily,
     fontSize: typography.fontSize.normal,
     paddingVertical: metrics.padding * 0.3,
   },
   signOut: {
-    color: colors.error,
+    color: COLORS.error,
   },
 })

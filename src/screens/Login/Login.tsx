@@ -8,6 +8,7 @@ import {
   Animated,
   KeyboardAvoidingView,
   Platform,
+  ImageBackground,
 } from 'react-native'
 import { useNavigation, NavigationProp } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -15,8 +16,10 @@ import ApiService from '../../services/Api'
 import { ContextApp } from '../../context/ContextApp'
 import { translateError } from '../../utils/errorTranslate'
 import { BACKEND_ROUTES } from '../../constants/routes'
-import { COLORS } from '../../constants/message'
+import { COLORS } from '../../constants/colors'
 import type { RootStackParamList } from '../../navigation/types'
+
+import background from '../../../assets/background.jpg'
 
 import styles from './styles'
 
@@ -50,29 +53,35 @@ export default function Login() {
     showMessage()
 
     try {
-      const resp = await ApiService.post<{ token?: string; error?: string }>(
+      if(!user.username || !user.password) {
+        setMessage({ value: "Faltan campos por llenar", color: COLORS.error })
+        showMessage()
+        return
+      }
+      const resp = await ApiService.post<{ token?: any; error: string }>(
         BACKEND_ROUTES.login,
         user
       )
-      if (resp.error) {
-        setMessage({ value: translateError(resp.error), color: COLORS.error })
-        showMessage()
-      } else if (resp.token) {
+      if (resp.token) {
         await AsyncStorage.setItem('access_token', resp.token)
         setContextUser({
           username: user.username,
           id: '',
           email: '',
           first_name: '',
-          last_name: ''
+          last_name: '',
+          role: "student"
         })
         navigation.reset({ index: 0, routes: [{ name: 'Home' }] })
       } else {
-        setMessage({ value: 'Error inesperado', color: COLORS.error })
+        setMessage({
+          value: translateError(Object.values(resp)[0]),
+          color: COLORS.error,
+        })
         showMessage()
       }
     } catch (err) {
-      setMessage({ value: 'Error de red', color: COLORS.error })
+      setMessage({ value: `Error: ${err}`, color: COLORS.error })
       showMessage()
     }
   }
@@ -82,54 +91,60 @@ export default function Login() {
       style={styles.container}
       behavior={Platform.select({ ios: 'padding', android: undefined })}
     >
-      <View style={styles.box}>
-        <Text style={styles.title}>Inicio de Sesión</Text>
+    <ImageBackground 
+        source={background} 
+        style={styles.container} 
+        resizeMode='cover'
+      >
+        <View style={styles.box}>
+          <Text style={styles.title}>Inicio de Sesión</Text>
 
-        <View style={styles.field}>
-          <Text style={styles.label}>Nombre de usuario</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Usuario"
-            placeholderTextColor={styles.inputPlaceholder.color}
-            value={user.username}
-            onChangeText={val => onChange('username', val)}
-            autoCapitalize="none"
-          />
-        </View>
+          <View style={styles.field}>
+            <Text style={styles.label}>Nombre de usuario <Text style={{ color: COLORS.error }}>*</Text></Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Usuario"
+              placeholderTextColor={styles.inputPlaceholder.color}
+              value={user.username}
+              onChangeText={val => onChange('username', val)}
+              autoCapitalize="none"
+            />
+          </View>
 
-        <View style={styles.field}>
-          <Text style={styles.label}>Contraseña</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Contraseña"
-            placeholderTextColor={styles.inputPlaceholder.color}
-            value={user.password}
-            onChangeText={val => onChange('password', val)}
-            secureTextEntry
-          />
-        </View>
+          <View style={styles.field}>
+            <Text style={styles.label}>Contraseña <Text style={{ color: COLORS.error }}>*</Text></Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Contraseña"
+              placeholderTextColor={styles.inputPlaceholder.color}
+              value={user.password}
+              onChangeText={val => onChange('password', val)}
+              secureTextEntry
+            />
+          </View>
 
-        <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-          <Text style={styles.redirect}>
-            ¿No tienes cuenta? Regístrate aquí
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.button} onPress={onSubmit}>
-          <Text style={styles.buttonText}>Enviar</Text>
-        </TouchableOpacity>
-
-        <Animated.View
-          style={[styles.message, { opacity: msgOpacity }]}
-          pointerEvents="none"
-        >
-          <TouchableOpacity onPress={hideMessage}>
-            <Text style={[styles.messageText, { color: message.color }]}>
-              {message.value}
+          <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+            <Text style={styles.redirect}>
+              ¿No tienes cuenta? Regístrate aquí
             </Text>
           </TouchableOpacity>
-        </Animated.View>
-      </View>
+
+          <TouchableOpacity style={styles.button} onPress={onSubmit}>
+            <Text style={styles.buttonText}>Enviar</Text>
+          </TouchableOpacity>
+
+          <Animated.View
+            style={[styles.message, { opacity: msgOpacity }]}
+            pointerEvents="none"
+          >
+            <TouchableOpacity onPress={hideMessage}>
+              <Text style={[styles.messageText, { color: message.color }]}>
+                {message.value}
+              </Text>
+            </TouchableOpacity>
+          </Animated.View>
+        </View>
+      </ImageBackground>
     </KeyboardAvoidingView>
   )
 }

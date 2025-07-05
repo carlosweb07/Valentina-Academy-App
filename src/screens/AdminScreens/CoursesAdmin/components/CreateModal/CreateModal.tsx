@@ -14,7 +14,7 @@ import { Picker } from '@react-native-picker/picker'
 import Modal from '../../../../../components/Modal/Modal'
 import ApiService from '../../../../../services/Api'
 import { BACKEND_ROUTES } from '../../../../../constants/routes'
-import { colors } from '../../../../../constants/colors'
+import { COLORS } from '../../../../../constants/colors'
 
 import styles from './styles'
 import { Category, Recipe, User } from '../../../../../interfaces/Models'
@@ -125,14 +125,14 @@ export default function CreateModal({
       <TextInput
         style={styles.input}
         placeholder="Título"
-        placeholderTextColor={colors.primaryOpaque}
+        placeholderTextColor={COLORS.primaryOpaque}
         value={courseData.title}
         onChangeText={t => setCourseData(d => ({ ...d, title: t }))}
       />
       <TextInput
         style={[styles.input, styles.textarea]}
         placeholder="Descripción"
-        placeholderTextColor={colors.primaryOpaque}
+        placeholderTextColor={COLORS.primaryOpaque}
         multiline
         numberOfLines={4}
         value={courseData.description}
@@ -141,14 +141,14 @@ export default function CreateModal({
       <TextInput
         style={styles.input}
         placeholder="Duración (HH:MM:SS)"
-        placeholderTextColor={colors.primaryOpaque}
+        placeholderTextColor={COLORS.primaryOpaque}
         value={courseData.duration}
         onChangeText={t => setCourseData(d => ({ ...d, duration: t }))}
       />
       <TextInput
         style={styles.input}
         placeholder="Precio ($)"
-        placeholderTextColor={colors.primaryOpaque}
+        placeholderTextColor={COLORS.primaryOpaque}
         keyboardType="numeric"
         value={courseData.price}
         onChangeText={t => setCourseData(d => ({ ...d, price: t }))}
@@ -219,7 +219,7 @@ export default function CreateModal({
 
   const renderLoading = () => (
     <View style={styles.loading}>
-      <ActivityIndicator size="large" color={colors.primary} />
+      <ActivityIndicator size="large" color={COLORS.primary} />
       <Text style={styles.loadingText}>Creando curso...</Text>
     </View>
   )

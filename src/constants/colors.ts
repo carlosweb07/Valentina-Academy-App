@@ -1,5 +1,5 @@
-// src/constants/colors.ts
-export const colors = {
+// src/constants/COLORS.ts
+export const COLORS = {
   primary: '#ecd553',
   primaryOpaque: '#ebd451b2',
   primaryMoreOpaque: '#f3dd6077',
@@ -10,5 +10,6 @@ export const colors = {
   skeletonLight: '#808080b0',
   skeletonDark: '#494949b0',
   white: '#ffffff',
-  error: '#db343c',
+  error: "#fa5353",
+  success: "#54ca45"
 };

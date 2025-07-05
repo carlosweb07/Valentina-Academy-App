@@ -1,14 +1,14 @@
 import React from 'react'
 import { View, Dimensions } from 'react-native'
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder'
-import { colors } from '../../../constants/colors'
+import { COLORS } from '../../../constants/colors'
 import styles from './styles'
 
 export default function CourseSkeleton() {
   return (
     <SkeletonPlaceholder
-      backgroundColor={colors.skeletonDark}
-      highlightColor={colors.skeletonLight}
+      backgroundColor={COLORS.skeletonDark}
+      highlightColor={COLORS.skeletonLight}
     >
       <View style={styles.cardSkeleton}>
         {/* Imagen Skeleton */}

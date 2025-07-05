@@ -1,6 +1,6 @@
 // src/modules/Survey/components/styles.ts
 import { StyleSheet, Dimensions } from 'react-native'
-import { colors } from '../../../../constants/colors'
+import { COLORS } from '../../../../constants/colors'
 import { typography } from '../../../../constants/typography'
 import { metrics } from '../../../../constants/metrics'
 
@@ -14,7 +14,7 @@ export default StyleSheet.create({
     borderRadius: metrics.borderRadius,
     overflow: 'hidden',
     alignSelf: 'center',
-    backgroundColor: colors.white, // fallback
+    backgroundColor: COLORS.white, // fallback
     shadowColor: '#000',
     shadowOpacity: 0.3,
     shadowRadius: 6,
@@ -31,12 +31,12 @@ export default StyleSheet.create({
   },
   headerH2: {
     fontSize: typography.fontSize.large,
-    color: colors.dark,
+    color: COLORS.dark,
     fontFamily: typography.fontFamily,
   },
   headerH3: {
     fontSize: typography.fontSize.normal,
-    color: colors.dark,
+    color: COLORS.dark,
     fontFamily: typography.fontFamily,
     marginTop: metrics.padding * 0.2,
   },
@@ -46,20 +46,20 @@ export default StyleSheet.create({
   bodyH2: {
     fontSize: typography.fontSize.large,
     fontFamily: typography.fontFamily,
-    color: colors.dark,
+    color: COLORS.dark,
     marginBottom: metrics.padding,
   },
   bodyText: {
     fontSize: typography.fontSize.normal,
     fontFamily: typography.fontFamily,
-    color: colors.dark,
+    color: COLORS.dark,
     textAlign: 'center',
     marginBottom: metrics.padding * 0.5,
   },
   name: {
     fontSize: typography.fontSize.large,
     fontFamily: typography.fontFamily,
-    color: colors.dark,
+    color: COLORS.dark,
     fontWeight: 'bold' as const,
     textDecorationLine: 'underline',
     marginBottom: metrics.padding,
@@ -68,14 +68,14 @@ export default StyleSheet.create({
   bodyTextTitle: {
     fontSize: typography.fontSize.normal,
     fontFamily: typography.fontFamily,
-    color: colors.dark,
+    color: COLORS.dark,
     marginBottom: metrics.padding * 0.5,
     textAlign: 'center',
   },
   courseTitle: {
     fontSize: typography.fontSize.xlarge,
     fontFamily: typography.fontFamily,
-    color: colors.dark,
+    color: COLORS.dark,
     fontWeight: 'bold' as const,
     marginBottom: metrics.padding,
     textAlign: 'center',
@@ -83,7 +83,7 @@ export default StyleSheet.create({
   details: {
     fontSize: typography.fontSize.normal,
     fontFamily: typography.fontFamily,
-    color: colors.dark,
+    color: COLORS.dark,
     textAlign: 'center',
     width: '70%',
     marginBottom: metrics.padding * 2,
@@ -100,12 +100,12 @@ export default StyleSheet.create({
   signatureName: {
     fontSize: typography.fontSize.normal,
     fontFamily: typography.fontFamily,
-    color: colors.dark,
+    color: COLORS.dark,
   },
   signatureRole: {
     fontSize: typography.fontSize.small,
     fontFamily: typography.fontFamily,
-    color: colors.dark,
+    color: COLORS.dark,
     marginTop: metrics.padding * 0.5,
   },
   footer: {
@@ -115,6 +115,6 @@ export default StyleSheet.create({
   footerText: {
     fontSize: typography.fontSize.small,
     fontFamily: typography.fontFamily,
-    color: colors.dark,
+    color: COLORS.dark,
   },
 })

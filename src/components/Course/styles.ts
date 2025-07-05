@@ -1,5 +1,5 @@
 import { StyleSheet, Dimensions } from 'react-native'
-import { colors } from '../../constants/colors'
+import { COLORS } from '../../constants/colors'
 import { typography } from '../../constants/typography'
 import { metrics } from '../../constants/metrics'
 
@@ -9,7 +9,7 @@ const CARD_WIDTH = width * 0.9
 export default StyleSheet.create({
   card: {
     width: CARD_WIDTH,
-    backgroundColor: colors.darkOpaque,
+    backgroundColor: COLORS.darkOpaque,
     borderRadius: metrics.borderRadius * 2,
     overflow: 'hidden',
     marginVertical: metrics.padding,
@@ -30,25 +30,25 @@ export default StyleSheet.create({
     borderTopRightRadius: metrics.borderRadius * 2,
   },
   info: {
-    backgroundColor: colors.darkMoreOpaque,
+    backgroundColor: COLORS.darkMoreOpaque,
     padding: metrics.padding,
     minHeight: metrics.screenHeight * 0.18,
     justifyContent: 'center',
   },
   title: {
-    color: colors.primary,
+    color: COLORS.primary,
     fontFamily: typography.fontFamily,
     fontSize: typography.fontSize.large,
     marginBottom: metrics.padding * 0.3,
   },
   description: {
-    color: colors.white,
+    color: COLORS.white,
     fontFamily: typography.fontFamily,
     fontSize: typography.fontSize.normal,
     lineHeight: typography.fontSize.normal * 1.4,
   },
   more: {
-    color: colors.primary,
+    color: COLORS.primary,
     fontFamily: typography.fontFamily,
     fontSize: typography.fontSize.normal,
   },

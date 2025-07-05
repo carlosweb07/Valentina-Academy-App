@@ -1,6 +1,6 @@
 // src/modules/Course/screens/styles.ts
 import { StyleSheet, Dimensions } from 'react-native'
-import { colors } from '../../../../constants/colors'
+import { COLORS } from '../../../../constants/colors'
 import { typography } from '../../../../constants/typography'
 import { metrics } from '../../../../constants/metrics'
 
@@ -10,12 +10,12 @@ const VIDEO_HEIGHT = width * 0.5625
 export default StyleSheet.create({
   container: {
     paddingBottom: metrics.padding,
-    backgroundColor: colors.darkOpaque,
+    backgroundColor: COLORS.darkOpaque,
     alignItems: 'center',
   },
   videoContainer: {
     width: '100%',
-    backgroundColor: colors.darkOpaque,
+    backgroundColor: COLORS.darkOpaque,
     paddingTop: metrics.padding * 3,
     alignItems: 'center',
   },
@@ -25,12 +25,12 @@ export default StyleSheet.create({
     borderRadius: metrics.borderRadius,
     marginVertical: metrics.padding,
     borderWidth: 10,
-    borderColor: colors.skeletonLight,
-    backgroundColor: colors.skeletonDark,
+    borderColor: COLORS.skeletonLight,
+    backgroundColor: COLORS.skeletonDark,
   },
   detailsSection: {
     width: '100%',
-    backgroundColor: colors.darkOpaque,
+    backgroundColor: COLORS.darkOpaque,
     padding: metrics.padding,
   },
   detailsContainer: {
@@ -39,7 +39,7 @@ export default StyleSheet.create({
     marginBottom: metrics.padding * 2,
   },
   detailBlock: {
-    backgroundColor: colors.skeletonDark,
+    backgroundColor: COLORS.skeletonDark,
     borderRadius: metrics.borderRadius,
     padding: metrics.padding,
   },
@@ -63,14 +63,14 @@ export default StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: colors.skeletonLight,
+    backgroundColor: COLORS.skeletonLight,
   },
   authorNameSkeleton: {
     width: '30%',
     height: typography.fontSize.normal,
     marginLeft: metrics.padding,
     borderRadius: metrics.borderRadius,
-    backgroundColor: colors.skeletonLight,
+    backgroundColor: COLORS.skeletonLight,
   },
   pdfContainerSkeleton: {
     flexDirection: 'row',
@@ -78,22 +78,22 @@ export default StyleSheet.create({
     marginTop: metrics.padding,
     padding: metrics.padding * 0.5,
     borderRadius: metrics.borderRadius,
-    backgroundColor: colors.skeletonLight,
+    backgroundColor: COLORS.skeletonLight,
   },
   pdfIconSkeleton: {
     width: 50,
     height: 50,
     marginRight: metrics.padding,
-    backgroundColor: colors.skeletonDark,
+    backgroundColor: COLORS.skeletonDark,
   },
   pdfTextSkeleton: {
     width: '40%',
     height: typography.fontSize.normal,
     borderRadius: metrics.borderRadius,
-    backgroundColor: colors.skeletonDark,
+    backgroundColor: COLORS.skeletonDark,
   },
   recipeSkeleton: {
-    backgroundColor: colors.skeletonDark,
+    backgroundColor: COLORS.skeletonDark,
     borderRadius: metrics.borderRadius,
     padding: metrics.padding,
   },
@@ -127,6 +127,6 @@ export default StyleSheet.create({
     height: typography.fontSize.normal * 0.6,
     borderRadius: metrics.borderRadius,
     marginBottom: metrics.padding * 0.5,
-    backgroundColor: colors.skeletonLight,
+    backgroundColor: COLORS.skeletonLight,
   },
 })

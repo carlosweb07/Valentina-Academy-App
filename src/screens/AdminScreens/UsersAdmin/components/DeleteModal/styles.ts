@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native'
-import { colors } from '../../../../../constants/colors'
+import { COLORS } from '../../../../../constants/colors'
 import { typography } from '../../../../../constants/typography'
 import { metrics } from '../../../../../constants/metrics'
 
@@ -10,7 +10,7 @@ export default StyleSheet.create({
   },
   status: {
     marginTop: metrics.padding,
-    color: colors.primary,
+    color: COLORS.primary,
     fontSize: typography.fontSize.normal,
   },
   container: {
@@ -19,7 +19,7 @@ export default StyleSheet.create({
   },
   header: {
     fontSize: typography.fontSize.large,
-    color: colors.primary,
+    color: COLORS.primary,
     marginBottom: metrics.padding * 1.5,
     textAlign: 'center',
   },
@@ -37,19 +37,19 @@ export default StyleSheet.create({
     marginHorizontal: metrics.padding * 0.5,
   },
   cancel: {
-    backgroundColor: colors.darkOpaque,
+    backgroundColor: COLORS.darkOpaque,
   },
   delete: {
-    backgroundColor: colors.error,
+    backgroundColor: COLORS.error,
   },
   btnText: {
     fontSize: typography.fontSize.normal,
     fontFamily: typography.fontFamily,
   },
   cancelText: {
-    color: colors.primary,
+    color: COLORS.primary,
   },
   deleteText: {
-    color: colors.white,
+    color: COLORS.white,
   },
 })

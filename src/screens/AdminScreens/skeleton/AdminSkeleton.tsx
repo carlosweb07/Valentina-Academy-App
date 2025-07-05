@@ -3,7 +3,7 @@ import React from 'react'
 import { SafeAreaView, ScrollView, View, Dimensions } from 'react-native'
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder'
 import Navbar from '../../../components/Navbar/Navbar'
-import { colors } from '../../../constants/colors'
+import { COLORS } from '../../../constants/colors'
 
 import styles from './styles'
 
@@ -18,8 +18,8 @@ export default function AdminSkeleton() {
       <Navbar />
       <ScrollView contentContainerStyle={styles.container}>
         <SkeletonPlaceholder
-          backgroundColor={colors.skeletonDark}
-          highlightColor={colors.skeletonLight}
+          backgroundColor={COLORS.skeletonDark}
+          highlightColor={COLORS.skeletonLight}
         >
           {Array.from({ length: 4 }).map((_, idx) => (
             <View key={idx} style={[styles.card, { width: CARD_WIDTH, height: CARD_HEIGHT }]}>

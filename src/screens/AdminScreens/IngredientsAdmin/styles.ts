@@ -1,6 +1,6 @@
 // src/screens/IngredientsAdminScreen/styles.ts
 import { StyleSheet, Dimensions } from 'react-native'
-import { colors } from '../../../constants/colors'
+import { COLORS } from '../../../constants/colors'
 import { typography } from '../../../constants/typography'
 import { metrics } from '../../../constants/metrics'
 
@@ -10,18 +10,18 @@ const CARD_WIDTH = width * 0.95
 export default StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: colors.darkOpaque,
+    backgroundColor: COLORS.darkOpaque,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: metrics.padding,
-    backgroundColor: colors.darkOpaque,
+    backgroundColor: COLORS.darkOpaque,
   },
   title: {
     fontSize: typography.fontSize.large,
-    color: colors.primary,
+    color: COLORS.primary,
     fontFamily: typography.fontFamily,
   },
   list: {
@@ -29,7 +29,7 @@ export default StyleSheet.create({
   },
   card: {
     width: CARD_WIDTH,
-    backgroundColor: colors.darkMoreOpaque,
+    backgroundColor: COLORS.darkMoreOpaque,
     borderRadius: metrics.borderRadius,
     marginBottom: metrics.padding,
     overflow: 'hidden',
@@ -42,7 +42,7 @@ export default StyleSheet.create({
   },
   cardTitle: {
     fontSize: typography.fontSize.normal,
-    color: colors.white,
+    color: COLORS.white,
     fontFamily: typography.fontFamily,
     flex: 1,
   },
@@ -58,15 +58,15 @@ export default StyleSheet.create({
   },
   cardBody: {
     padding: metrics.padding,
-    backgroundColor: colors.darkOpaque,
+    backgroundColor: COLORS.darkOpaque,
   },
   detailLabel: {
     fontSize: typography.fontSize.normal,
-    color: colors.primary,
+    color: COLORS.primary,
     marginBottom: metrics.padding * 0.5,
   },
   detailText: {
     fontSize: typography.fontSize.normal,
-    color: colors.white,
+    color: COLORS.white,
   },
 })

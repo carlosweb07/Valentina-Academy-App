@@ -1,5 +1,5 @@
 import { StyleSheet, Dimensions } from 'react-native'
-import { colors } from '../../../../../constants/colors'
+import { COLORS } from '../../../../../constants/colors'
 import { typography } from '../../../../../constants/typography'
 import { metrics } from '../../../../../constants/metrics'
 const { width } = Dimensions.get('window')
@@ -12,31 +12,31 @@ export default StyleSheet.create({
   },
   header: {
     fontSize: typography.fontSize.large,
-    color: colors.primary,
+    color: COLORS.primary,
     marginBottom: metrics.padding,
   },
   input: {
     width: INPUT_W,
-    backgroundColor: colors.darkMoreOpaque,
-    color: colors.white,
+    backgroundColor: COLORS.darkMoreOpaque,
+    color: COLORS.white,
     padding: metrics.padding,
     borderRadius: metrics.borderRadius,
     marginVertical: metrics.padding * 0.5,
   },
   button: {
     width: INPUT_W,
-    backgroundColor: colors.primary,
+    backgroundColor: COLORS.primary,
     padding: metrics.padding,
     borderRadius: metrics.borderRadius,
     alignItems: 'center',
     marginTop: metrics.padding,
   },
   btnText: {
-    color: colors.dark,
+    color: COLORS.dark,
     fontSize: typography.fontSize.normal,
   },
   error: {
-    color: colors.error,
+    color: COLORS.error,
     marginBottom: metrics.padding,
   },
   center: {
@@ -45,6 +45,6 @@ export default StyleSheet.create({
   },
   status: {
     marginTop: metrics.padding,
-    color: colors.primary,
+    color: COLORS.primary,
   },
 })

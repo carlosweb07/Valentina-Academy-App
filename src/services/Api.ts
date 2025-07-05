@@ -1,6 +1,6 @@
 // src/services/ApiService.ts
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import Constants from 'expo-constants'
+import { BACKEND_URL } from '../constants/vars'
 
 export interface RequestOptions extends Omit<RequestInit, 'headers' | 'body' | 'method'> {
   headers?: Record<string, string>
@@ -11,19 +11,19 @@ export class ApiService {
   private baseUrl: string
 
   constructor() {
-    // extra.backendUrl lo defines en app.json o .env
-    this.baseUrl = (Constants.manifest?.extra?.backendUrl as string) || ''
+    this.baseUrl = BACKEND_URL
   }
 
   // Método genérico para construir URLs con query params
   private buildUrl(route: string, queryParams?: Record<string, any>): string {
-    let url = `${this.baseUrl}/${route}`
+    let url = `${this.baseUrl}/${route}/`
     if (queryParams && Object.keys(queryParams).length > 0) {
       const qs = Object.entries(queryParams)
         .map(([key, val]) => `${encodeURIComponent(key)}=${encodeURIComponent(val)}`)
         .join('&')
       url += `?${qs}`
     }
+    
     return url
   }
 
@@ -46,19 +46,21 @@ export class ApiService {
       'Content-Type': 'application/json',
       ...(options.headers || {})
     }
-    if (token) headers.Authorization = `Token ${token}`
+    if (token) headers.Authorization = `Token ${token}`    
+    
 
     const response = await fetch(url, {
       method,
       headers,
       body: options.body ? JSON.stringify(options.body) : undefined
     })
+    
+    const data = await response.json()
 
-    if (!response.ok) {
-      const errorText = await response.text()
-      throw new Error(`API ${method} ${url} failed: ${errorText}`)
-    }
-    return response.json()
+    console.log("Response: ", data);
+    
+
+    return data
   }
 
   // Helpers públicos

@@ -1,6 +1,6 @@
 // src/screens/RecipesAdminScreen/styles.ts
 import { StyleSheet, Dimensions } from 'react-native'
-import { colors } from '../../../constants/colors'
+import { COLORS } from '../../../constants/colors'
 import { typography } from '../../../constants/typography'
 import { metrics } from '../../../constants/metrics'
 
@@ -10,7 +10,7 @@ const CARD_WIDTH = width * 0.95
 export default StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: colors.darkOpaque,
+    backgroundColor: COLORS.darkOpaque,
   },
   header: {
     flexDirection: 'row',
@@ -20,14 +20,14 @@ export default StyleSheet.create({
   },
   heading: {
     fontSize: typography.fontSize.xlarge,
-    color: colors.primary,
+    color: COLORS.primary,
   },
   icon: {
-    color: colors.primary,
+    color: COLORS.primary,
   },
   deleteIcon: {
     marginHorizontal: metrics.padding * 0.5,
-    color: colors.error,
+    color: COLORS.error,
   },
   list: {
     paddingHorizontal: metrics.padding,
@@ -35,7 +35,7 @@ export default StyleSheet.create({
   },
   card: {
     width: CARD_WIDTH,
-    backgroundColor: colors.darkMoreOpaque,
+    backgroundColor: COLORS.darkMoreOpaque,
     borderRadius: metrics.borderRadius,
     marginVertical: metrics.padding * 0.5,
     overflow: 'hidden',
@@ -48,7 +48,7 @@ export default StyleSheet.create({
   },
   cardTitle: {
     fontSize: typography.fontSize.large,
-    color: colors.primary,
+    color: COLORS.primary,
     flex: 1,
   },
   actions: {
@@ -60,22 +60,22 @@ export default StyleSheet.create({
   },
   cardBody: {
     padding: metrics.padding,
-    backgroundColor: colors.dark,
+    backgroundColor: COLORS.dark,
   },
   subheading: {
     fontSize: typography.fontSize.large,
-    color: colors.primary,
+    color: COLORS.primary,
     marginTop: metrics.padding,
     marginBottom: metrics.padding * 0.5,
   },
   text: {
     fontSize: typography.fontSize.normal,
-    color: colors.white,
+    color: COLORS.white,
     marginBottom: metrics.padding,
   },
   listItem: {
     fontSize: typography.fontSize.normal,
-    color: colors.white,
+    color: COLORS.white,
     marginLeft: metrics.padding,
     marginBottom: metrics.padding * 0.3,
   },

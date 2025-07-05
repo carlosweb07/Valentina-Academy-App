@@ -11,7 +11,7 @@ import { Picker } from '@react-native-picker/picker'
 import Modal from '../../../../../components/Modal/Modal'
 import ApiService from '../../../../../services/Api'
 import { BACKEND_ROUTES } from '../../../../../constants/routes'
-import { colors } from '../../../../../constants/colors'
+import { COLORS } from '../../../../../constants/colors'
 import styles from './styles'
 
 interface Props {
@@ -54,7 +54,7 @@ export default function CreateModal({ visible, onClose }: Props) {
     <Modal showModal={visible} onClose={onClose}>
       {loading ? (
         <View style={styles.center}>
-          <ActivityIndicator size="large" color={colors.primary} />
+          <ActivityIndicator size="large" color={COLORS.primary} />
           <Text style={styles.status}>Creando ingrediente...</Text>
         </View>
       ) : (
@@ -65,7 +65,7 @@ export default function CreateModal({ visible, onClose }: Props) {
           <TextInput
             style={styles.input}
             placeholder="Nombre"
-            placeholderTextColor={colors.primaryOpaque}
+            placeholderTextColor={COLORS.primaryOpaque}
             value={name}
             onChangeText={setName}
           />
@@ -73,7 +73,7 @@ export default function CreateModal({ visible, onClose }: Props) {
           <TextInput
             style={styles.input}
             placeholder="Cantidad"
-            placeholderTextColor={colors.primaryOpaque}
+            placeholderTextColor={COLORS.primaryOpaque}
             keyboardType="numeric"
             value={quantity}
             onChangeText={setQuantity}

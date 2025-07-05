@@ -1,6 +1,6 @@
 // src/shared/components/HeaderCard/styles.ts
 import { StyleSheet, Dimensions } from 'react-native'
-import { colors } from '../../constants/colors'
+import { COLORS } from '../../constants/colors'
 import { typography } from '../../constants/typography'
 import { metrics } from '../../constants/metrics'
 
@@ -27,9 +27,9 @@ export default StyleSheet.create({
   text: {
     width: '80%',
     textAlign: 'center',
-    color: colors.primary,
+    color: COLORS.primary,
     fontFamily: typography.fontFamily,
-    fontSize: typography.fontSize.xxlarge,
+    fontSize: typography.fontSize.xlarge,
     padding: metrics.padding,
   },
 })

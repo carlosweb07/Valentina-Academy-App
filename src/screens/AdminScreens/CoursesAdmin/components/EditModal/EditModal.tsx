@@ -12,7 +12,7 @@ import { Picker } from '@react-native-picker/picker'
 import Modal from '../../../../../components/Modal/Modal'
 import ApiService from '../../../../../services/Api'
 import { BACKEND_ROUTES } from '../../../../../constants/routes'
-import { colors } from '../../../../../constants/colors'
+import { COLORS } from '../../../../../constants/colors'
 import { Category, Recipe, User } from '../../../../../interfaces/Models'
 
 import styles from './styles'
@@ -144,11 +144,11 @@ export default function EditCourseModal({
 
       {loading ? (
         <View style={styles.center}>
-          <ActivityIndicator size="large" color={colors.primary} />
+          <ActivityIndicator size="large" color={COLORS.primary} />
         </View>
       ) : updating ? (
         <View style={styles.center}>
-          <ActivityIndicator size="large" color={colors.primary} />
+          <ActivityIndicator size="large" color={COLORS.primary} />
           <Text style={styles.statusText}>Actualizando curso...</Text>
         </View>
       ) : (

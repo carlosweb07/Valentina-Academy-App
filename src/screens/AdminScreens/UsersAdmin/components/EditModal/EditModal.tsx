@@ -10,7 +10,7 @@ import Modal from '../../../../../components/Modal/Modal'
 import ApiService from '../../../../../services/Api'
 import { BACKEND_ROUTES } from '../../../../../constants/routes'
 import { User } from '../../../../../interfaces/Models'
-import { colors } from '../../../../../constants/colors'
+import { COLORS } from '../../../../../constants/colors'
 
 import styles from './styles'
 
@@ -71,7 +71,7 @@ export default function EditUserModal({ visible, onClose, userId }: Props) {
     <Modal showModal={visible} onClose={onClose}>
       {(loading || updating) ? (
         <View style={styles.center}>
-          <ActivityIndicator size="large" color={colors.primary} />
+          <ActivityIndicator size="large" color={COLORS.primary} />
           <Text style={styles.status}>
             {loading ? 'Cargando...' : 'Actualizando...'}
           </Text>

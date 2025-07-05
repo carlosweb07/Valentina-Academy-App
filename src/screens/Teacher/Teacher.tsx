@@ -10,7 +10,7 @@ import Navbar from '../../components/Navbar/Navbar'
 import CoursesAdmin from '../AdminScreens/CoursesAdmin/CoursesAdmin'
 import ApiService from '../../services/Api'
 import { BACKEND_ROUTES } from '../../constants/routes'
-import { colors } from '../../constants/colors'
+import { COLORS } from '../../constants/colors'
 import CourseSkeleton from '../../components/Course/skeleton/CourseSkeleton'
 
 import styles from './styles'
@@ -42,7 +42,7 @@ export default function Teacher() {
       <Navbar />
       {loading ? (
         <View style={styles.loader}>
-          <ActivityIndicator size="large" color={colors.primary} />
+          <ActivityIndicator size="large" color={COLORS.primary} />
           {Array.from({ length: 6 }).map((_, i) => (
             <CourseSkeleton key={i} />
           ))}
