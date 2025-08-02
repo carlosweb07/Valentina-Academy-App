@@ -7,18 +7,21 @@ import { metrics } from '../../../constants/metrics'
 const { width } = Dimensions.get('window')
 
 export default StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   safeArea: {
     flex: 1,
-    backgroundColor: COLORS.primaryOpaque,
-  },
-  container: {
+    justifyContent: 'center',
     padding: metrics.padding,
-    backgroundColor: COLORS.primaryOpaque,
+    backgroundColor: COLORS.primaryMoreOpaque,
   },
   details: {
     backgroundColor: COLORS.dark,
-    padding: metrics.padding,
     borderRadius: metrics.borderRadius,
+  },
+  detailsContent: {
+    padding: metrics.padding,
   },
   title: {
     fontSize: typography.fontSize.xlarge,
@@ -71,10 +74,11 @@ export default StyleSheet.create({
   imageContainer: {
     width: '100%',
     height: width * 0.6,
-    marginTop: metrics.padding,
   },
   imageMask: {
     resizeMode: 'cover',
+    borderTopRightRadius: metrics.borderRadius,
+    borderTopLeftRadius: metrics.borderRadius,
     // Opcional: add gradient mask using react-native-linear-gradient
   },
 })

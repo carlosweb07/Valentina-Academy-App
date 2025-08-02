@@ -27,7 +27,7 @@ export default function Footer() {
         </Text>
       </Text>
       <Text style={styles.text}>
-        <Text style={styles.bold}>2024</Text>
+        <Text style={styles.bold}>2025</Text>
       </Text>
       <TouchableOpacity onPress={openInstagram} activeOpacity={0.7}>
         <View style={styles.instagramContainer}>

@@ -26,9 +26,7 @@ export default function CourseCard({
   const words = description.split(' ')
   const truncated = words.length > 20
   const preview = words.slice(0, 20).join(' ')
-
-  console.log("IMG", img);
-
+  
   const handlePress = () => {
     navigation.navigate('Course', { id })
   }

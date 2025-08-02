@@ -13,6 +13,7 @@ import ApiService from '../../services/Api'
 import { ContextApp } from '../../context/ContextApp'
 import PaymentPage from './PaymentScreen/PayCourseScreen'
 import CourseContent from './CourseScreen/CourseScreen'
+import { BACKEND_ROUTES } from '../../constants/routes'
 
 type CourseRouteProp = RouteProp<RootStackParamList, 'Course'>
 
@@ -35,7 +36,7 @@ export default function Course({ setCompleted }: Props) {
     async function loadCourse() {
       try {
         const purchases = await ApiService.get<any[]>(
-          'purchased-courses',
+          BACKEND_ROUTES.purchased_courses,
           { user_id: user.id, course_id: params.id }
         )
         if (!mounted) return
