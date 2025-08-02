@@ -27,6 +27,8 @@ export default function CourseCard({
   const truncated = words.length > 20
   const preview = words.slice(0, 20).join(' ')
 
+  console.log("IMG", img);
+
   const handlePress = () => {
     navigation.navigate('Course', { id })
   }
@@ -38,7 +40,7 @@ export default function CourseCard({
       onPress={handlePress}
     >
       <ImageBackground
-        source={img as ImageSourcePropType}
+        source={{ uri: img }}
         style={styles.image}
         imageStyle={styles.imageRounded}
       >

@@ -22,6 +22,7 @@ import type { RootStackParamList } from '../../navigation/types'
 import background from '../../../assets/background.jpg'
 
 import styles from './styles'
+import { User } from '../../interfaces/Models'
 
 export default function Login() {
   const [user, setUser] = useState({ username: '', password: '' })
@@ -58,7 +59,7 @@ export default function Login() {
         showMessage()
         return
       }
-      const resp = await ApiService.post<{ token?: any; error: string }>(
+      const resp = await ApiService.post<{ token?: any; error?: string, user: User }>(
         BACKEND_ROUTES.login,
         user
       )
@@ -66,10 +67,10 @@ export default function Login() {
         await AsyncStorage.setItem('access_token', resp.token)
         setContextUser({
           username: user.username,
-          id: '',
-          email: '',
-          first_name: '',
-          last_name: '',
+          id: resp.user.id,
+          email: resp.user.email,
+          first_name: resp.user.first_name,
+          last_name: resp.user.last_name,
           role: "student"
         })
         navigation.reset({ index: 0, routes: [{ name: 'Home' }] })

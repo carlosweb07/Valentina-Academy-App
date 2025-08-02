@@ -50,15 +50,15 @@ export default StyleSheet.create({
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: COLORS.primaryOpaque,
+    backgroundColor: COLORS.darkOpaque,
     justifyContent: 'center',
     alignItems: 'center',
   },
   label: {
-    color: COLORS.white,
+    color: COLORS.primary,
     fontFamily: typography.fontFamily,
     fontSize: typography.fontSize.large,
-    backgroundColor: COLORS.darkOpaque, 
+    fontWeight: "bold",
     paddingHorizontal: metrics.padding * 0.3,
     paddingVertical: metrics.padding * 0.1,
     borderRadius: metrics.borderRadius * 0.5,

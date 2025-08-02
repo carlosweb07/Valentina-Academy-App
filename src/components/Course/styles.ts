@@ -31,14 +31,14 @@ export default StyleSheet.create({
   },
   info: {
     backgroundColor: COLORS.darkMoreOpaque,
-    padding: metrics.padding,
+    padding: metrics.padding * 1.5,
     minHeight: metrics.screenHeight * 0.18,
     justifyContent: 'center',
   },
   title: {
     color: COLORS.primary,
     fontFamily: typography.fontFamily,
-    fontSize: typography.fontSize.large,
+    fontSize: typography.fontSize.xxlarge,
     marginBottom: metrics.padding * 0.3,
   },
   description: {

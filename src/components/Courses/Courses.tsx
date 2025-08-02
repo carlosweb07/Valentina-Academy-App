@@ -7,13 +7,15 @@ import {
   TouchableOpacity,
   Animated,
   Easing,
+  ImageBackground,
 } from 'react-native'
 import { FontAwesome5 } from '@expo/vector-icons'
 import { styles } from './styles'
 import { COLORS } from '../../constants/colors'
 
+import fondo from '../../../assets/taller.jpg'
 interface Props {
-  children: ReactNode[]
+  children: ReactNode[] | ReactNode
   setCategory: (cat: number | null) => void
 }
 
@@ -41,22 +43,26 @@ export default function Courses({ children, setCategory }: Props) {
   })
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Cursos</Text>
-        <Animated.View style={{ transform: [{ rotate: spin }] }}>
-          <TouchableOpacity onPress={onReload} style={styles.reloadButton}>
-            <FontAwesome5 name="redo-alt" size={24} color={COLORS.primary} />
-          </TouchableOpacity>
-        </Animated.View>
-      </View>
+    <ImageBackground
+      source={fondo}
+    >
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Cursos</Text>
+          <Animated.View style={{ transform: [{ rotate: spin }] }}>
+            <TouchableOpacity onPress={onReload} style={styles.reloadButton}>
+              <FontAwesome5 name="redo-alt" size={24} color={COLORS.darkOpaque} />
+            </TouchableOpacity>
+          </Animated.View>
+        </View>
 
-      <ScrollView
-        contentContainerStyle={styles.coursesContainer}
-        showsVerticalScrollIndicator={false}
-      >
-        {children}
-      </ScrollView>
-    </View>
+        <ScrollView
+          contentContainerStyle={styles.coursesContainer}
+          showsVerticalScrollIndicator={false}
+        >
+          {children}
+        </ScrollView>
+      </View>
+    </ImageBackground>
   )
 }

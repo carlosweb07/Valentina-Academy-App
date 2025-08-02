@@ -62,7 +62,7 @@ export default function AppNavigator() {
       <Stack.Screen name="Login" component={LoginPage}  />
       <Stack.Screen name="Register" component={RegisterPage} />
 
-      <Stack.Screen name="Home" options={{ title: 'Inicio' }}>
+      <Stack.Screen name="Home"  options={{ headerShown: false }}>
       {() => (
         <IsAuthorized>
         <HasPermissions role={ROLES.student}>

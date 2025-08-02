@@ -93,6 +93,7 @@ export default function Register() {
         showMessage()
       }
     } catch (err: any) {
+      console.log(err);
       setMessage({ value: translateError(err.message), color: COLORS.error })
       showMessage()
     }

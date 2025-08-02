@@ -13,8 +13,17 @@ export default StyleSheet.create({
     backgroundColor: COLORS.darkOpaque,
   },
   main: {
+    flex: 1
+  },
+  notFoundContainer: {
     flex: 1,
-    paddingHorizontal: metrics.padding,
-    paddingTop: metrics.padding,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: metrics.padding,
+  },
+  notFoundText: {
+    color: COLORS.darkOpaque,
+    fontSize: 30,
+    textAlign: 'left',
   },
 })

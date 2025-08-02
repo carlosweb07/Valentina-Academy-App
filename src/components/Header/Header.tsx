@@ -10,6 +10,7 @@ import { ContextApp } from '../../context/ContextApp'
 import styles from './styles'
 
 // Ajusta rutas a tus assets
+import fondo from '../../../assets/background.jpg'
 import ReposteriaImg from '../../../assets/SIU.jpg'
 import GastronomiaImg from '../../../assets/2.jpg'
 
@@ -21,48 +22,52 @@ export default function Header({ setCategory }: Props) {
   const { user } = useContext(ContextApp)
 
   return (
-    <View style={styles.header}>
-      <View style={styles.headerInfo}>
-        <Text style={styles.greeting}>Bienvenido, {user.username}!</Text>
-        <Text style={styles.subTitle}>
-          Descubre nuestros cursos, y explora entre las dos principales
-          categorías que tenemos para ofrecer
-        </Text>
-      </View>
+    <ImageBackground
+      source={fondo}
+    >
+      <View style={styles.header}>
+        <View style={styles.headerInfo}>
+          <Text style={styles.greeting}>Bienvenido, {user.username}!</Text>
+          <Text style={styles.subTitle}>
+            Descubre nuestros cursos, y explora entre las dos principales
+            categorías que tenemos para ofrecer
+          </Text>
+        </View>
 
-      <View style={styles.categories}>
-        <TouchableOpacity
-          style={styles.category}
-          onPress={() => setCategory(1)}
-          activeOpacity={0.8}
-        >
-          <ImageBackground
-            source={ReposteriaImg}
-            style={styles.imgContent}
-            imageStyle={styles.imgStyle}
+        <View style={styles.categories}>
+          <TouchableOpacity
+            style={styles.category}
+            onPress={() => setCategory(1)}
+            activeOpacity={0.8}
           >
-            <View style={styles.overlay}>
-              <Text style={styles.label}>REPOSTERIA</Text>
-            </View>
-          </ImageBackground>
-        </TouchableOpacity>
+            <ImageBackground
+              source={ReposteriaImg}
+              style={styles.imgContent}
+              imageStyle={styles.imgStyle}
+            >
+              <View style={styles.overlay}>
+                <Text style={styles.label}>REPOSTERIA</Text>
+              </View>
+            </ImageBackground>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.category}
-          onPress={() => setCategory(2)}
-          activeOpacity={0.8}
-        >
-          <ImageBackground
-            source={GastronomiaImg}
-            style={styles.imgContent}
-            imageStyle={styles.imgStyle}
+          <TouchableOpacity
+            style={styles.category}
+            onPress={() => setCategory(2)}
+            activeOpacity={0.8}
           >
-            <View style={styles.overlay}>
-              <Text style={styles.label}>GASTRONOMIA</Text>
-            </View>
-          </ImageBackground>
-        </TouchableOpacity>
+            <ImageBackground
+              source={GastronomiaImg}
+              style={styles.imgContent}
+              imageStyle={styles.imgStyle}
+            >
+              <View style={styles.overlay}>
+                <Text style={styles.label}>GASTRONOMIA</Text>
+              </View>
+            </ImageBackground>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </ImageBackground>
   )
 }

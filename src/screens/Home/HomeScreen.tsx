@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { SafeAreaView, ScrollView, View } from 'react-native'
+import { SafeAreaView, ScrollView, Text, View } from 'react-native'
 import { BACKEND_ROUTES } from '../../constants/routes'
 import ApiService from '../../services/Api'
 import Navbar from '../../components/Navbar/Navbar'
@@ -19,22 +19,25 @@ interface Course {
 
 export default function Home() {
   const [courses, setCourses] = useState<Course[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
   const [category, setCategory] = useState<number | null>(null)
 
   useEffect(() => {
-    let mounted = true
     async function load() {
-      setCourses([])
-      const resp = await ApiService.get<Course[]>(
-        BACKEND_ROUTES.courses,
-        category !== null ? { category } : {}
-      )
-      if (mounted) setCourses(resp)
+      try {
+        setCourses([])
+        const resp = await ApiService.get<Course[]>(
+          BACKEND_ROUTES.courses,
+          category !== null ? { category } : {}
+        )
+        console.log("Cursos", resp);
+        setCourses(resp)
+      } finally {
+        console.log("TERMINE");
+        setLoading(false)
+      }
     }
     load()
-    return () => {
-      mounted = false
-    }
   }, [category])
 
   return (
@@ -44,19 +47,30 @@ export default function Home() {
         <Header setCategory={setCategory} />
         <View style={styles.main}>
           <Courses setCategory={setCategory}>
-            {courses.length === 0
-              ? Array.from({ length: 12 }).map((_, i) => (
-                  <CourseSkeleton key={i} />
-                ))
-              : courses.map(c => (
-                  <CourseCard
-                    key={c.id}
-                    id={c.id}
-                    img={c.media.url_cover}
-                    title={c.title}
-                    description={c.description}
-                  />
-                ))}
+            <>
+              {loading
+                ? Array.from({ length: 12 }).map((_, i) => (
+                    <CourseSkeleton key={i} />
+                  ))
+                : 
+                courses.length === 0 ? (
+                  <View style={styles.notFoundContainer}>
+                    <Text style={styles.notFoundText}>
+                      No hay cursos disponibles... Limpia las categorias o intenta mas tarde
+                    </Text>
+                  </View>
+                  )
+                :
+                courses.map(c => (
+                    <CourseCard
+                      key={c.id}
+                      id={c.id}
+                      img={c.media.url_cover}
+                      title={c.title}
+                      description={c.description}
+                    />
+                  ))}
+            </>
           </Courses>
         </View>
         <Footer />

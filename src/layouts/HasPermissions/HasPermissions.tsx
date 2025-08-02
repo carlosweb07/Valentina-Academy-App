@@ -6,43 +6,33 @@ import { BACKEND_ROUTES } from '../../constants/routes'
 import ApiService from '../../services/Api'
 import type { RootStackParamList } from '../../navigation/types'
 import { RoleItem } from '../../interfaces/App'
+import { ROLES } from '../../constants/roles'
 
 interface Props {
   children: React.ReactNode
   role: RoleItem
 }
 
-export default function HasPermissions({ children, role }: Props) {
+export default function HasPermissions({ children }: Props) {
   const { user } = useContext(ContextApp)
   const navigation = useNavigation<NavigationProp<RootStackParamList>>()
   const [loading, setLoading] = useState(true)
-  const roles = Object.keys(role);
+
+  // Normaliza el prop `role` a un array de strings
+  const allowedRoles = Object.keys(ROLES)
 
   useEffect(() => {
     let isMounted = true
 
+    if(!user) return
+
     async function checkPermissions() {
       try {
-        // Si no hay usuario logueado, redirige al Landing
-        if (!user.id) {
-          navigation.navigate('Landing')
-          return
-        }
+        // Llamada al backend según tu lógica
+        const resp = await ApiService.get<{ role?: string }>(`${BACKEND_ROUTES.roles}/${user.id}`)
+        const serverRole = resp?.role
 
-        // Llamada al backend para obtener el rol
-        type Response = { role?: string }
-        const resp = await ApiService.get<Response>(`${BACKEND_ROUTES.roles}/${user.id}`)
-        const serverRole: string | undefined = resp?.role
-
-        if (!serverRole) {
-          navigation.navigate('Landing')
-          return
-        }
-
-        // Chequeo según tipo de "role" (string o array)
-        const allowed = roles.includes(serverRole)
-
-        if (!allowed) {
+        if (!serverRole || !allowedRoles.includes(serverRole)) {
           navigation.navigate('Landing')
           return
         }
@@ -50,7 +40,6 @@ export default function HasPermissions({ children, role }: Props) {
         console.warn('HasPermissions error:', error)
         navigation.navigate('Landing')
       } finally {
-        // Sólo actualizamos estado si el componente sigue montado
         if (isMounted) setLoading(false)
       }
     }
@@ -60,9 +49,8 @@ export default function HasPermissions({ children, role }: Props) {
     return () => {
       isMounted = false
     }
-  }, [navigation, role, user.id])
+  }, [user])
 
-  // Mientras comprobamos, mostramos loader full-screen
   if (loading) {
     return (
       <View style={styles.loaderContainer}>

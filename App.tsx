@@ -1,18 +1,16 @@
 // App.tsx
 import 'react-native-gesture-handler';
-import React, { useContext } from 'react';
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import AppNavigator from './src/navigation/AppNavigator';
-import { ContextApp } from './src/context/ContextApp';
+import { ContextAppProvider } from './src/context/ContextApp';
 
 export default function App() {
-  const { user, setUser, completed, setCompleted } = useContext(ContextApp)
-
   return (
-    <ContextApp.Provider value={{ user, setUser, completed, setCompleted }}>
+    <ContextAppProvider>
       <NavigationContainer>
         <AppNavigator />
       </NavigationContainer>
-    </ContextApp.Provider>
+    </ContextAppProvider>
   );
 }
