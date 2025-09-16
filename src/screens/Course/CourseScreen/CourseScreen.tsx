@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Linking
 } from 'react-native'
-import { Video, ResizeMode } from 'react-native-video'
+import { useVideoPlayer, VideoView } from 'expo-video'
 import { useNavigation } from '@react-navigation/native'
 import type { StackNavigationProp } from '@react-navigation/stack'
 import { BACKEND_ROUTES } from '../../../constants/routes'
@@ -40,13 +40,21 @@ export default function CoursePage({ course, setCompleted }: Props) {
     navigation.navigate('Survey', { course_id: course.id })
   }
 
+  const player = useVideoPlayer(course.media.url_video, player => {
+    player.play()
+
+    player.addListener("playToEnd", () => {
+      onVideoEnd()
+    })
+  })
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Video
-        source={{ uri: course.media.url_video }}
-        resizeMode={ResizeMode.COVER}
-        style={styles.video}
-        onEnd={onVideoEnd}
+      <VideoView 
+        style={styles.video} 
+        player={player} 
+        allowsFullscreen
+        allowsPictureInPicture
       />
 
       <View style={styles.detailsContainer}>

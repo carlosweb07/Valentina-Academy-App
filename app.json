@@ -24,6 +24,15 @@
     },
     "web": {
       "favicon": "./assets/logo.jpg"
-    }
+    },
+    "plugins": [
+      [
+        "expo-video",
+        {
+          "supportsBackgroundPlayback": true,
+          "supportsPictureInPicture": true
+        }
+      ]
+    ]
   }
 }
