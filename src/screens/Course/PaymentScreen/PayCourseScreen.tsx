@@ -1,13 +1,12 @@
 // src/modules/Course/screens/PayCoursePage.tsx
 import React, { useContext, useState } from 'react'
 import {
-  SafeAreaView,
   View,
   Text,
   TouchableOpacity,
   ImageBackground,
-  ScrollView,
 } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { FontAwesome5 } from '@expo/vector-icons'
 import { useNavigation, NavigationProp } from '@react-navigation/native'
 import ApiService from '../../../services/Api'
@@ -16,6 +15,7 @@ import { BACKEND_ROUTES } from '../../../constants/routes'
 import { COLORS } from '../../../constants/colors'
 import PayCourseSkeleton from './skeleton/PayCourseSkeleton'
 import styles from './styles'
+
 import fondo from '../../../../assets/background.jpg'
 
 export default function PayCoursePage({ course }: { course: any }) {

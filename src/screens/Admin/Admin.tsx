@@ -1,13 +1,13 @@
 // src/screens/AdminScreen.tsx
 import React from 'react'
 import {
-  SafeAreaView,
   View,
   Text,
   ScrollView,
   TouchableOpacity,
 } from 'react-native'
 import { useNavigation, NavigationProp } from '@react-navigation/native'
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Navbar from '../../components/Navbar/Navbar'
 import type { RootStackParamList } from '../../navigation/types'
 import styles from './styles'

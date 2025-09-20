@@ -1,12 +1,12 @@
 // src/screens/RecipesAdminScreen.tsx
 import React, { useState, useEffect } from 'react'
 import {
-  SafeAreaView,
   ScrollView,
   View,
   Text,
   TouchableOpacity,
 } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { FontAwesome5 } from '@expo/vector-icons'
 import Navbar from '../../../components/Navbar/Navbar'
 import AdminSkeleton from '../skeleton/AdminSkeleton'

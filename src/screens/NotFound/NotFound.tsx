@@ -1,13 +1,13 @@
 // src/screens/NotFoundScreen.tsx
 import React from 'react'
 import {
-  SafeAreaView,
   ScrollView,
   View,
   Text,
   Image,
   TouchableOpacity,
 } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, NavigationProp } from '@react-navigation/native'
 import Navbar from '../../components/Navbar/Navbar'
 import type { RootStackParamList } from '../../navigation/types'

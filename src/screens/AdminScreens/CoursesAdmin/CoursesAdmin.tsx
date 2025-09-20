@@ -1,14 +1,12 @@
 // src/screens/CoursesAdminScreen.tsx
 import React, { useState, useEffect } from 'react'
 import {
-  SafeAreaView,
   ScrollView,
   View,
   Text,
-  Image,
   TouchableOpacity,
 } from 'react-native'
-import { useVideoPlayer, VideoView } from 'expo-video'
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { FontAwesome5 } from '@expo/vector-icons'
 import ApiService from '../../../services/Api'
 import { BACKEND_ROUTES } from '../../../constants/routes'
@@ -21,9 +19,8 @@ import { Category, Course, User, Recipe } from '../../../interfaces/Models'
 
 import styles from './styles'
 
-export default function CoursesAdminScreen() {
+export default function CoursesAdminScreen({ courses }: { courses: Course[] }) {
   const [loading, setLoading] = useState(true)
-  const [courses, setCourses] = useState<Course[]>([])
   const [categories, setCategories] = useState<Category[]>([])
   const [users, setUsers] = useState<User[]>([])
   const [recipes, setRecipes] = useState<Recipe[]>([])
@@ -37,14 +34,12 @@ export default function CoursesAdminScreen() {
     let mounted = true
     async function loadData() {
       try {
-        const [crs, cats, usrs, rcps] = await Promise.all([
-          ApiService.get<Course[]>(BACKEND_ROUTES.courses),
+        const [cats, usrs, rcps] = await Promise.all([
           ApiService.get<Category[]>(BACKEND_ROUTES.categories),
           ApiService.get<User[]>(BACKEND_ROUTES.users),
           ApiService.get<Recipe[]>(BACKEND_ROUTES.recipes),
         ])
         if (!mounted) return
-        setCourses(crs)
         setCategories(cats)
         setUsers(usrs)
         setRecipes(rcps)
@@ -68,13 +63,14 @@ export default function CoursesAdminScreen() {
     })
   }
 
-  const player = useVideoPlayer(course.media.url_video, player => {
-    player.play()
+  // TODO: add a player for every course
+  // const player = useVideoPlayer(course.media.url_video, player => {
+  //   player.play()
 
-    player.addListener("playToEnd", () => {
-      onVideoEnd()
-    })
-  })
+  //   player.addListener("playToEnd", () => {
+  //     onVideoEnd()
+  //   })
+  // })
 
   if (loading) {
     return <AdminSkeleton />

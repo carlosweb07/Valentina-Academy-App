@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { SafeAreaView, ScrollView, Text, View } from 'react-native'
+import { ScrollView, Text, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { BACKEND_ROUTES } from '../../constants/routes'
 import ApiService from '../../services/Api'
 import Navbar from '../../components/Navbar/Navbar'

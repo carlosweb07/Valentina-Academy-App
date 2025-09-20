@@ -1,14 +1,12 @@
 // src/screens/LandingScreen.tsx
 import React from 'react'
 import {
-  SafeAreaView,
   ScrollView,
   View,
   Text,
-  StyleSheet,
-  Dimensions,
   ImageBackground,
 } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Navbar from '../../components/Navbar/Navbar'
 import Carousel from '../../components/Carousel/Carousel'
 import HeaderCard from '../../components/HeaderCard/HeaderCard'

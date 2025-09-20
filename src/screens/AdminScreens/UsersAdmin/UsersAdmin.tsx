@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import {
-  SafeAreaView,
   ScrollView,
   View,
   Text,
   TouchableOpacity,
 } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { FontAwesome5 } from '@expo/vector-icons'
 import Navbar from '../../../components/Navbar/Navbar'
 import AdminSkeleton from '../skeleton/AdminSkeleton'
@@ -14,7 +14,7 @@ import EditUserModal from './components/EditModal/EditModal'
 import DeleteUserModal from './components/DeleteModal/DeleteModal'
 import ApiService from '../../../services/Api'
 import { BACKEND_ROUTES } from '../../../constants/routes'
-import { SPANISH_ROLES } from '../../../constants/roles'
+import { ROLES } from '../../../constants/roles'
 import { User } from '../../../interfaces/Models'
 
 import styles from './styles'
@@ -95,7 +95,7 @@ export default function UsersAdmin() {
               <View style={styles.cardBody}>
                 <Text style={styles.detail}><Text style={styles.bold}>Nombre:</Text> {u.first_name} {u.last_name}</Text>
                 <Text style={styles.detail}><Text style={styles.bold}>Email:</Text> {u.email}</Text>
-                <Text style={styles.detail}><Text style={styles.bold}>Rol:</Text> {SPANISH_ROLES[u.role]}</Text>
+                <Text style={styles.detail}><Text style={styles.bold}>Rol:</Text> {ROLES[u.role].translate}</Text>
               </View>
             )}
           </View>
