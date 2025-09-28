@@ -24,6 +24,7 @@ interface Props {
   categories: Category[]
   users: User[]
   recipes: Recipe[]
+  onSuccess: () => void;
 }
 
 export default function EditCourseModal({
@@ -107,9 +108,16 @@ export default function EditCourseModal({
         const mediaResp = await ApiService.post(
           `${BACKEND_ROUTES.courses_media}/${course.mediaId}`,
           form
-        )
-        if (mediaResp.error) throw new Error(mediaResp.error)
-        course.mediaId = mediaResp.id
+        ) as any
+        // Validación y tipado seguro para mediaResp
+        if (typeof mediaResp === 'object' && mediaResp !== null) {
+          // @ts-ignore
+          if ('error' in mediaResp && mediaResp.error) throw new Error((mediaResp as any).error)
+          // @ts-ignore
+          if ('id' in mediaResp) course.mediaId = (mediaResp as any).id
+        } else {
+          throw new Error('Respuesta inesperada del servidor al actualizar medios')
+        }
       }
 
       // 2) Patch curso
@@ -126,9 +134,14 @@ export default function EditCourseModal({
       const resp = await ApiService.put(
         `${BACKEND_ROUTES.courses}/${courseId}`,
         patched
-      )
-      if (resp.error) throw new Error(resp.error)
-      onClose()
+      ) as any
+      // Validación y tipado seguro para resp
+      if (typeof resp === 'object' && resp !== null) {
+        if ('error' in resp && (resp as any).error) throw new Error((resp as any).error)
+        onClose()
+      } else {
+        throw new Error('Respuesta inesperada del servidor al actualizar el curso')
+      }
     } catch (e: any) {
       setError(e.message || 'Error actualizando')
     } finally {
@@ -139,7 +152,7 @@ export default function EditCourseModal({
   if (!visible) return null
 
   return (
-    <Modal showModal={visible} onClose={onClose}>
+    <Modal showModal={visible} onClose={onClose} setShowModal={() => {}}>
       <Text style={styles.header}>Editar curso</Text>
 
       {loading ? (

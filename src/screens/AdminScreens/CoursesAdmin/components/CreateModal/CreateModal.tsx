@@ -1,4 +1,3 @@
-// src/modules/admin/components/CreateCourseModal.tsx
 import React, { useState } from 'react'
 import {
   View,
@@ -9,15 +8,15 @@ import {
   ScrollView,
   Platform,
 } from 'react-native'
-import * as ImagePicker from 'expo-image-picker'
 import { Picker } from '@react-native-picker/picker'
 import Modal from '../../../../../components/Modal/Modal'
-import ApiService from '../../../../../services/Api'
 import { BACKEND_ROUTES } from '../../../../../constants/routes'
 import { COLORS } from '../../../../../constants/colors'
-
+import mime from 'mime'
+import VideoPickerPlayer from '../Multimedia/SelectVideo'
 import styles from './styles'
-import { Category, Recipe, User } from '../../../../../interfaces/Models'
+import { Category, Course, CourseMedia, Recipe, User } from '../../../../../interfaces/Models'
+import Api, { ApiService } from '../../../../../services/Api'
 
 interface Props {
   visible: boolean
@@ -44,24 +43,32 @@ export default function CreateModal({
     user: '',
     recipe: '',
   })
-  const [coverUri, setCoverUri] = useState<string | null>(null)
-  const [videoUri, setVideoUri] = useState<string | null>(null)
+  const [cover, setCover] = useState<any>(null)
+  const [video, setVideo] = useState<any>(null)
   const [error, setError] = useState('')
 
-  const pickMedia = async (
-    mediaTypes: ImagePicker.MediaTypeOptions,
-    setter: React.Dispatch<React.SetStateAction<string | null>>
-  ) => {
-    const perm = await ImagePicker.requestMediaLibraryPermissionsAsync()
-    if (!perm.granted) {
-      setError('Permiso denegado')
-      return
+  const normalizeFile = (f: any) => {
+    if (!f) return null
+    let uri = f.uri
+    if (!uri) return null
+
+    if (Platform.OS === 'android' && !uri.startsWith('file://')) {
+      uri = 'file://' + uri
     }
-    const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes })
-    if (!result.canceled) setter(result.assets[0].uri)
+
+    const name = f.name || f.fileName || f.file || uri.split('/').pop() || 'file'
+    const type =
+      f.mimeType ||
+      f.type ||
+      mime.getType(name) ||
+      (name.endsWith('.mp4') ? 'video/mp4' : name.endsWith('.jpg') || name.endsWith('.jpeg') ? 'image/jpeg' : 'application/octet-stream')
+
+    return { uri, name, type }
   }
 
   const onSubmit = async () => {
+    setError('')
+  
     if (
       !courseData.title ||
       !courseData.description ||
@@ -69,56 +76,117 @@ export default function CreateModal({
       !courseData.price ||
       !courseData.category ||
       !courseData.user ||
-      !courseData.recipe ||
-      !coverUri ||
-      !videoUri
+      !courseData.recipe
     ) {
       setError('Completa todos los campos')
       return
     }
-
+  
+    if (!cover || !video) {
+      setError('Selecciona imagen y video')
+      return
+    }
+  
+    // normalizador más estricto (usa tu normalizeFile si quieres, pero asegúrate name/type/uri)
+    const normalizeFileStrict = (f: any) => {
+      if (!f || !f.uri) return null
+      let uri: string = f.uri
+      if (Platform.OS === 'android' && !uri.startsWith('file://')) uri = 'file://' + uri
+      const name = (f.name || f.fileName || f.file || uri.split('/').pop() || 'file').toString()
+      const type = (f.type || f.mimeType || mime.getType(name) || 'application/octet-stream').toString()
+      return { uri, name, type }
+    }
+  
     setCreating(true)
     try {
-      // 1) Media upload
+      // 1) Normalizar archivos
+      const c = normalizeFileStrict(cover)
+      const v = normalizeFileStrict(video)
+      if (!c || !v) throw new Error('Error normalizando archivos seleccionados')
+  
+      // 2) Construir FormData para /courses_media con las claves exactas que tu backend usa
       const mediaForm = new FormData()
+
       mediaForm.append('cover', {
-        uri: coverUri,
-        name: 'cover.jpg',
-        type: 'image/jpeg',
+        uri: c.uri,
+        name: c.name,
+        type: c.type,
       } as any)
+
       mediaForm.append('video', {
-        uri: videoUri,
-        name: 'video.mp4',
-        type: 'video/mp4',
+        uri: v.uri,
+        name: v.name,
+        type: v.type,
       } as any)
+  
+      console.log('Uploading media to', BACKEND_ROUTES.courses_media)
 
-      const mediaResp = await ApiService.post(
-        BACKEND_ROUTES.courses_media,
-        mediaForm
-      )
-      if (mediaResp.error) throw new Error(mediaResp.error)
-
-      // 2) Create course
-      const body = {
-        ...courseData,
-        category: Number(courseData.category),
-        user: Number(courseData.user),
-        recipe: Number(courseData.recipe),
-        media: mediaResp.id,
+      console.log('Form:', mediaForm)
+  
+      // 3) Subir media (manteniendo tu fetch)
+      const media = await Api.post<CourseMedia>(BACKEND_ROUTES.courses_media, mediaForm, true)
+  
+      const mediaId = media?.id
+      if (!mediaId) {
+        console.error('courses_media did not return id', media)
+        throw new Error('No media id returned from server')
       }
-      const courseResp = await ApiService.post(
-        BACKEND_ROUTES.courses,
-        body
-      )
-      if (courseResp.error) throw new Error(courseResp.error)
+  
+      console.log('Media created id:', mediaId)
 
+      console.log("price", courseData.price, typeof courseData.price);
+      console.log("category", courseData.category, typeof courseData.category);
+      console.log("user", courseData.user, typeof courseData.user);
+      console.log("recipe", courseData.recipe, typeof courseData.recipe);
+  
+      // 4) Construir payload para /courses (convertir strings a number donde corresponde)
+      const priceNum = Number(courseData.price)
+      const categoryNum = Number(courseData.category)
+      const userNum = Number(courseData.user)
+      const recipe = courseData.recipe
+  
+      if (isNaN(priceNum) || isNaN(categoryNum) || isNaN(userNum)) {
+        throw new Error('Campos numéricos inválidos')
+      }
+  
+      const payload = {
+        title: courseData.title.trim(),
+        description: courseData.description.trim(),
+        duration: courseData.duration, // asegúrate que sea "HH:MM:SS" si tu modelo usa TimeField
+        price: priceNum,
+        category: categoryNum,
+        user: userNum,
+        recipe: recipe,
+        media: mediaId,
+      }
+  
+      console.log('Creating course with payload:', payload)
+  
+      // 5) Crear course (JSON)
+      const courseResp = await Api.post<{ course: Course }>(BACKEND_ROUTES.courses, payload)
+  
+      console.log('Course created', courseResp.course)
+      // limpiar estado y cerrar modal
+      setCover(null)
+      setVideo(null)
+      setCourseData({
+        title: '',
+        description: '',
+        duration: '00:00:00',
+        price: '',
+        category: '',
+        user: '',
+        recipe: '',
+      })
       onClose()
     } catch (e: any) {
+      console.error('Submit error', e)
       setError(e.message || 'Error creando curso')
     } finally {
       setCreating(false)
     }
   }
+  
 
   const renderForm = () => (
     <ScrollView contentContainerStyle={styles.form}>
@@ -180,24 +248,6 @@ export default function CreateModal({
         ))}
       </Picker>
 
-      <TouchableOpacity
-        style={styles.mediaButton}
-        onPress={() => pickMedia(ImagePicker.MediaTypeOptions.Images, setCoverUri)}
-      >
-        <Text style={styles.mediaText}>
-          {coverUri ? 'Carátula seleccionada' : 'Selecciona carátula'}
-        </Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.mediaButton}
-        onPress={() => pickMedia(ImagePicker.MediaTypeOptions.Videos, setVideoUri)}
-      >
-        <Text style={styles.mediaText}>
-          {videoUri ? 'Vídeo seleccionado' : 'Selecciona vídeo'}
-        </Text>
-      </TouchableOpacity>
-
       <Picker
         selectedValue={courseData.recipe}
         style={styles.picker}
@@ -209,9 +259,35 @@ export default function CreateModal({
         ))}
       </Picker>
 
+      <VideoPickerPlayer
+        onImageSelected={(img) => {
+          const normalizedImage = {
+            uri: img.uri,
+            fileName: img.name || img.fileName || img.uri?.split('/').pop(),
+            mimeType: img.mimeType || img.type || 'image/jpeg',
+            width: img.width,
+            height: img.height,
+            fileSize: img.fileSize || img.size,
+          }
+          console.log('Parent received image:', normalizedImage)
+          setCover(normalizedImage)
+        }}
+        onVideoSelected={(vid) => {
+          const normalizedVideo = {
+            uri: vid.uri,
+            name: vid.name || vid.fileName || vid.uri?.split('/').pop(),
+            mimeType: vid.mimeType || vid.type || 'video/mp4',
+            size: vid.size || vid.fileSize,
+          }
+          console.log('Parent received video:', normalizedVideo)
+          setVideo(normalizedVideo)
+        }}
+        disabled={creating}
+      />
+
       {error ? <Text style={styles.error}>{error}</Text> : null}
 
-      <TouchableOpacity style={styles.button} onPress={onSubmit}>
+      <TouchableOpacity style={styles.button} onPress={onSubmit} disabled={creating}>
         <Text style={styles.buttonText}>Crear Curso</Text>
       </TouchableOpacity>
     </ScrollView>
@@ -225,7 +301,7 @@ export default function CreateModal({
   )
 
   return (
-    <Modal showModal={visible} onClose={onClose}>
+    <Modal showModal={visible} setShowModal={onClose} onClose={onClose}>
       <Text style={styles.header}>Crear nuevo curso</Text>
       {creating ? renderLoading() : renderForm()}
     </Modal>

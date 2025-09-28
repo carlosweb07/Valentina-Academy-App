@@ -18,6 +18,7 @@ import styles from './styles'
 interface Props {
   visible: boolean
   onClose: () => void
+  onSuccess: () => void;
   courseId: number | null
 }
 
@@ -46,7 +47,7 @@ export default function DeleteCourseModal({
   }
 
   return (
-    <Modal showModal={visible} onClose={onClose}>
+    <Modal showModal={visible} onClose={onClose} setShowModal={onClose}>
       {deleting ? (
         <View style={styles.center}>
           <ActivityIndicator size="large" color={COLORS.primary} />
