@@ -47,7 +47,7 @@ export default function Login() {
   }
 
   const onChange = (key: 'username' | 'password', val: string) =>
-    setUser(prev => ({ ...prev, [key]: val }))
+    setUser(prev => ({ ...prev, [key]: val.trim() }))
 
   const onSubmit = async () => {
     setMessage({ value: 'Iniciando sesión...', color: COLORS.success })

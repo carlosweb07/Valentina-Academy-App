@@ -7,14 +7,9 @@ const { width } = Dimensions.get('window')
 const VIDEO_HEIGHT = width * 0.5625 // proporción 16:9
 
 export default StyleSheet.create({
-  container: {
-    paddingBottom: metrics.padding,
-    backgroundColor: COLORS.darkOpaque,
-  },
   video: {
     width: '100%',
-    height: VIDEO_HEIGHT,
-    marginTop: metrics.padding,
+    height: VIDEO_HEIGHT
   },
   detailsContainer: {
     padding: metrics.padding,

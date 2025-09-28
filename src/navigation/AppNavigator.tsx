@@ -82,7 +82,7 @@ export default function AppNavigator() {
       )}
       </Stack.Screen>
 
-      <Stack.Screen name="Survey" options={{ title: 'Encuesta' }}>
+      <Stack.Screen name="Survey" options={{ title: 'Encuesta', headerShown: false }}>
       {() => (
         <IsAuthorized>
         <HasPermissions role={ROLES.student}>

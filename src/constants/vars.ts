@@ -1,1 +1,2 @@
 export const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL
+export const BACKGROUND_URI = 'https://static.vecteezy.com/system/resources/previews/010/503/533/non_2x/gold-and-white-background-free-vector.jpg'

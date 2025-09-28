@@ -54,11 +54,20 @@ export class ApiService {
       headers,
       body: options.body ? JSON.stringify(options.body) : undefined
     })
-    
-    const data = await response.json()
 
-    console.log("Response: ", data);
-    
+    const contentType = response.headers.get("content-type")
+
+    let data: any = {}
+
+    switch(contentType) {
+      case "application/json":
+        data = await response.json()
+        break
+      
+      case "application/pdf":
+        data = await response.blob()
+        break
+    }
 
     return data
   }
