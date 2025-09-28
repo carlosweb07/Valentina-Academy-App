@@ -37,13 +37,13 @@ export class ApiService {
     route: string,
     method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'GET',
     options: RequestOptions = {},
-    queryParams?: Record<string, any>
+    queryParams?: Record<string, any>,
+    isMedia?: boolean
   ): Promise<T> {
     const url = this.buildUrl(route, queryParams)
     const token = await this.getToken()
 
     const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
       ...(options.headers || {})
     }
     if (token) headers.Authorization = `Token ${token}`    
@@ -52,7 +52,7 @@ export class ApiService {
     const response = await fetch(url, {
       method,
       headers,
-      body: options.body ? JSON.stringify(options.body) : undefined
+      body: options.body ? isMedia ? options.body : JSON.stringify(options.body) : undefined
     })
     
     const data = await response.json()
@@ -68,12 +68,32 @@ export class ApiService {
     return this.request<T>(route, 'GET', {}, params)
   }
 
-  public post<T>(route: string, data: any): Promise<T> {
-    return this.request<T>(route, 'POST', { body: data })
+  public post<T>(route: string, data: any, isMedia = false): Promise<T> {
+    const options = {
+      body: data,
+      headers: {}
+    }
+    
+    if(!isMedia) options.headers = {
+      "Content-type": "application/json"
+    }
+
+    console.log(options);
+    
+    return this.request<T>(route, 'POST', options, undefined, isMedia)
   }
 
-  public put<T>(route: string, data: any): Promise<T> {
-    return this.request<T>(route, 'PUT', { body: data })
+  public put<T>(route: string, data: any, isMedia = false): Promise<T> {
+    const options = {
+      body: data,
+      headers: {}
+    }
+    
+    if(!isMedia) options.headers = {
+      "Content-type": "application/json"
+    }
+
+    return this.request<T>(route, 'PUT', options)
   }
 
   public delete<T>(route: string, params?: Record<string, any>): Promise<T> {

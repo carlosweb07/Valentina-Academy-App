@@ -13,12 +13,14 @@ interface Props {
   children: ReactNode
   showModal: boolean
   setShowModal: (visible: boolean) => void
+  onClose: () => void;
 }
 
 export default function AppModal({
   children,
   showModal,
   setShowModal,
+  onClose
 }: Props) {
   return (
     <RNModal

@@ -4,7 +4,7 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native'
-import { useVideoPlayer, VideoView } from 'expo-video'
+import { Video, ResizeMode } from 'expo-av' // <-- Usa expo-av para el componente Video
 import { FontAwesome5 } from '@expo/vector-icons'
 import { COLORS } from '../../../../../constants/colors'
 import { Course } from '../../../../../interfaces/Models'
@@ -12,10 +12,21 @@ import styles from './styles'
 
 interface CourseMultimediaProps {
   course: Course,
-  
+  setSelectedId: (id: number) => void
+  setShowEdit: (show: boolean) => void
+  setShowDelete: (show: boolean) => void
+  toggleExpand: (id: number) => void
+  expanded: Set<number>
 }
 
-export default function CourseMultimedia({ course }: {  }) {
+export default function CourseMultimedia({
+  course,
+  setSelectedId,
+  setShowEdit,
+  setShowDelete,
+  toggleExpand,
+  expanded,
+}: CourseMultimediaProps) {
   return (
     <View key={course.id} style={styles.card}>
       {/* Card Header */}
@@ -129,6 +140,7 @@ export default function CourseMultimedia({ course }: {  }) {
                 source={{ uri: course.media.url_video }}
                 resizeMode={ResizeMode.COVER}
                 style={styles.video}
+                useNativeControls
               />
             </View>
           </View>
