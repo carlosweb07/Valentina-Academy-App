@@ -2,6 +2,8 @@
 export const typography = {
   fontFamily: 'Roboto',
   fontSize: {
+    xxsmall: 8,
+    xsmall: 10,
     small: 14,
     normal: 16,
     large: 18,

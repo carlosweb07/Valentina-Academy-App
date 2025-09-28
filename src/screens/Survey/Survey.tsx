@@ -5,7 +5,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
-  StyleSheet,
+  ImageBackground
 } from 'react-native'
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native'
 import type { StackNavigationProp } from '@react-navigation/stack'
@@ -15,26 +15,31 @@ import ApiService from '../../services/Api'
 import { BACKEND_ROUTES } from '../../constants/routes'
 import { COLORS } from '../../constants/colors'
 import SurveyComponent from './components/Survey/Survey'
-import PrevCertificate from './components/PrevCertificate/PrevCertificate' 
+import PrevCertificate from './components/PrevCertificate/PrevCertificate'
 import type { RootStackParamList } from '../../navigation/types'
 
+import { documentDirectory, writeAsStringAsync, EncodingType } from 'expo-file-system/legacy'
+import { shareAsync } from 'expo-sharing'
+
+import fondo from '../../../assets/background.jpg'
 import styles from './styles'
+
 
 type SurveyRouteProp = RouteProp<RootStackParamList, 'Survey'>
 
 export default function Survey() {
-  // params: { course_id: string }
   const { params } = useRoute<SurveyRouteProp>()
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
-
   const { user } = useContext(ContextApp)
+
   const [surveyStart, setSurveyStart] = useState(false)
   const [counter, setCounter] = useState(3)
   const [error, setError] = useState('')
   const [surveyData, setSurveyData] = useState<any>(null)
   const [answersSelected, setAnswersSelected] = useState<string[]>([])
-  const [percentage, setPercentage] = useState(0)
-  const [certificateUrl, setCertificateUrl] = useState('')
+  const [percentage, setPercentage] = useState<number | null>(null)
+  const [btnName, setBtnName] = useState('📄 Descargar certificado!')
+  
   const [certificateData, setCertificateData] = useState({
     user_full_name: '',
     course_title: '',
@@ -44,7 +49,7 @@ export default function Survey() {
     year: '',
   })
 
-  // timer hook para 20 minutos
+  // 20-minute timer
   const expiry = new Date()
   expiry.setSeconds(expiry.getSeconds() + 1200)
   const { seconds, minutes, restart, start } = useTimer({
@@ -53,54 +58,71 @@ export default function Survey() {
     autoStart: false,
   })
 
-  // ---- 1) Carga encuesta ----
+  // 1) Carga encuesta
   useEffect(() => {
-    (async () => {
-      if (!params.course_id) {
-        navigation.navigate('Home')
-        return
-      }
+    let isMounted = true
+    if (!params.course_id) {
+      navigation.navigate('Home')
+      return
+    }
+
+    ;(async () => {
       try {
         const resp = await ApiService.get<any[]>(
           BACKEND_ROUTES.surveys,
           { course_id: params.course_id }
         )
-        setSurveyData(resp[0])
+        if (!isMounted) return
+
+        if (resp.length > 0) {
+          setSurveyData(resp[0])
+        } else {
+          navigation.navigate('Home')
+        }
       } catch {
-        navigation.navigate('Home')
+        if (isMounted) navigation.navigate('Home')
       }
     })()
+
+    return () => {
+      isMounted = false
+    }
   }, [navigation, params.course_id])
 
-  // ---- 2) Conteo inicial 3…2…1…GO → arranca temporizador ----
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  // 2) Conteo inicial 3…2…1
+  const startCalled = useRef(false)
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+
   useEffect(() => {
-    if (surveyStart && counter > 0) {
-      intervalRef.current = setInterval(() => {
+    if (!surveyStart) return
+
+    if (counter > 0) {
+      timeoutRef.current = setTimeout(() => {
         setCounter(c => c - 1)
       }, 1000)
-    } else if (surveyStart && counter === 0) {
-      start()
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current)
-        intervalRef.current = null
+
+      return () => {
+        if (timeoutRef.current) clearTimeout(timeoutRef.current)
       }
     }
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current)
-        intervalRef.current = null
-      }
+
+    if (!startCalled.current) {
+      start()
+      startCalled.current = true
     }
   }, [surveyStart, counter, start])
 
+  // onStartSurvey sin restart instantáneo
   function onStartSurvey() {
     setError('')
     setCounter(3)
+    setPercentage(null)
+    setAnswersSelected([])
+    startCalled.current = false
     setSurveyStart(true)
   }
 
-  // ---- 3) Finalizar prueba manual ----
+  // 3) Validación manual
   function onValidateAnswers() {
     if (
       !surveyData?.questions ||
@@ -112,59 +134,85 @@ export default function Survey() {
     onEndSurvey()
   }
 
-  // ---- 4) Fin de prueba (automático o manual) ----
+  // 4) Fin de prueba
   async function onEndSurvey() {
-    restart(new Date()) // resetea timer
-    // calcula porcentaje
-    let correct = 0
-    surveyData.questions.forEach((q: any, i: number) => {
-      const sel = answersSelected[i]
-      const ans = q.answers.find((a: any) => a.answer === sel)
-      if (ans?.is_correct) correct++
-    })
+    restart(new Date())  // reset timer for next run
+    if (!surveyData) return
+
+    const correct = surveyData.questions.reduce(
+      (sum: number, q: any, i: number) =>
+        sum +
+        (q.answers.find((a: any) => a.answer === answersSelected[i])
+          ?.is_correct
+          ? 1
+          : 0),
+      0
+    )
+
     const pct = Math.floor((100 * correct) / surveyData.questions.length)
     setPercentage(pct)
 
     if (pct > 50) {
-      // genera certificado
+      setError('Aprobaste la prueba 🎉')
       try {
         const cert = await ApiService.post(
           BACKEND_ROUTES.export_certificate,
           { user_id: user.id, course_id: surveyData.course.id }
         )
-        // asumimos que backend nos devuelve URL
-        setCertificateUrl(cert.url)
-        // fecha actual
-        const d = new Date().toISOString().split('T')[0].split('-')
+        const [year, month, day] = new Date().toISOString().split('T')[0].split('-')
         setCertificateData({
           user_full_name: `${user.first_name} ${user.last_name}`,
           course_title: surveyData.course.title,
           course_author: `${surveyData.course.user.first_name} ${surveyData.course.user.last_name}`,
-          day: d[2],
-          month: d[1],
-          year: d[0],
+          day,
+          month,
+          year,
         })
-      } catch (e) {
+      } catch {
         Alert.alert('Error', 'No se pudo generar certificado')
       }
-      setError('Aprobaste la prueba 🎉')
     } else {
       setError('Reprobaste la prueba :(')
     }
   }
 
-  function onExportCertificate() {
-    // descarga o abre en navegador
-    if (certificateUrl) {
-      // @ts-ignore
-      Linking.openURL(certificateUrl)
-      navigation.navigate('Home')
+  const onExportCertificate = async () => {
+    setBtnName("Descargando...")
+    try {
+      const blob = await ApiService.post<any>(
+        BACKEND_ROUTES.export_certificate,
+        { user_id: user.id, course_id: surveyData.course.id }
+      )
+      
+      const localUri = documentDirectory + "certificate_" + surveyData.course.title.toLowerCase().replace(/ /g, "_") + ".pdf";
+
+      const base64: string = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onerror = reject;
+        reader.onload = () => {
+          const dataUrl = reader.result as string;
+          const [, rawBase64] = dataUrl.split(',');
+          resolve(rawBase64);
+        };
+        reader.readAsDataURL(blob);
+      });
+
+      await writeAsStringAsync(localUri, base64, {
+        encoding: EncodingType.Base64,
+      });
+
+      await shareAsync(localUri);
+
+    } catch (error) {
+      console.error('Error al exportar receta:', error);
+    } finally {
+      setBtnName("📄 Descargar certificado!")
     }
   }
 
-  // ---- 5) Render por estados ----
+  // Renderizado según estado
   const renderInitial = () => (
-    <View>
+    <>
       <Text style={styles.heading}>¿Listo para la prueba?</Text>
       <Text style={styles.paragraph}>
         Tendrás 20 minutos para responder preguntas del curso.
@@ -172,17 +220,13 @@ export default function Survey() {
       <TouchableOpacity style={styles.btn} onPress={onStartSurvey}>
         <Text style={styles.btnText}>Ir a la prueba ahora</Text>
       </TouchableOpacity>
-    </View>
+    </>
   )
 
-  const renderCountdown = () => (
-    <View style={styles.center}>
-      <Text style={styles.counter}>{counter}</Text>
-    </View>
-  )
+  const renderCountdown = () => <Text style={styles.counter}>{counter}</Text>
 
   const renderSurvey = () => (
-    <View>
+    <>
       <Text style={styles.timer}>
         Tiempo restante:{' '}
         {minutes.toString().padStart(2, '0')}:
@@ -191,26 +235,38 @@ export default function Survey() {
       <SurveyComponent
         survey={surveyData}
         onSelectAnswers={setAnswersSelected}
+        onValidateAnswers={onValidateAnswers}
       />
-      <TouchableOpacity style={styles.btn} onPress={onValidateAnswers}>
-        <Text style={styles.btnText}>Terminar prueba</Text>
-      </TouchableOpacity>
-      {error ? <Text style={[styles.error, { backgroundColor: COLORS.error }]}>{error}</Text> : null}
-    </View>
+      {error ? (
+        <Text style={[styles.error, { backgroundColor: COLORS.error }]}>
+          {error}
+        </Text>
+      ) : null}
+    </>
   )
 
   const renderResults = () => (
-    <View style={styles.results}>
+    <ScrollView style={styles.results}>
       <Text style={styles.heading}>{error}</Text>
       <Text style={styles.percentage}>{percentage}/100</Text>
       <Text style={styles.paragraph}>
-        {percentage > 50
+        {percentage! > 50
           ? '¡Felicitaciones! ahora tendrás acceso a tu certificado.'
           : 'No aprobaste. Necesitas más del 50% para obtener el certificado.'}
       </Text>
 
-      {percentage > 50 && (
-        <PrevCertificate data={certificateData} />
+      {percentage! > 50 && (
+        <>
+          <PrevCertificate data={certificateData} />
+          <TouchableOpacity
+            style={styles.btn}
+            onPress={onExportCertificate}
+          >
+            <Text style={styles.btnText}>
+              {btnName}
+            </Text>
+          </TouchableOpacity>
+        </>
       )}
 
       <TouchableOpacity
@@ -218,21 +274,23 @@ export default function Survey() {
         onPress={() => navigation.navigate('Home')}
       >
         <Text style={styles.btnText}>
-          {percentage > 50 ? 'Volver al inicio' : 'Reintentar más tarde'}
+          {percentage! > 50 ? 'Volver al inicio' : 'Reintentar más tarde'}
         </Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   )
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {!surveyStart
-        ? renderInitial()
-        : counter > 0
-        ? renderCountdown()
-        : minutes === 0 && seconds === 0
-        ? renderResults()
-        : renderSurvey()}
-    </ScrollView>
+    <ImageBackground source={fondo} style={styles.imgContainer}>
+      <View style={styles.cardView}>
+        {!surveyStart
+          ? renderInitial()
+          : counter > 0
+          ? renderCountdown()
+          : minutes === 0 && seconds === 0
+          ? renderResults()
+          : renderSurvey()}
+      </View>
+    </ImageBackground>
   )
 }

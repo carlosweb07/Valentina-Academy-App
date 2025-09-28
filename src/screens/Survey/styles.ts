@@ -7,20 +7,31 @@ const { width, height } = Dimensions.get('window')
 
 export default StyleSheet.create({
   container: {
-    flexGrow: 1,
+    flex: 1,
+    height: height,
+  },
+  imgContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  cardView: {
+    marginHorizontal: 20,
+    padding: 20,
+    borderRadius: 10,
+    maxHeight: height / 1.3,
     backgroundColor: COLORS.darkOpaque,
-    padding: metrics.padding,
-    minHeight: height,
+    alignItems: "center"
   },
   heading: {
     fontSize: typography.fontSize.xlarge,
     color: COLORS.primary,
     marginBottom: metrics.padding,
-    textAlign: 'center',
+    textAlign: 'center'
   },
   paragraph: {
     fontSize: typography.fontSize.normal,
-    color: COLORS.dark,
+    color: COLORS.primaryOpaque,
     marginBottom: metrics.padding * 1.5,
     textAlign: 'center',
   },
@@ -29,16 +40,11 @@ export default StyleSheet.create({
     padding: metrics.padding,
     borderRadius: metrics.borderRadius,
     alignItems: 'center',
-    marginVertical: metrics.padding,
+    marginVertical: metrics.padding * 0.3,
   },
   btnText: {
     color: COLORS.primary,
     fontSize: typography.fontSize.normal,
-  },
-  center: {
-    height: height * 0.6,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   counter: {
     fontSize: typography.fontSize.xxlarge || 80,
@@ -46,8 +52,8 @@ export default StyleSheet.create({
   },
   timer: {
     fontSize: typography.fontSize.xxlarge,
-    color: COLORS.dark,
-    marginBottom: metrics.padding,
+    color: COLORS.primaryOpaque,
+    marginVertical: metrics.padding,
     textAlign: 'center',
   },
   error: {
@@ -58,12 +64,12 @@ export default StyleSheet.create({
     marginVertical: metrics.padding,
   },
   results: {
-    alignItems: 'center',
     marginTop: metrics.padding,
   },
   percentage: {
     fontSize: typography.fontSize.xxlarge,
-    color: COLORS.dark,
+    color: COLORS.primary,
     marginVertical: metrics.padding,
+    textAlign: "center"
   },
 })

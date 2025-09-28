@@ -45,4 +45,15 @@ export default StyleSheet.create({
     color: COLORS.primary,
     fontWeight: 'bold' as const,
   },
+  btn: {
+    backgroundColor: COLORS.dark,
+    padding: metrics.padding,
+    borderRadius: metrics.borderRadius,
+    alignItems: 'center',
+    marginVertical: metrics.padding * 0.3,
+  },
+  btnText: {
+    color: COLORS.primary,
+    fontSize: typography.fontSize.normal,
+  },
 })

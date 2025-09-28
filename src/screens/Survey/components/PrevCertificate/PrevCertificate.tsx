@@ -1,12 +1,10 @@
-// src/modules/Survey/components/PrevCertificate.tsx
 import React from 'react'
 import {
   View,
   Text,
   ImageBackground,
-  Dimensions,
-  ImageSourcePropType,
 } from 'react-native'
+import { BACKGROUND_URI } from '../../../../constants/vars'
 
 import styles from './styles'
 
@@ -19,17 +17,14 @@ interface CertificateData {
   year: string
 }
 
-interface Props {
+export interface Props {
   data: CertificateData
 }
-
-const BACKGROUND_URI =
-  'https://static.vecteezy.com/system/resources/previews/010/503/533/non_2x/gold-and-white-background-free-vector.jpg'
 
 export default function PrevCertificate({ data }: Props) {
   return (
     <ImageBackground
-      source={BACKGROUND_URI as ImageSourcePropType}
+      source={{ uri: BACKGROUND_URI }}
       style={styles.container}
       imageStyle={styles.backgroundImage}
     >
