@@ -33,6 +33,12 @@ export interface Course {
   media: Media
 }
 
+export interface CourseMedia {
+  id: number
+  url_video: string
+  url_cover: string
+}
+
 export interface Answer {
   id: string
   answer: string
