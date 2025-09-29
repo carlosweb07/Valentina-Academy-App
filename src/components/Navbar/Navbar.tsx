@@ -28,19 +28,19 @@ export default function Navbar() {
   const signOut = async () => {
     try {
       await ApiService.post(BACKEND_ROUTES.logout, {})
+      await AsyncStorage.removeItem('access_token')
+      setUser({
+        id: '',
+        email: '',
+        first_name: '',
+        last_name: '',
+        username: '',
+        role: 'student'
+      })
+      navigation.navigate('Landing')
     } catch (e) {
       console.warn('Logout error:', e)
     }
-    await AsyncStorage.removeItem('access_token')
-    setUser({
-      id: '',
-      email: '',
-      first_name: '',
-      last_name: '',
-      username: '',
-      role: 'student'
-    })
-    navigation.navigate('Landing')
   }
 
   const onLogin = () => navigation.navigate('Login')
