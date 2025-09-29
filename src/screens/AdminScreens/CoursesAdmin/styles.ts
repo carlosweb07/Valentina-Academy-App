@@ -22,7 +22,7 @@ export default StyleSheet.create({
     backgroundColor: COLORS.darkOpaque,
   },
   heading: {
-    fontSize: typography.fontSize.xlarge,
+    fontSize: typography.fontSize.mlarge,
     color: COLORS.primary,
     fontFamily: typography.fontFamily,
   },
@@ -160,6 +160,7 @@ export default StyleSheet.create({
     width: 'auto',
     height: 'auto',
     flex: 1,
+    marginTop: 30,
     backgroundColor: COLORS.darkMoreOpaque,
     },
   imageRounded: {
@@ -191,7 +192,13 @@ export default StyleSheet.create({
     backgroundColor: COLORS.primary,
   },
   deleteButton: {
-    backgroundColor: COLORS.error,
+    backgroundColor: COLORS.darkOpaque,
+    fontSize: typography.fontSize.normal,
+    color: COLORS.error,
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    borderRadius: 8,
+    textAlign: 'center',
   },
       actionButtonText: {
         color: COLORS.white,
@@ -217,5 +224,10 @@ export default StyleSheet.create({
         color: COLORS.white,
         fontSize: 12,
         opacity: 0.9,
+      },
+      reloadButton: {
+        alignItems: 'flex-start',
+        color: COLORS.primary,
+        marginLeft: 10,
       },
     })
