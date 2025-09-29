@@ -70,7 +70,7 @@ export default function EditCourseModal({
   })
   const [cover, setCover] = useState<any>(null)
   const [video, setVideo] = useState<any>(null)
-
+  
   // Normaliza un asset para FormData (asegura uri/file://, name y type)
   const normalizeFile = (f: any) => {
     if (!f) return null
@@ -128,7 +128,7 @@ export default function EditCourseModal({
     const ss = mMS[2]
     return `00:${mm}:${ss}`
   }
-
+  
   return null
 }
 
@@ -224,11 +224,11 @@ export default function EditCourseModal({
 
     if (cover && !c) {
       console.error('uploadMediaIfNeeded: cover present but normalization failed', cover)
-      throw new Error('Error normalizando carátula')
+      throw setError('Error normalizando carátula')
     }
     if (video && !v) {
       console.error('uploadMediaIfNeeded: video present but normalization failed', video)
-      throw new Error('Error normalizando video')
+      throw setError('Error normalizando video')
     }
 
     const form = new FormData()
@@ -250,36 +250,47 @@ export default function EditCourseModal({
 
       if (!mediaResp || typeof mediaResp !== 'object') {
         console.error('Media upload returned unexpected value', mediaResp)
-        throw new Error('Respuesta inesperada al subir media')
+        throw setError('Respuesta inesperada al subir media')
       }
       const mediaId = (mediaResp as any).id ?? (mediaResp as any).media?.id ?? null
       if (!mediaId) {
         console.error('Media upload response missing id field', mediaResp)
-        throw new Error('No se devolvió id del media subido')
+        throw setError('No se devolvió id del media subido')
       }
       console.log('Media upload succeeded, id:', mediaId)
       return Number(mediaId)
     } catch (err: any) {
       console.error('uploadMediaIfNeeded error (using Api.post)', err)
-      throw new Error(err?.message || 'Error subiendo media')
+      throw setError(err?.message || 'Error subiendo media')
     }
   }
 
   const onSubmit = async () => {
     setError('')
+    const result = validateAndNormalizeDuration(courseData.duration);
+
+    if (!result.ok) {
+      setError(result.errors.join(' '));
+      return;
+    }
+
+    const normalizedDuration = result.value; 
+    console.log('Normalized duration ->', normalizedDuration);
+
+
     if (!courseData.title || !courseData.description || !courseData.duration || !courseData.price || !courseData.category || !courseData.user) {
       setError('Completa los campos obligatorios')
       return
     }
-
     setUpdating(true)
     try {
-      // Normalizar duration antes de cualquier envío
-      const normalizedDuration = normalizeDuration(courseData.duration)
-      console.log('Normalized duration ->', normalizedDuration) // <-- AQUI: log de duración normalizada
-      if (!normalizedDuration) {
-        throw new Error('Duración con formato inválido. Usa HH:MM, MM:SS o HH:MM:SS')
+      const result = validateAndNormalizeDuration(courseData.duration);
+
+      if (!result.ok) {
+        setError(result.errors.join(' '));
+        return;
       }
+      const normalizedDuration = result.value; 
 
       // 1) subir media si el usuario escogió nuevos archivos
       let mediaIdToUse = courseData.mediaId
@@ -289,7 +300,7 @@ export default function EditCourseModal({
         console.log('onSubmit: uploadMediaIfNeeded returned:', newMediaId)
         if (!newMediaId) {
           console.error('onSubmit: upload returned no id', newMediaId)
-          throw new Error('No se recibió id del media subido')
+          throw setError('No se recibió id del media subido')
         }
         mediaIdToUse = newMediaId
       } else {
@@ -306,7 +317,7 @@ export default function EditCourseModal({
 
       if (isNaN(priceNum) || isNaN(categoryNum) || isNaN(userNum)) {
         console.error('Numeric conversion failed', { priceNum, categoryNum, userNum })
-        throw new Error('Campos numéricos inválidos')
+        throw setError('Campos numéricos inválidos')
       }
 
       const payload: any = {
@@ -339,7 +350,7 @@ export default function EditCourseModal({
           const firstMsgs = entries[0][1] as string[]
           const composed = `${firstField}: ${firstMsgs.join(' ')}`
           console.error('Validation error from server:', respRaw)
-          throw new Error(composed)
+          throw setError(composed)
         }
       }
 
@@ -348,7 +359,7 @@ export default function EditCourseModal({
 
       if (!updatedCourse) {
         console.error('Response missing course property', respRaw)
-        throw new Error('No se devolvió el curso actualizado')
+        throw setError('No se devolvió el curso actualizado')
       }
 
       console.log('Course updated successfully:', updatedCourse)
@@ -426,7 +437,25 @@ export default function EditCourseModal({
   const ss = String(Math.min(ssNum, 59)).padStart(2, '0');
   return `${hh}:${mm}:${ss}`;
 };
+  const validateAndNormalizeDuration = (input: string): DurationNorm => {
+  const normalized = normalizeDuration(input);
+  if (!normalized) {
+    return {
+      ok: false,
+      errors: ['Formato inválido. Usa HH:MM o HH:MM:SS'],
+    };
+  }
+  
 
+  const [hh, mm, ss] = normalized.split(':').map(Number);
+  const seconds = hh * 3600 + mm * 60 + ss;
+
+  return {
+    ok: true,
+    value: normalized,
+    seconds,
+  };
+};
 
   if (!visible) return null
 
