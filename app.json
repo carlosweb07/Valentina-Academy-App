@@ -3,12 +3,13 @@
     "name": "valentina-academy-app",
     "slug": "valentina-academy-app",
     "version": "1.0.0",
+    "projectId": "eb56bd6e-bfe1-4067-80ca-d3ab5a7b7bc0",
     "orientation": "portrait",
-    "icon": "./assets/logo.jpg",
+    "icon": "./assets/logo.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/logo.jpg",
+      "image": "./assets/logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,13 +18,14 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/logo.jpg",
+        "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.ganterlix_dev.valentinaacademyapp"
     },
     "web": {
-      "favicon": "./assets/logo.jpg"
+      "favicon": "./assets/logo.png"
     },
     "plugins": [
       [
@@ -32,7 +34,14 @@
           "supportsBackgroundPlayback": true,
           "supportsPictureInPicture": true
         }
-      ]
-    ]
+      ],
+      "expo-font"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "811611e9-e9ba-4859-8bb1-77d49feaad77"
+      },
+      "backendUrl": "http://192.168.10.129:8082"
+    }
   }
 }

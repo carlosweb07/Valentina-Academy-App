@@ -13,7 +13,7 @@ import { FontAwesome5 } from '@expo/vector-icons'
 import { styles } from './styles'
 import { COLORS } from '../../constants/colors'
 
-import fondo from '../../../assets/taller.jpg'
+import fondo from '../../../assets/taller.png'
 interface Props {
   children: ReactNode[] | ReactNode
   setCategory: (cat: number | null) => void

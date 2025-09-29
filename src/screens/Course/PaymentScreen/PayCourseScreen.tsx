@@ -17,7 +17,7 @@ import { Course } from '../../../interfaces/Models';
 import PayCourseSkeleton from './skeleton/PayCourseSkeleton'
 import styles from './styles'
 
-import fondo from '../../../../assets/background.jpg'
+import fondo from '../../../../assets/background.png'
 import PurchaseScreen from './components/PurchaseScreen';
 
 export default function PayCoursePage({ course }: { course: Course }) {

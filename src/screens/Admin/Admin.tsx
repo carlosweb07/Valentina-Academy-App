@@ -11,7 +11,7 @@ import { useNavigation, NavigationProp } from '@react-navigation/native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Navbar from '../../components/Navbar/Navbar'
 import type { RootStackParamList } from '../../navigation/types'
-import fondo from '../../../assets/background.jpg';
+import fondo from '../../../assets/background.png';
 
 import styles from './styles'
 

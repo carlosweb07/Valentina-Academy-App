@@ -22,7 +22,7 @@ import { documentDirectory, writeAsStringAsync, EncodingType } from 'expo-file-s
 import pdfIcon from '../../../../assets/pdf.png'
 import userImg from '../../../../assets/usuario.png'
 
-import fondo from '../../../../assets/background.jpg'
+import fondo from '../../../../assets/background.png'
 
 import styles from './styles'
 

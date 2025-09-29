@@ -12,7 +12,7 @@ import {
 } from 'react-native'
 import { useNavigation, NavigationProp } from '@react-navigation/native'
 import { COLORS } from '../../../../constants/colors'
-import background from '../../../../../assets/background.jpg'
+import background from '../../../../../assets/background.png'
 
 import styles from './styles'
 import { BACKEND_ROUTES } from '../../../../constants/routes'

@@ -69,7 +69,7 @@ export default function CreateModal({
       f.mimeType ||
       f.type ||
       mime.getType(name) ||
-      (name.endsWith('.mp4') ? 'video/mp4' : name.endsWith('.jpg') || name.endsWith('.jpeg') ? 'image/jpeg' : 'application/octet-stream')
+      (name.endsWith('.mp4') ? 'video/mp4' : name.endsWith('.png') || name.endsWith('.jpeg') ? 'image/jpeg' : 'application/octet-stream')
 
     return { uri, name, type }
   }

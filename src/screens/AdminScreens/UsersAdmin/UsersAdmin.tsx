@@ -20,7 +20,7 @@ import { BACKEND_ROUTES } from '../../../constants/routes'
 import { ROLES } from '../../../constants/roles'
 import { User } from '../../../interfaces/Models'
 import { COLORS } from '../../../constants/colors'
-import fondo from '../../../../assets/background.jpg'
+import fondo from '../../../../assets/background.png'
 
 import styles from './styles'
 

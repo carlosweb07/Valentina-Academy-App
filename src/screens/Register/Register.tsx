@@ -18,7 +18,7 @@ import { BACKEND_ROUTES } from '../../constants/routes'
 import { COLORS } from '../../constants/colors'
 import type { RootStackParamList } from '../../navigation/types'
 
-import background from '../../../assets/background.jpg'
+import background from '../../../assets/background.png'
 
 import styles from './styles'
 

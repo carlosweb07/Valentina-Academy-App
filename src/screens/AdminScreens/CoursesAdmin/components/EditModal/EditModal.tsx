@@ -90,7 +90,7 @@ export default function EditCourseModal({
       (f?.type ||
         f?.mimeType ||
         mime.getType(name) ||
-        (name.endsWith('.mp4') ? 'video/mp4' : name.endsWith('.jpg') || name.endsWith('.jpeg') ? 'image/jpeg' : 'application/octet-stream')
+        (name.endsWith('.mp4') ? 'video/mp4' : name.endsWith('.png') || name.endsWith('.jpeg') ? 'image/jpeg' : 'application/octet-stream')
       ).toString()
 
     return { uri, name, type }

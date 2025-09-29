@@ -19,7 +19,7 @@ import ApiService from '../../../services/Api'
 import { BACKEND_ROUTES } from '../../../constants/routes'
 import { Ingredient } from '../../../interfaces/Models'
 import { COLORS } from '../../../constants/colors'
-import fondo from '../../../../assets/background.jpg'
+import fondo from '../../../../assets/background.png'
 
 import styles from './styles'
 

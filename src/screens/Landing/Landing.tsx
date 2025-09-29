@@ -14,10 +14,10 @@ import Footer from '../../components/Footer/Footer'
 import { metrics } from '../../constants/metrics'
 
 import present1 from '../../../assets/presentacion_1.png'
-import present2 from '../../../assets/presentacion_2.jpg'
-import present3 from '../../../assets/presentacion_3.jpg'
+import present2 from '../../../assets/presentacion_2.png'
+import present3 from '../../../assets/presentacion_3.png'
 
-import background from '../../../assets/background.jpg'
+import background from '../../../assets/background.png'
 
 
 import styles from './styles'

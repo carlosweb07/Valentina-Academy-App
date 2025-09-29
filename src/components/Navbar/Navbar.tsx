@@ -15,7 +15,7 @@ import ApiService from '../../services/Api'
 import type { RootStackParamList } from '../../navigation/types'
 
 // Ajusta estos imports según tu estructura de assets
-import logoImg from '../../../assets/logo.jpg'
+import logoImg from '../../../assets/logo.png'
 import userPlaceholder from '../../../assets/usuario.png'
 
 import styles from './styles'

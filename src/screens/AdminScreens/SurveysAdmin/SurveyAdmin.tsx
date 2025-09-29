@@ -21,7 +21,7 @@ import { BACKEND_ROUTES } from '../../../constants/routes'
 import { Survey, Course } from '../../../interfaces/Models'
 import { COLORS } from '../../../constants/colors'
 
-import fondo from '../../../../assets/background.jpg'
+import fondo from '../../../../assets/background.png'
 
 import styles from './styles'
 

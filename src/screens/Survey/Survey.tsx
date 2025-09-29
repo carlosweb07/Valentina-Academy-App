@@ -21,7 +21,7 @@ import type { RootStackParamList } from '../../navigation/types'
 import { documentDirectory, writeAsStringAsync, EncodingType } from 'expo-file-system/legacy'
 import { shareAsync } from 'expo-sharing'
 
-import fondo from '../../../assets/background.jpg'
+import fondo from '../../../assets/background.png'
 import styles from './styles'
 
 

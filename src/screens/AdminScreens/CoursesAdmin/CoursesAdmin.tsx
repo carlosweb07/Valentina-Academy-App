@@ -27,7 +27,7 @@ import type { StackNavigationProp } from '@react-navigation/stack'
 import Navbar from '../../../components/Navbar/Navbar'
 
 import styles from './styles'
-import fondo from '../../../../assets/background.jpg'
+import fondo from '../../../../assets/background.png'
 import SoloVideo from './components/Multimedia/Video'
 
 interface Props {

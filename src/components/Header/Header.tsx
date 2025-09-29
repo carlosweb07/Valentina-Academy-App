@@ -10,9 +10,9 @@ import { ContextApp } from '../../context/ContextApp'
 import styles from './styles'
 
 // Ajusta rutas a tus assets
-import fondo from '../../../assets/background.jpg'
-import ReposteriaImg from '../../../assets/SIU.jpg'
-import GastronomiaImg from '../../../assets/2.jpg'
+import fondo from '../../../assets/background.png'
+import ReposteriaImg from '../../../assets/SIU.png'
+import GastronomiaImg from '../../../assets/2.png'
 
 interface Props {
   setCategory: (cat: number | null) => void
