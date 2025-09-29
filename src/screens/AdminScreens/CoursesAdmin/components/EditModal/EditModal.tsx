@@ -37,6 +37,15 @@ interface Props {
   recipes: Recipe[]
 }
 
+export type DurationNorm = {
+  ok: true;
+  value: string;    // "HH:MM:SS"
+  seconds: number;
+} | {
+  ok: false;
+  errors: string[];
+};
+
 export default function EditCourseModal({
   visible,
   onClose,
@@ -61,7 +70,7 @@ export default function EditCourseModal({
   })
   const [cover, setCover] = useState<any>(null)
   const [video, setVideo] = useState<any>(null)
-
+  
   // Normaliza un asset para FormData (asegura uri/file://, name y type)
   const normalizeFile = (f: any) => {
     if (!f) return null
@@ -119,7 +128,7 @@ export default function EditCourseModal({
     const ss = mMS[2]
     return `00:${mm}:${ss}`
   }
-
+  
   return null
 }
 
@@ -207,11 +216,11 @@ export default function EditCourseModal({
 
     if (cover && !c) {
       console.error('uploadMediaIfNeeded: cover present but normalization failed', cover)
-      throw new Error('Error normalizando carátula')
+      throw setError('Error normalizando carátula')
     }
     if (video && !v) {
       console.error('uploadMediaIfNeeded: video present but normalization failed', video)
-      throw new Error('Error normalizando video')
+      throw setError('Error normalizando video')
     }
 
     const form = new FormData()
@@ -230,34 +239,46 @@ export default function EditCourseModal({
 
       if (!mediaResp || typeof mediaResp !== 'object') {
         console.error('Media upload returned unexpected value', mediaResp)
-        throw new Error('Respuesta inesperada al subir media')
+        throw setError('Respuesta inesperada al subir media')
       }
       const mediaId = (mediaResp as any).id ?? (mediaResp as any).media?.id ?? null
       if (!mediaId) {
         console.error('Media upload response missing id field', mediaResp)
-        throw new Error('No se devolvió id del media subido')
+        throw setError('No se devolvió id del media subido')
       }
       return Number(mediaId)
     } catch (err: any) {
       console.error('uploadMediaIfNeeded error (using Api.post)', err)
-      throw new Error(err?.message || 'Error subiendo media')
+      throw setError(err?.message || 'Error subiendo media')
     }
   }
 
   const onSubmit = async () => {
     setError('')
+    const result = validateAndNormalizeDuration(courseData.duration);
+
+    if (!result.ok) {
+      setError(result.errors.join(' '));
+      return;
+    }
+
+    const normalizedDuration = result.value; 
+    console.log('Normalized duration ->', normalizedDuration);
+
+
     if (!courseData.title || !courseData.description || !courseData.duration || !courseData.price || !courseData.category || !courseData.user) {
       setError('Completa los campos obligatorios')
       return
     }
-
     setUpdating(true)
     try {
-      // Normalizar duration antes de cualquier envío
-      const normalizedDuration = normalizeDuration(courseData.duration)
-      if (!normalizedDuration) {
-        throw new Error('Duración con formato inválido. Usa HH:MM, MM:SS o HH:MM:SS')
+      const result = validateAndNormalizeDuration(courseData.duration);
+
+      if (!result.ok) {
+        setError(result.errors.join(' '));
+        return;
       }
+      const normalizedDuration = result.value; 
 
       // 1) subir media si el usuario escogió nuevos archivos
       let mediaIdToUse = courseData.mediaId
@@ -265,7 +286,7 @@ export default function EditCourseModal({
         const newMediaId = await uploadMediaIfNeeded()
         if (!newMediaId) {
           console.error('onSubmit: upload returned no id', newMediaId)
-          throw new Error('No se recibió id del media subido')
+          throw setError('No se recibió id del media subido')
         }
         mediaIdToUse = newMediaId
       }
@@ -278,7 +299,7 @@ export default function EditCourseModal({
 
       if (isNaN(priceNum) || isNaN(categoryNum) || isNaN(userNum)) {
         console.error('Numeric conversion failed', { priceNum, categoryNum, userNum })
-        throw new Error('Campos numéricos inválidos')
+        throw setError('Campos numéricos inválidos')
       }
 
       const payload: any = {
@@ -308,7 +329,7 @@ export default function EditCourseModal({
           const firstMsgs = entries[0][1] as string[]
           const composed = `${firstField}: ${firstMsgs.join(' ')}`
           console.error('Validation error from server:', respRaw)
-          throw new Error(composed)
+          throw setError(composed)
         }
       }
 
@@ -316,7 +337,7 @@ export default function EditCourseModal({
 
       if (!updatedCourse) {
         console.error('Response missing course property', respRaw)
-        throw new Error('No se devolvió el curso actualizado')
+        throw setError('No se devolvió el curso actualizado')
       }
 
       // éxito: limpiar estado y notificar
@@ -344,6 +365,73 @@ export default function EditCourseModal({
       setUpdating(false)
     }
   }
+
+ 
+  const formatDurationInputWithLimits = (input: string): string => {
+  const d = input.replace(/\D/g, '').slice(0, 6); // hhmmss max
+  if (!d) return '';
+
+  // Horas (1..2 dígitos)
+  if (d.length <= 2) {
+    if (d.length === 2) {
+      const hh = Number(d);
+      // si >23, limitar a 23
+      return String(Math.min(hh, 23)).padStart(2, '0');
+    }
+    return d; // 1 dígito, dejar tal cual para edición incremental
+  }
+
+  // d.length >= 3
+  const hhRaw = d.slice(0, 2);
+  const hhNum = Number(hhRaw);
+  const hh = String(Math.min(hhNum, 23)).padStart(2, '0');
+
+  // Resto mmss
+  const rest = d.slice(2); // 1..4 dígitos
+  if (rest.length <= 2) {
+    // minutos (1..2 dígitos); si llegamos a 2 y >59 clamp a 59
+    if (rest.length === 2) {
+      const mmNum = Number(rest);
+      const mm = String(Math.min(mmNum, 59)).padStart(2, '0');
+      return `${hh}:${mm}`;
+    }
+    return `${hh}:${rest}`; // minuto parcial (1 dígito)
+  }
+
+  // rest.length 3..4 -> mmss
+  const mmRaw = rest.slice(0, 2);
+  const ssRaw = rest.slice(2); // 1..2 dígitos
+  const mmNum = Number(mmRaw);
+  const mm = String(Math.min(mmNum, 59)).padStart(2, '0');
+
+  if (ssRaw.length === 1) {
+    // segundo parcial
+    return `${hh}:${mm}:${ssRaw}`;
+  }
+  // ssRaw.length === 2
+  const ssNum = Number(ssRaw);
+  const ss = String(Math.min(ssNum, 59)).padStart(2, '0');
+  return `${hh}:${mm}:${ss}`;
+};
+  const validateAndNormalizeDuration = (input: string): DurationNorm => {
+  const normalized = normalizeDuration(input);
+  if (!normalized) {
+    return {
+      ok: false,
+      errors: ['Formato inválido. Usa HH:MM o HH:MM:SS'],
+    };
+  }
+  
+
+  const [hh, mm, ss] = normalized.split(':').map(Number);
+  const seconds = hh * 3600 + mm * 60 + ss;
+
+  return {
+    ok: true,
+    value: normalized,
+    seconds,
+  };
+};
 
   if (!visible) return null
 
@@ -394,7 +482,11 @@ export default function EditCourseModal({
             placeholder="Duración (HH:MM:SS)"
             placeholderTextColor={COLORS.primaryOpaque}
             value={courseData.duration}
-            onChangeText={t => setCourseData((d: any) => ({ ...d, duration: t }))}
+            keyboardType="numeric"
+            onChangeText={(t: string) =>
+            setCourseData((d: any)=> ({ ...d, duration: formatDurationInputWithLimits(t) }))
+            }
+            maxLength={8}
           />
           <Text style={styles.tittle}>Precio</Text>
           <TextInput
