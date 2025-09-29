@@ -38,10 +38,11 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "eb56bd6e-bfe1-4067-80ca-d3ab5a7b7bc0",
+        "projectId": "c2a418a3-aeb9-404b-a8ca-c307c2e5e2b6",
         "name": "Valentina-Academy-App"
       },
-      "backendUrl": "http://192.168.10.129:8082"
-    }
+      "backendUrl": "http://0.0.0.0:8082"
+    },
+    "owner": "ganterlix_dev"
   }
 }
