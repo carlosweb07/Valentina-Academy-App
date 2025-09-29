@@ -3,7 +3,6 @@
     "name": "valentina-academy-app",
     "slug": "valentina-academy-app",
     "version": "1.0.0",
-    "projectId": "eb56bd6e-bfe1-4067-80ca-d3ab5a7b7bc0",
     "orientation": "portrait",
     "icon": "./assets/logo.png",
     "userInterfaceStyle": "light",
@@ -39,7 +38,8 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "811611e9-e9ba-4859-8bb1-77d49feaad77"
+        "projectId": "eb56bd6e-bfe1-4067-80ca-d3ab5a7b7bc0",
+        "name": "Valentina-Academy-App"
       },
       "backendUrl": "http://192.168.10.129:8082"
     }
