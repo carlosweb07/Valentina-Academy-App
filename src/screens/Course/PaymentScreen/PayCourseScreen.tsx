@@ -13,35 +13,29 @@ import ApiService from '../../../services/Api'
 import { ContextApp } from '../../../context/ContextApp'
 import { BACKEND_ROUTES } from '../../../constants/routes'
 import { COLORS } from '../../../constants/colors'
+import { Course } from '../../../interfaces/Models';
 import PayCourseSkeleton from './skeleton/PayCourseSkeleton'
 import styles from './styles'
 
 import fondo from '../../../../assets/background.jpg'
+import PurchaseScreen from './components/PurchaseScreen';
 
-export default function PayCoursePage({ course }: { course: any }) {
+export default function PayCoursePage({ course }: { course: Course }) {
   const { user } = useContext(ContextApp)
   const navigation = useNavigation<NavigationProp<any>>()
   const [errorMsg, setErrorMsg] = useState('')
+  const [showPurchase, setShowPurchase] = useState(false)
 
   const onBuy = async () => {
-    try {
-      const resp = await ApiService.post(
-        BACKEND_ROUTES.purchased_courses,
-        { course: course.id, user: user.id, is_purchased: true }
-      )
-      if (resp.error) {
-        setErrorMsg(resp.error)
-      } else {
-        navigation.navigate('Home')
-      }
-    } catch (err) {
-      setErrorMsg('Error al procesar la compra')
-      console.warn(err)
-    }
+    setShowPurchase(true)
   }
 
   if (!course) {
     return <PayCourseSkeleton />
+  }
+
+  if(showPurchase) {
+    return <PurchaseScreen course={course} />
   }
 
   return (

@@ -58,8 +58,10 @@ export default function Register() {
     }).start()
   }
 
-  const onChange = (key: keyof User, val: string) =>
-    setUser(prev => ({ ...prev, [key]: val }))
+  const onChange = (key: keyof User, val: string) => {
+    const newVal = ["username", "email", "password"].includes(key) ? val.trim() : val
+    setUser(prev => ({ ...prev, [key]: newVal }))
+  }
   const onSubmit = async () => {
     if (confirm !== user.password) {
       setMessage({ value: 'Las claves deben coincidir', color: COLORS.error })

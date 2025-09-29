@@ -1,8 +1,10 @@
 // src/navigation/AppNavigator.tsx
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import * as NavigationBar from 'expo-navigation-bar';
 import { ContextApp } from '../context/ContextApp'
 import { ROLES } from '../constants/roles'
+import { COLORS } from '../constants/colors';
 
 // Screens
 import LandingPage from '../screens/Landing/Landing'
@@ -24,14 +26,37 @@ import HasPermissions from '../layouts/HasPermissions/HasPermissions'
 import IsCourseCompleted from '../layouts/IsCourseCompleted/IsCourseCompleted'
 
 import type { RootStackParamList } from './types'
-import { Text, TouchableOpacity } from 'react-native'
+import { 
+  StatusBar, 
+  Text, 
+  TouchableOpacity,
+  AppState
+} from 'react-native'
 import { NavigationProp, useNavigation } from '@react-navigation/native'
 
 const Stack = createNativeStackNavigator<RootStackParamList>()
 
 export default function AppNavigator() {
   const { completed, setCompleted } = useContext(ContextApp)
+  const appState = useRef(AppState.currentState);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>()
+
+  const hideSystemBars = async () => {
+    StatusBar.setHidden(true, 'fade')
+    await NavigationBar.setVisibilityAsync("hidden")
+  }
+
+  useEffect(() => {
+    hideSystemBars()
+
+    const subscription = AppState.addEventListener("change", nextAppState => {
+      appState.current = nextAppState
+      hideSystemBars()
+    })
+    return () => {
+      subscription.remove()
+    }
+  }, [])
 
   return (
     <Stack.Navigator
