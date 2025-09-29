@@ -25,6 +25,14 @@ interface Props {
   users: User[]
   recipes: Recipe[]
 }
+export type DurationNorm = {
+  ok: true;
+  value: string;    // "HH:MM:SS"
+  seconds: number;
+} | {
+  ok: false;
+  errors: string[];
+};
 
 export default function CreateModal({
   visible,
@@ -187,6 +195,53 @@ export default function CreateModal({
     }
   }
   
+  const formatDurationInputWithLimits = (input: string): string => {
+  const d = input.replace(/\D/g, '').slice(0, 6); // hhmmss max
+  if (!d) return '';
+
+  // Horas (1..2 dígitos)
+  if (d.length <= 2) {
+    if (d.length === 2) {
+      const hh = Number(d);
+      // si >23, limitar a 23
+      return String(Math.min(hh, 23)).padStart(2, '0');
+    }
+    return d; // 1 dígito, dejar tal cual para edición incremental
+  }
+
+  // d.length >= 3
+  const hhRaw = d.slice(0, 2);
+  const hhNum = Number(hhRaw);
+  const hh = String(Math.min(hhNum, 23)).padStart(2, '0');
+
+  // Resto mmss
+  const rest = d.slice(2); // 1..4 dígitos
+  if (rest.length <= 2) {
+    // minutos (1..2 dígitos); si llegamos a 2 y >59 clamp a 59
+    if (rest.length === 2) {
+      const mmNum = Number(rest);
+      const mm = String(Math.min(mmNum, 59)).padStart(2, '0');
+      return `${hh}:${mm}`;
+    }
+    return `${hh}:${rest}`; // minuto parcial (1 dígito)
+  }
+
+  // rest.length 3..4 -> mmss
+  const mmRaw = rest.slice(0, 2);
+  const ssRaw = rest.slice(2); // 1..2 dígitos
+  const mmNum = Number(mmRaw);
+  const mm = String(Math.min(mmNum, 59)).padStart(2, '0');
+
+  if (ssRaw.length === 1) {
+    // segundo parcial
+    return `${hh}:${mm}:${ssRaw}`;
+  }
+  // ssRaw.length === 2
+  const ssNum = Number(ssRaw);
+  const ss = String(Math.min(ssNum, 59)).padStart(2, '0');
+  return `${hh}:${mm}:${ss}`;
+};
+
 
   const renderForm = () => (
     <ScrollView contentContainerStyle={styles.form}>
@@ -209,9 +264,14 @@ export default function CreateModal({
       <Text style={styles.tittle}>duration</Text>
       <TextInput
         style={styles.input}
+        placeholder="hh:mm:ss"
         placeholderTextColor={COLORS.primaryOpaque}
         value={courseData.duration}
-        onChangeText={t => setCourseData(d => ({ ...d, duration: t }))}
+        keyboardType="numeric"
+        onChangeText={(t: string) =>
+          setCourseData(d => ({ ...d, duration: formatDurationInputWithLimits(t) }))
+        }
+        maxLength={8}
       />
       <Text style={styles.tittle}>price</Text>
       <TextInput
