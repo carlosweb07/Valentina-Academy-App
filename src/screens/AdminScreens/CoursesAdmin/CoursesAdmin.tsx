@@ -1,14 +1,19 @@
 // src/screens/CoursesAdminScreen.tsx
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import {
   ImageBackground,
-  ScrollView,
   View,
+  Animated,
   Text,
+  Easing,
   Image,
   TouchableOpacity,
+  ScrollView,
+  FlatList,
+  ListRenderItem,
+  Dimensions,
 } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context'
 import { FontAwesome5 } from '@expo/vector-icons'
 import ApiService from '../../../services/Api'
 import { BACKEND_ROUTES } from '../../../constants/routes'
@@ -22,20 +27,17 @@ import { useNavigation } from '@react-navigation/native'
 import { RootStackParamList } from '../../../navigation/types'
 import type { StackNavigationProp } from '@react-navigation/stack'
 
-import styles from './styles'
-import Api from '../../../services/Api';
+import Navbar from '../../../components/Navbar/Navbar'
 
+import styles from './styles'
 import fondo from '../../../../assets/background.jpg'
-import SoloVideo from './components/Multimedia/Video';
-import style from '../IngredientsAdmin/components/DeleteModal/style';
+import SoloVideo from './components/Multimedia/Video'
 
 interface Props {
-  img: string
-  uri: string;
-  setCompleted: React.Dispatch<React.SetStateAction<boolean>>;
+  setCompleted: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export default function CoursesAdminScreen({ img,setCompleted }: Props) {
+export default function CoursesAdminScreen({ setCompleted }: Props) {
   const [loading, setLoading] = useState(true)
   const [courses, setCourses] = useState<Course[]>([])
   const [categories, setCategories] = useState<Category[]>([])
@@ -46,52 +48,179 @@ export default function CoursesAdminScreen({ img,setCompleted }: Props) {
   const [showEdit, setShowEdit] = useState(false)
   const [showDelete, setShowDelete] = useState(false)
   const [selectedId, setSelectedId] = useState<number | null>(null)
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
+  const [category, setCategory] = useState<number | null>(null)
 
-  
+  // Animación del botón reload
+  const spinAnim = useRef(new Animated.Value(0)).current
+  const spin = spinAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg'],
+  })
+
+  // Ref para controlar si componente está montado y evitar setState después de ununmount
+  const mountedRef = useRef(true)
   useEffect(() => {
-    let mounted = true
-    async function loadData() {
-      try {
-        const [coursesData, cats, usrs, rcps] = await Promise.all([
-          ApiService.get<Course[]>(BACKEND_ROUTES.courses),
-          ApiService.get<Category[]>(BACKEND_ROUTES.categories),
-          ApiService.get<User[]>(BACKEND_ROUTES.users),
-          ApiService.get<Recipe[]>(BACKEND_ROUTES.recipes),
-        ])
-        if (!mounted) return
-        setCourses(coursesData)
-        setCategories(cats)
-        setUsers(usrs)
-        setRecipes(rcps)
-      } catch (e) {
-        console.warn('Error loading admin data', e)
-      } finally {
-        if (mounted) setLoading(false)
-      }
-    }
-    loadData()
+    mountedRef.current = true
     return () => {
-      mounted = false
+      mountedRef.current = false
     }
   }, [])
+
+  // loadData: extraída y memoizada para poder llamarla desde onReload y callbacks de modales
+  const loadData = useCallback(async () => {
+    try {
+      setLoading(true)
+      const [coursesData, cats, usrs, rcps] = await Promise.all([
+        ApiService.get<Course[]>(BACKEND_ROUTES.courses),
+        ApiService.get<Category[]>(BACKEND_ROUTES.categories),
+        ApiService.get<User[]>(BACKEND_ROUTES.users),
+        ApiService.get<Recipe[]>(BACKEND_ROUTES.recipes),
+      ])
+      if (!mountedRef.current) return
+      setCourses(coursesData ?? [])
+      setCategories(cats ?? [])
+      setUsers(usrs ?? [])
+      setRecipes(rcps ?? [])
+    } catch (e) {
+      console.warn('Error loading admin data', e)
+    } finally {
+      if (mountedRef.current) setLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    loadData()
+  }, [loadData])
 
   const toggleExpand = (id: number) => {
     setExpanded(prev => {
       const copy = new Set(prev)
-      copy.has(id) ? copy.delete(id) : copy.add(id)
+      if (copy.has(id)) copy.delete(id)
+      else copy.add(id)
       return copy
     })
+  }
+
+  const onReload = () => {
+    // reset de categoría
+    setCategory(null)
+
+    // animación
+    spinAnim.setValue(0)
+    Animated.timing(spinAnim, {
+      toValue: 1,
+      duration: 500,
+      easing: Easing.linear,
+      useNativeDriver: true,
+    }).start()
+
+    // recargar datos
+    loadData()
+  }
+
+  // Callbacks que pasamos a los modales para que notifiquen al volver
+  const handleSaved = () => {
+    // Después de crear/editar/eliminar recargamos
+    // Si prefieres, aquí se puede actualizar el estado localmente en lugar de recargar todo
+    loadData()
+  }
+
+  // Render item para FlatList
+  const renderItem: ListRenderItem<Course> = ({ item: course }) => {
+    const isExpanded = expanded.has(course.id)
+    const coverUri = course.media?.url_cover ?? null
+    const videoUri = course.media?.url_video ?? ''
+
+    return (
+      <View style={styles.courseItem}>
+        <TouchableOpacity
+          onPress={() => toggleExpand(course.id)}
+          onLongPress={() => {
+            setSelectedId(course.id)
+            setShowEdit(true)
+          }}
+          style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}
+        >
+          <Text style={styles.cardTitle}>{course.title}</Text>
+          <FontAwesome5
+            name={isExpanded ? 'caret-down' : 'caret-right'}
+            size={18}
+            color={COLORS.primary}
+          />
+        </TouchableOpacity>
+
+        {isExpanded && (
+          <View style={styles.courseDetails}>
+            <View style={{ maxHeight: Dimensions.get('window').height * 0.55 }}>
+              <Text style={styles.cardBody}>
+                <Text style={styles.bold}>Descripción:</Text>
+                <Text style={styles.text}> {course.description ?? '-'}</Text>
+              </Text>
+              <Text style={styles.cardBody}>
+                <Text style={styles.bold}>Duración:</Text>
+                <Text style={styles.text}> {course.duration ?? '-'}</Text>
+              </Text>
+              <Text style={styles.cardBody}>
+                <Text style={styles.bold}>Categoría:</Text>
+                <Text style={styles.text}> {course.category?.name ?? '-'}</Text>
+              </Text>
+              <Text style={styles.cardBody}>
+                <Text style={styles.bold}>Autor:</Text>
+                <Text style={styles.text}> {course.user?.username ?? '-'}</Text>
+              </Text>
+              <Text style={styles.cardBody}>
+                <Text style={styles.bold}>Precio:</Text>
+                <Text style={styles.text}> {course.price ?? 0}$</Text>
+              </Text>
+              <Text style={styles.cardBody}>
+                <Text style={styles.bold}>Receta:</Text>
+                <Text style={styles.text}> {course.recipe?.name ?? '-'}</Text>
+              </Text>
+
+              {coverUri ? (
+                <Image source={{ uri: coverUri }} style={styles.imagenrender} resizeMode="cover" />
+              ) : (
+                <View style={[styles.imagenrender, { backgroundColor: '#eee', alignItems: 'center', justifyContent: 'center' }]}>
+                  <Text style={{ color: '#666' }}>No cover</Text>
+                </View>
+              )}
+
+              {/* SoloVideo se monta siempre; le pasamos videoUri (puede ser '') para que sus hooks se ejecuten en orden constante */}
+              <View style={{ width: '100%', height: 300 }}>
+                <SoloVideo
+                  uri={videoUri}
+                  onEnd={() => {
+                    // Navegar primero para evitar potential re-render que desmonte antes de navigate
+                    navigation.navigate('Survey', { course_id: course.id })
+                    setCompleted(true)
+                  }}
+                />
+              </View>
+            </View>
+
+            <TouchableOpacity
+              onPress={() => {
+                setSelectedId(course.id)
+                setShowDelete(true)
+              }}
+              style={{ marginTop: 8 }}
+            >
+              <Text style={{ color: COLORS.error }}>Eliminar</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
+    )
   }
 
   if (loading) {
     return <AdminSkeleton />
   }
 
-  console.log('courses:', courses)
-
   return (
       <SafeAreaView style={styles.safeArea}>
+        <Navbar />
         <ImageBackground
         source={fondo}
         style={styles.image}
@@ -100,6 +229,11 @@ export default function CoursesAdminScreen({ img,setCompleted }: Props) {
         >
       <View style={styles.header}>
         <Text style={styles.heading}>Administración de cursos</Text>
+        <Animated.View style={{ transform: [{ rotate: spin }] }}>
+            <TouchableOpacity onPress={onReload}>
+              <FontAwesome5 name="redo-alt" size={20} color={COLORS.primary} />
+            </TouchableOpacity>
+          </Animated.View>
         <TouchableOpacity onPress={() => setShowCreate(true)}>
           <FontAwesome5 name="plus" size={24} color={COLORS.primary} />
         </TouchableOpacity>
@@ -133,6 +267,7 @@ export default function CoursesAdminScreen({ img,setCompleted }: Props) {
               <View style={styles.courseDetails}>
                 <ScrollView>
                 {/* Información detallada del curso */}
+                
                 <Text style={styles.cardBody}><Text style={styles.bold}>Descripción:</Text><Text style={styles.text}> {course.description}</Text></Text>
                 <Text style={styles.cardBody}><Text style={styles.bold}>Duración:</Text><Text style={styles.text}> {course.duration}</Text></Text>
                 <Text style={styles.cardBody}><Text style={styles.bold}>Categoría:</Text><Text style={styles.text}> {course.category?.name}</Text></Text>
@@ -162,7 +297,7 @@ export default function CoursesAdminScreen({ img,setCompleted }: Props) {
                   }}
                   style={{ marginTop: 8 }}
                 >
-                  <Text style={{ color: COLORS.error }}>Eliminar</Text>
+                  <Text style={ styles.deleteButton }>Eliminar</Text>
                 </TouchableOpacity>
               </View>
             )}
@@ -190,17 +325,13 @@ export default function CoursesAdminScreen({ img,setCompleted }: Props) {
         visible={showDelete}
         onClose={() => setShowDelete(false)}
         courseId={selectedId}
-        />
+        onDeleted={() => {
+          setShowDelete(false)   // cierra modal
+          setSelectedId(null)    // limpia selección
+          loadData()             // refresca lista
+        }}
+      />
         </ImageBackground>
     </SafeAreaView>
   )
 }
-
-/**
- * Cambios realizados:
- * - Ahora cada curso muestra su información básica y, al hacer tap, se expande para mostrar todos los detalles.
- * - El botón de eliminar está dentro de la vista expandida.
- * - Se documenta cada sección para claridad.
- * - Se usa un View como contenedor principal de cada curso para mejor estructura.
- * - Se recomienda agregar estilos como `courseTitle`, `courseLabel`, `bold`, `courseDetails` en tu archivo styles.ts.
- */
