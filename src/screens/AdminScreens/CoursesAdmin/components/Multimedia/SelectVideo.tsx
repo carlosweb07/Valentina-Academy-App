@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { View, Button, StyleSheet, Alert, ActivityIndicator, Text } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
-import { useVideoPlayer, VideoView } from 'expo-video';
+// import { useVideoPlayer, VideoView } from 'expo-video'; // ya no se usa si no vas a reproducir
 
 interface Props {
   onVideoSelected?: (video: any) => void;
@@ -12,17 +12,10 @@ interface Props {
 
 const VideoPickerPlayer: React.FC<Props> = ({ onVideoSelected, onImageSelected, disabled = false }) => {
   const [videoUri, setVideoUri] = useState<string | null>(null);
+  const [videoName, setVideoName] = useState<string | null>(null);
   const [imageUri, setImageUri] = useState<string | null>(null);
+  const [imageName, setImageName] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-
-  const player = useVideoPlayer(
-    videoUri ? { uri: videoUri } : { uri: '' }, // siempre se llama
-    (player) => {
-      if (videoUri) {
-        player.play();
-      }
-    }
-  );
 
   const pickVideoFile = async () => {
     if (disabled) return;
@@ -98,37 +91,64 @@ const VideoPickerPlayer: React.FC<Props> = ({ onVideoSelected, onImageSelected, 
     }
   };
 
+  // Nombre amigable para mostrar (prefiere name, si no usa la uri)
+  const displayedVideoName = useMemo(() => {
+    if (videoName) return videoName;
+    if (videoUri) return videoUri.split('/').pop() ?? videoUri;
+    return null;
+  }, [videoName, videoUri]);
+
+  const displayedImageName = useMemo(() => {
+    if (imageName) return imageName;
+    if (imageUri) return imageUri.split('/').pop() ?? imageUri;
+    return null;
+  }, [imageName, imageUri]);
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Multimedia del Curso</Text>
-      
-      <Button 
-        title="Seleccionar Imagen de Portada" 
-        onPress={pickImageFile}
-        disabled={disabled}
-      />
-      
-      <Button 
-        title="Seleccionar Video" 
-        onPress={pickVideoFile}
-        disabled={disabled}
-      />
-      
-      {loading && <ActivityIndicator size="large" color="#0000ff" style={{ marginTop: 20 }} />}
-      
-      {imageUri && (
-        <Text style={styles.selectedText}>Imagen seleccionada: {imageUri.split('/').pop()}</Text>
-      )}
-      
-      {videoUri && (
-        <View style={styles.videoContainer}>
-          <VideoView
-            player={player}
-            style={styles.video}
-            allowsFullscreen
-            allowsPictureInPicture
-          />
+
+      <View style={styles.buttonWrapper}>
+        <Button
+          title="Seleccionar Imagen de Portada"
+          onPress={pickImageFile}
+          disabled={disabled}
+          color="#181212a9"
+        />
+      </View>
+
+      <View style={styles.buttonWrapper}>
+        <Button
+          title="Seleccionar Video"
+          onPress={pickVideoFile}
+          disabled={disabled}
+          color="#181212a9"
+        />
+      </View>
+
+      {loading && <ActivityIndicator size="large" style={{ marginTop: 20 }} />}
+
+      {displayedImageName ? (
+        <View style={styles.videoInfo}>
+          <Text style={styles.videoLabel}>Imagen seleccionada:
+            <Text style={styles.videoName} numberOfLines={1} ellipsizeMode="middle">
+            {displayedImageName}
+          </Text>
+          </Text>
         </View>
+      ) : (
+        <Text style={styles.noVideoText}>No hay Imagen seleccionado</Text>
+      )}
+
+      {videoUri ? (
+        <View style={styles.videoInfo}>
+          <Text style={styles.videoLabel}>Video seleccionado</Text>
+          <Text style={styles.videoName} numberOfLines={1} ellipsizeMode="middle">
+            {displayedVideoName}
+          </Text>
+        </View>
+      ) : (
+        <Text style={styles.noVideoText}>No hay video seleccionado</Text>
       )}
     </View>
   );
@@ -138,28 +158,46 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     flex: 1,
-    backgroundColor: '#fff',
   },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 15,
+    // si quieres alinearlo a la izquierda cambia a 'left'
     textAlign: 'center',
+    color: '#ecd553',
+  },
+  buttonWrapper: {
+    marginBottom: 20,
+    padding: 10,
+    borderRadius: 10,
+    borderColor: '#f3dd6077',
+    borderWidth: 1,
+    backgroundColor: 'transparent',
   },
   selectedText: {
     marginTop: 10,
     color: 'green',
     textAlign: 'center',
   },
-  videoContainer: {
-    marginTop: 20,
-    width: '100%',
-    height: 300,
-    backgroundColor: 'black',
+  videoInfo: {
+    marginTop: 12,
+    padding: 10,
+    backgroundColor: '#222',
+    borderRadius: 8,
   },
-  video: {
-    width: '100%',
-    height: '100%',
+  videoLabel: {
+    color: '#ecd553',
+    fontSize: 14,
+    marginBottom: 6,
+  },
+  videoName: {
+    color: '#fff',
+    fontSize: 13,
+  },
+  noVideoText: {
+    marginTop: 12,
+    color: '#888',
   },
 });
 

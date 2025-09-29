@@ -190,74 +190,80 @@ export default function CreateModal({
 
   const renderForm = () => (
     <ScrollView contentContainerStyle={styles.form}>
+      <Text style={styles.tittle}>Título</Text>
       <TextInput
         style={styles.input}
-        placeholder="Título"
         placeholderTextColor={COLORS.primaryOpaque}
         value={courseData.title}
         onChangeText={t => setCourseData(d => ({ ...d, title: t }))}
       />
+      <Text style={styles.tittle}>description</Text>
       <TextInput
         style={[styles.input, styles.textarea]}
-        placeholder="Descripción"
         placeholderTextColor={COLORS.primaryOpaque}
         multiline
         numberOfLines={4}
         value={courseData.description}
         onChangeText={t => setCourseData(d => ({ ...d, description: t }))}
       />
+      <Text style={styles.tittle}>duration</Text>
       <TextInput
         style={styles.input}
-        placeholder="Duración (HH:MM:SS)"
         placeholderTextColor={COLORS.primaryOpaque}
         value={courseData.duration}
         onChangeText={t => setCourseData(d => ({ ...d, duration: t }))}
       />
+      <Text style={styles.tittle}>price</Text>
       <TextInput
         style={styles.input}
-        placeholder="Precio ($)"
         placeholderTextColor={COLORS.primaryOpaque}
         keyboardType="numeric"
         value={courseData.price}
         onChangeText={t => setCourseData(d => ({ ...d, price: t }))}
       />
-
+      <Text style={styles.tittle}>Categoría</Text>
+      <View style={styles.Viewpicker}>
       <Picker
         selectedValue={courseData.category}
         style={styles.picker}
         onValueChange={v => setCourseData(d => ({ ...d, category: v }))}
-      >
+        >
         <Picker.Item label="-- Categoría --" value="" />
         {categories.map(c => (
           <Picker.Item key={c.id} label={c.name} value={String(c.id)} />
         ))}
       </Picker>
-
+      </View>
+      <Text style={styles.tittle}>Autor</Text>
+      <View style={styles.Viewpicker}>
       <Picker
         selectedValue={courseData.user}
         style={styles.picker}
         onValueChange={v => setCourseData(d => ({ ...d, user: v }))}
-      >
+        >
         <Picker.Item label="-- Autor --" value="" />
         {users.map(u => (
           <Picker.Item
-            key={u.id}
-            label={`${u.first_name} ${u.last_name}`}
-            value={String(u.id)}
+          key={u.id}
+          label={`${u.first_name} ${u.last_name}`}
+          value={String(u.id)}
           />
         ))}
       </Picker>
-
+      </View>
+      <Text style={styles.tittle}>Receta</Text>
+      <View style={styles.Viewpicker}>
       <Picker
         selectedValue={courseData.recipe}
         style={styles.picker}
         onValueChange={v => setCourseData(d => ({ ...d, recipe: v }))}
-      >
+        >
         <Picker.Item label="-- Receta --" value="" />
         {recipes.map(r => (
           <Picker.Item key={r.id} label={r.name} value={String(r.id)} />
         ))}
       </Picker>
+      </View>
 
       <VideoPickerPlayer
         onImageSelected={(img) => {

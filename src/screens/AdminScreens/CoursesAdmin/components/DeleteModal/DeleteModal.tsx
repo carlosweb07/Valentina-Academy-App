@@ -1,47 +1,80 @@
 // src/modules/admin/components/DeleteCourseModal.tsx
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import {
   View,
   Text,
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native'
-import { useNavigation, NavigationProp } from '@react-navigation/native'
 import Modal from '../../../../../components/Modal/Modal'
 import ApiService from '../../../../../services/Api'
 import { BACKEND_ROUTES } from '../../../../../constants/routes'
 import { COLORS } from '../../../../../constants/colors'
-import type { RootStackParamList } from '../../../../../navigation/types'
-
 import styles from './styles'
 
 interface Props {
   visible: boolean
   onClose: () => void
-  onSuccess: () => void;
+  onDeleted?: () => void
   courseId: number | null
 }
 
 export default function DeleteCourseModal({
   visible,
   onClose,
+  onDeleted,
   courseId,
 }: Props) {
   const [deleting, setDeleting] = useState(false)
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>()
+  const completedRef = useRef(false)
+
+  const handleSuccessFlow = (id: number | null) => {
+    completedRef.current = true
+    console.debug('DeleteCourseModal: delete success for', id)
+    if (typeof onDeleted === 'function') {
+      try {
+        onDeleted()
+      } catch (cbErr) {
+        console.warn('DeleteCourseModal: onDeleted callback error', cbErr)
+      }
+    }
+    setTimeout(() => {
+      try {
+        onClose()
+      } catch (e) {
+        console.warn('DeleteCourseModal: onClose error', e)
+      }
+    }, 120)
+  }
 
   const onDelete = async () => {
     if (courseId == null) return
+    if (deleting) return
+    if (completedRef.current) return
+
     setDeleting(true)
     try {
+      // Llamada al servicio (puede lanzar por parseo JSON si el backend responde sin cuerpo)
       await ApiService.delete(`${BACKEND_ROUTES.courses}/${courseId}`)
-      onClose()
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'CoursesAdmin' }],
-      })
-    } catch (e) {
-      console.warn('Delete error:', e)
+
+      // Si llega acá sin lanzar, todo OK
+      handleSuccessFlow(courseId)
+    } catch (e: any) {
+      // Si el error viene por JSON parse (respuesta 204/empty body) lo tratamos como éxito
+      const msg = String(e?.message ?? e)
+      const isEmptyJsonError =
+        msg.includes('JSON Parse error') ||
+        msg.includes('Unexpected end of input') ||
+        msg.includes('Unexpected token') // por si varía el mensaje
+
+      if (isEmptyJsonError) {
+        console.debug('DeleteCourseModal: backend returned empty body; treating as success', msg)
+        handleSuccessFlow(courseId)
+        return
+      }
+
+      // Otros errores: los reportamos y permitimos reintento
+      console.warn('DeleteCourseModal: Delete error:', e)
       setDeleting(false)
     }
   }
@@ -59,19 +92,21 @@ export default function DeleteCourseModal({
           <View style={styles.buttons}>
             <TouchableOpacity
               style={[styles.button, styles.cancelBtn]}
-              onPress={onClose}
+              onPress={() => {
+                completedRef.current = false
+                onClose()
+              }}
+              disabled={deleting}
             >
-              <Text style={[styles.btnText, styles.cancelText]}>
-                Cancelar
-              </Text>
+              <Text style={[styles.btnText, styles.cancelText]}>Cancelar</Text>
             </TouchableOpacity>
+
             <TouchableOpacity
               style={[styles.button, styles.deleteBtn]}
               onPress={onDelete}
+              disabled={deleting}
             >
-              <Text style={[styles.btnText, styles.deleteText]}>
-                Eliminar
-              </Text>
+              <Text style={[styles.btnText, styles.deleteText]}>Eliminar</Text>
             </TouchableOpacity>
           </View>
         </View>
