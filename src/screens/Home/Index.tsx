@@ -21,8 +21,6 @@ export default function Index() {
         const resp = await ApiService.get<{ role: string }>(
           `${BACKEND_ROUTES.roles}/${user.id}`
         )
-
-        console.log("resp", resp);
         
         if (!mounted) return
 

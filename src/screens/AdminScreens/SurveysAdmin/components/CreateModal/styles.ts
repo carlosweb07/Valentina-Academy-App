@@ -5,12 +5,18 @@ import { typography } from '../../../../../constants/typography'
 import { metrics } from '../../../../../constants/metrics'
 
 const { width, height } = Dimensions.get('window')
-const INPUT_W = width * 0.9
+const INPUT_W = width * 0.75
 
 export default StyleSheet.create({
   container: {
-    alignItems: 'center',
     padding: metrics.padding,
+    paddingLeft: metrics.padding * 0.3,
+  },
+  title: {
+    fontSize: typography.fontSize.large,
+    color: COLORS.primary,
+    marginTop: metrics.padding,
+    paddingBottom: 10,
   },
   header: {
     fontSize: typography.fontSize.large,
@@ -46,14 +52,17 @@ export default StyleSheet.create({
   input: {
     width: INPUT_W,
     backgroundColor: COLORS.darkMoreOpaque,
-    color: COLORS.white,
+    color: COLORS.primary,
     padding: metrics.padding,
     borderRadius: metrics.borderRadius,
     marginVertical: metrics.padding * 0.5,
+    borderColor: COLORS.primaryMoreOpaque,
+    borderWidth: 1,
   },
   textarea: {
     height: height * 0.08,
     textAlignVertical: 'top',
+    color: COLORS.primary,
   },
   questionBlock: {
     width: INPUT_W,
@@ -61,6 +70,7 @@ export default StyleSheet.create({
     padding: metrics.padding,
     borderRadius: metrics.borderRadius,
     marginVertical: metrics.padding,
+    paddingLeft: metrics.padding * 0.3,
   },
   questionHeader: {
     flexDirection: 'row',

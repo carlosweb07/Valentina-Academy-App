@@ -119,10 +119,6 @@ export default function CreateModal({
         type: v.type,
       } as any)
   
-      console.log('Uploading media to', BACKEND_ROUTES.courses_media)
-
-      console.log('Form:', mediaForm)
-  
       // 3) Subir media (manteniendo tu fetch)
       const media = await Api.post<CourseMedia>(BACKEND_ROUTES.courses_media, mediaForm, true)
   
@@ -131,13 +127,6 @@ export default function CreateModal({
         console.error('courses_media did not return id', media)
         throw new Error('No media id returned from server')
       }
-  
-      console.log('Media created id:', mediaId)
-
-      console.log("price", courseData.price, typeof courseData.price);
-      console.log("category", courseData.category, typeof courseData.category);
-      console.log("user", courseData.user, typeof courseData.user);
-      console.log("recipe", courseData.recipe, typeof courseData.recipe);
   
       // 4) Construir payload para /courses (convertir strings a number donde corresponde)
       const priceNum = Number(courseData.price)
@@ -160,12 +149,8 @@ export default function CreateModal({
         media: mediaId,
       }
   
-      console.log('Creating course with payload:', payload)
-  
       // 5) Crear course (JSON)
-      const courseResp = await Api.post<{ course: Course }>(BACKEND_ROUTES.courses, payload)
-  
-      console.log('Course created', courseResp.course)
+      await Api.post<{ course: Course }>(BACKEND_ROUTES.courses, payload)
       // limpiar estado y cerrar modal
       setCover(null)
       setVideo(null)
@@ -275,7 +260,6 @@ export default function CreateModal({
             height: img.height,
             fileSize: img.fileSize || img.size,
           }
-          console.log('Parent received image:', normalizedImage)
           setCover(normalizedImage)
         }}
         onVideoSelected={(vid) => {
@@ -285,7 +269,6 @@ export default function CreateModal({
             mimeType: vid.mimeType || vid.type || 'video/mp4',
             size: vid.size || vid.fileSize,
           }
-          console.log('Parent received video:', normalizedVideo)
           setVideo(normalizedVideo)
         }}
         disabled={creating}

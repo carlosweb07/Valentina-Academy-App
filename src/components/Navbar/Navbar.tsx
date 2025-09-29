@@ -65,7 +65,7 @@ export default function Navbar() {
           </>
         ) : (
           <TouchableOpacity onPress={onDashboard}>
-            <Text style={styles.navText}>Dashboard</Text>
+            <Text style={styles.navText}>Inicio</Text>
           </TouchableOpacity>
         )}
 

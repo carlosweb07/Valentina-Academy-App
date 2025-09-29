@@ -17,7 +17,7 @@ import styles from './styles'
 interface Props {
   visible: boolean
   onClose: () => void
-  userId: string | null
+  userId: number | null
 }
 
 export default function DeleteUserModal({
@@ -34,7 +34,7 @@ export default function DeleteUserModal({
     try {
       await ApiService.delete(`${BACKEND_ROUTES.users}/${userId}`)
       onClose()
-      navigation.reset({ index: 0, routes: [{ name: 'UsersAdmin' }] })
+      navigation.navigate("UsersAdmin")
     } catch (e) {
       console.warn('Delete error:', e)
       setDeleting(false)
@@ -44,7 +44,7 @@ export default function DeleteUserModal({
   if (!visible) return null
 
   return (
-    <Modal showModal={visible} onClose={onClose}>
+    <Modal showModal={visible} onClose={onClose} setShowModal={onClose}>
       {deleting ? (
         <View style={styles.center}>
           <ActivityIndicator size="large" color={COLORS.primary} />

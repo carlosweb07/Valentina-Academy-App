@@ -5,11 +5,14 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
+  ImageBackground,
 } from 'react-native'
 import { useNavigation, NavigationProp } from '@react-navigation/native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Navbar from '../../components/Navbar/Navbar'
 import type { RootStackParamList } from '../../navigation/types'
+import fondo from '../../../assets/background.jpg';
+
 import styles from './styles'
 
 const entities: { label: string; route: keyof RootStackParamList }[] = [
@@ -26,25 +29,31 @@ export default function Admin() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <Navbar />
-      <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.title}>Administrador</Text>
-        <Text style={styles.subtitle}>
-          Selecciona la entidad que deseas administrar
-        </Text>
+      <ImageBackground
+        source={fondo}
+        style={styles.container}
+        resizeMode="cover"
+      >
+        <ScrollView contentContainerStyle={styles.container}>
+          <Text style={styles.title}>Administrador</Text>
+          <Text style={styles.subtitle}>
+            Selecciona la entidad que deseas administrar
+          </Text>
 
-        <View style={styles.entitiesContainer}>
-          {entities.map(({ label, route }) => (
-            <TouchableOpacity
-              key={route}
-              style={styles.card}
-              activeOpacity={0.8}
-              onPress={() => navigation.navigate(route)}
-            >
-              <Text style={styles.cardText}>{label}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </ScrollView>
+          <View style={styles.entitiesContainer}>
+            {entities.map(({ label, route }) => (
+              <TouchableOpacity
+                key={route}
+                style={styles.card}
+                activeOpacity={0.8}
+                onPress={() => navigation.navigate(route)}
+              >
+                <Text style={styles.cardText}>{label}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </ScrollView>
+      </ImageBackground>
     </SafeAreaView>
   )
 }

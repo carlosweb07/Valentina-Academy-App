@@ -31,10 +31,8 @@ export default function Home() {
           BACKEND_ROUTES.courses,
           category !== null ? { category } : {}
         )
-        console.log("Cursos", resp);
         setCourses(resp)
       } finally {
-        console.log("TERMINE");
         setLoading(false)
       }
     }

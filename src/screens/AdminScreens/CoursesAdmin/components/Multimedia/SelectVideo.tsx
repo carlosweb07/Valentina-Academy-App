@@ -31,13 +31,6 @@ const VideoPickerPlayer: React.FC<Props> = ({ onVideoSelected, onImageSelected, 
         const selectedVideo = result.assets[0];
         setVideoUri(selectedVideo.uri);
         
-        console.log('🎥 Video seleccionado:', {
-          uri: selectedVideo.uri,
-          name: selectedVideo.name,
-          size: selectedVideo.size,
-          type: selectedVideo.mimeType
-        });
-        
         // Comunicar el video seleccionado al componente padre
         if (onVideoSelected) {
           onVideoSelected(selectedVideo);
@@ -68,13 +61,6 @@ const VideoPickerPlayer: React.FC<Props> = ({ onVideoSelected, onImageSelected, 
       if (!result.canceled && result.assets && result.assets.length > 0) {
         const selectedImage = result.assets[0];
         setImageUri(selectedImage.uri);
-        
-        console.log('📷 Imagen seleccionada:', {
-          uri: selectedImage.uri,
-          width: selectedImage.width,
-          height: selectedImage.height,
-          fileSize: selectedImage.fileSize
-        });
         
         // Comunicar la imagen seleccionada al componente padre
         if (onImageSelected) {

@@ -143,9 +143,7 @@ export default function EditCourseModal({
       setLoading(true)
       setError('')
       try {
-        console.log('GET course ->', `${BACKEND_ROUTES.courses}/${courseId}`)
         const resp = await Api.get<any>(`${BACKEND_ROUTES.courses}/${courseId}`)
-        console.log('GET course response raw:', resp)
         if (!mounted) return
 
         let recipeVal = ''
@@ -177,7 +175,6 @@ export default function EditCourseModal({
   }, [visible, courseId])
 
   const onImageSelected = (img: any) => {
-    console.log('Parent received image raw:', img)
     const normalizedImage = {
       uri: img.uri,
       name: img.name || img.fileName || img.uri?.split('/').pop(),
@@ -186,32 +183,27 @@ export default function EditCourseModal({
       height: img.height,
       fileSize: img.fileSize || img.size,
     }
-    console.log('Parent received image normalized:', normalizedImage)
     setCover(normalizedImage)
   }
 
   const onVideoSelected = (vid: any) => {
-    console.log('Parent received video raw:', vid)
     const normalizedVideo = {
       uri: vid.uri,
       name: vid.name || vid.fileName || vid.uri?.split('/').pop(),
       mimeType: vid.mimeType || vid.type || 'video/mp4',
       size: vid.size || vid.fileSize,
     }
-    console.log('Parent received video normalized:', normalizedVideo)
     setVideo(normalizedVideo)
   }
 
   // Sube media usando Api.post (wrapper debe soportar FormData cuando se pasa true)
   const uploadMediaIfNeeded = async (): Promise<number | null> => {
     if (!cover && !video) {
-      console.log('uploadMediaIfNeeded: nothing to upload')
       return null
     }
 
     const c = normalizeFile(cover)
     const v = normalizeFile(video)
-    console.log('uploadMediaIfNeeded normalized files:', { cover: c, video: v })
 
     if (cover && !c) {
       console.error('uploadMediaIfNeeded: cover present but normalization failed', cover)
@@ -230,14 +222,11 @@ export default function EditCourseModal({
     try {
       try {
         // @ts-ignore
-        console.log('FormData parts (approx):', (form as any)._parts || 'not available')
       } catch (inspectErr) {
         console.warn('Could not inspect FormData parts', inspectErr)
       }
 
-      console.log('Uploading media to', BACKEND_ROUTES.courses_media, { cover: c?.name, video: v?.name })
       const mediaResp = await Api.post<CourseMedia>(BACKEND_ROUTES.courses_media, form, true)
-      console.log('Media upload response (edit):', mediaResp)
 
       if (!mediaResp || typeof mediaResp !== 'object') {
         console.error('Media upload returned unexpected value', mediaResp)
@@ -248,7 +237,6 @@ export default function EditCourseModal({
         console.error('Media upload response missing id field', mediaResp)
         throw new Error('No se devolvió id del media subido')
       }
-      console.log('Media upload succeeded, id:', mediaId)
       return Number(mediaId)
     } catch (err: any) {
       console.error('uploadMediaIfNeeded error (using Api.post)', err)
@@ -267,7 +255,6 @@ export default function EditCourseModal({
     try {
       // Normalizar duration antes de cualquier envío
       const normalizedDuration = normalizeDuration(courseData.duration)
-      console.log('Normalized duration ->', normalizedDuration) // <-- AQUI: log de duración normalizada
       if (!normalizedDuration) {
         throw new Error('Duración con formato inválido. Usa HH:MM, MM:SS o HH:MM:SS')
       }
@@ -275,16 +262,12 @@ export default function EditCourseModal({
       // 1) subir media si el usuario escogió nuevos archivos
       let mediaIdToUse = courseData.mediaId
       if (cover || video) {
-        console.log('onSubmit: new cover/video detected, calling uploadMediaIfNeeded')
         const newMediaId = await uploadMediaIfNeeded()
-        console.log('onSubmit: uploadMediaIfNeeded returned:', newMediaId)
         if (!newMediaId) {
           console.error('onSubmit: upload returned no id', newMediaId)
           throw new Error('No se recibió id del media subido')
         }
         mediaIdToUse = newMediaId
-      } else {
-        console.log('onSubmit: no new media, using existing mediaId:', mediaIdToUse)
       }
 
       // 2) construir payload y asegurarse de incluir media id si existe
@@ -292,8 +275,6 @@ export default function EditCourseModal({
       const categoryNum = Number(courseData.category)
       const userNum = Number(courseData.user)
       const recipeVal = courseData.recipe
-
-      console.log('Converted numeric values:', { priceNum, categoryNum, userNum })
 
       if (isNaN(priceNum) || isNaN(categoryNum) || isNaN(userNum)) {
         console.error('Numeric conversion failed', { priceNum, categoryNum, userNum })
@@ -317,10 +298,7 @@ export default function EditCourseModal({
         payload.media = Number(mediaIdToUse)
       }
 
-      console.log('PUT payload (edit):', payload, 'to', `${BACKEND_ROUTES.courses}/${courseId}`)
-
       const respRaw = await Api.put(`${BACKEND_ROUTES.courses}/${courseId}`, payload)
-      console.log('Response: ', respRaw)
 
       // Si la respuesta es un objeto de errores de validación (p.ej. { duration: [...] })
       if (respRaw && typeof respRaw === 'object' && !('id' in respRaw) && !('course' in respRaw) && !('data' in respRaw)) {
@@ -335,14 +313,11 @@ export default function EditCourseModal({
       }
 
       const updatedCourse = extractCourseFromResponse(respRaw)
-      console.log('Course update response (edit):', respRaw)
 
       if (!updatedCourse) {
         console.error('Response missing course property', respRaw)
         throw new Error('No se devolvió el curso actualizado')
       }
-
-      console.log('Course updated successfully:', updatedCourse)
 
       // éxito: limpiar estado y notificar
       setCover(null)

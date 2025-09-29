@@ -1,5 +1,5 @@
 // src/modules/admin/components/CreateRecipeModal.tsx
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import {
   View,
   Text,
@@ -9,7 +9,6 @@ import {
   ActivityIndicator,
 } from 'react-native'
 import { FontAwesome5 } from '@expo/vector-icons'
-import { Picker } from '@react-native-picker/picker'
 import Modal from '../../../../../components/Modal/Modal'
 import ApiService from '../../../../../services/Api'
 import { BACKEND_ROUTES } from '../../../../../constants/routes'
@@ -29,12 +28,19 @@ export default function CreateRecipeModal({
   onClose,
   ingredients,
 }: Props) {
-  const [loading, setLoading] = useState(false)
+  const mountedRef = useRef(true)
+  React.useEffect(() => {
+    mountedRef.current = true
+    return () => {
+      mountedRef.current = false
+    }
+  }, [])
+
+  const [creating, setCreating] = useState(false)
   const [error, setError] = useState('')
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [selected, setSelected] = useState<Set<string>>(new Set())
-  const [stepsCount, setStepsCount] = useState(1)
   const [steps, setSteps] = useState<string[]>([''])
 
   const toggleIngredient = (id: string) => {
@@ -53,61 +59,83 @@ export default function CreateRecipeModal({
     })
   }
 
+  const addStep = () => setSteps(ss => [...ss, ''])
+  const removeStep = () =>
+    setSteps(ss => (ss.length > 1 ? ss.slice(0, -1) : ss))
+
+  const onlyFilled = () =>
+    name.trim().length > 0 &&
+    description.trim().length > 0 &&
+    selected.size > 0 &&
+    steps.length > 0 &&
+    steps.every(s => s.trim().length > 0)
+
   const onSubmit = async () => {
-    if (!name || !description || selected.size === 0 || steps.some(s => !s)) {
+    setError('')
+    if (!onlyFilled()) {
       setError('Completa todos los campos')
       return
     }
-    setLoading(true)
-    setError('')
+    setCreating(true)
     try {
       const body = {
-        name,
-        description,
+        name: name.trim(),
+        description: description.trim(),
         ingredient: Array.from(selected),
-        steps,
+        steps: steps.map(s => s.trim()),
       }
       const resp = await ApiService.post(BACKEND_ROUTES.recipes, body)
-      if ((resp as any).detail) throw new Error('Error creando receta')
+      if ((resp as any)?.detail) throw new Error('Error creando receta')
+      if (!mountedRef.current) return
+      // limpiar formulario
+      setName('')
+      setDescription('')
+      setSelected(new Set())
+      setSteps([''])
       onClose()
     } catch (e: any) {
-      setError(e.message || 'Error creando receta')
+      console.error('CreateRecipeModal error', e)
+      setError(e?.message || 'Error creando receta')
     } finally {
-      setLoading(false)
+      if (mountedRef.current) setCreating(false)
     }
   }
 
   if (!visible) return null
 
   return (
-    <Modal showModal={visible} onClose={onClose}>
-      {loading ? (
-        <View style={styles.center}>
+    <Modal showModal={visible} setShowModal={onClose} onClose={onClose}>
+      <Text style={styles.header}>Crear nueva receta</Text>
+
+      {creating ? (
+        <View style={styles.loading}>
           <ActivityIndicator size="large" color={COLORS.primary} />
-          <Text style={styles.status}>Creando receta...</Text>
+          <Text style={styles.loadingText}>Creando receta...</Text>
         </View>
       ) : (
-        <ScrollView contentContainerStyle={styles.container}>
-          <Text style={styles.header}>Crear nueva receta</Text>
+        <ScrollView contentContainerStyle={styles.form}>
           {error ? <Text style={styles.error}>{error}</Text> : null}
 
+          <Text style={styles.tittle}>Nombre</Text>
           <TextInput
             style={styles.input}
             placeholder="Nombre"
             placeholderTextColor={COLORS.primaryOpaque}
             value={name}
-            onChangeText={setName}
+            onChangeText={t => setName(t)}
           />
+
+          <Text style={styles.tittle}>Descripción</Text>
           <TextInput
             style={[styles.input, styles.textarea]}
             placeholder="Descripción"
             placeholderTextColor={COLORS.primaryOpaque}
             multiline
             value={description}
-            onChangeText={setDescription}
+            onChangeText={t => setDescription(t)}
           />
 
-          <Text style={styles.subheading}>Ingredientes</Text>
+          <Text style={styles.tittle}>Ingredientes</Text>
           {ingredients.map(ing => (
             <TouchableOpacity
               key={ing.id}
@@ -125,24 +153,12 @@ export default function CreateRecipeModal({
           ))}
 
           <View style={styles.stepsHeader}>
-            <Text style={styles.subheading}>Pasos</Text>
+            <Text style={styles.tittle}>Pasos</Text>
             <View style={styles.stepButtons}>
-              <TouchableOpacity
-                onPress={() => {
-                  if (stepsCount > 1) {
-                    setStepsCount(c => c - 1)
-                    setSteps(ss => ss.slice(0, -1))
-                  }
-                }}
-              >
+              <TouchableOpacity onPress={removeStep}>
                 <FontAwesome5 name="minus" size={20} color={COLORS.primary} />
               </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  setStepsCount(c => c + 1)
-                  setSteps(ss => [...ss, ''])
-                }}
-              >
+              <TouchableOpacity onPress={addStep}>
                 <FontAwesome5 name="plus" size={20} color={COLORS.primary} />
               </TouchableOpacity>
             </View>
@@ -160,7 +176,7 @@ export default function CreateRecipeModal({
             />
           ))}
 
-          <TouchableOpacity style={styles.button} onPress={onSubmit}>
+          <TouchableOpacity style={styles.button} onPress={onSubmit} disabled={creating}>
             <Text style={styles.buttonText}>Crear receta</Text>
           </TouchableOpacity>
         </ScrollView>

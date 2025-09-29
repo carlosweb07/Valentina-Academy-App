@@ -1,5 +1,5 @@
 // src/modules/admin/components/DeleteSurveyModal.tsx
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import {
   View,
   Text,
@@ -27,25 +27,34 @@ export default function DeleteSurveyModal({
   surveyId,
 }: Props) {
   const [deleting, setDeleting] = useState(false)
+  const mountedRef = useRef(true)
   const navigation = useNavigation<NavigationProp<RootStackParamList>>()
 
+  React.useEffect(() => {
+    mountedRef.current = true
+    return () => {
+      mountedRef.current = false
+    }
+  }, [])
+
   const handleDelete = async () => {
-    if (!surveyId) return
+    if (surveyId == null) return
     setDeleting(true)
     try {
-      await ApiService.delete(`${BACKEND_ROUTES.surveys}/${surveyId}`)
+      await ApiService.delete(`${BACKEND_ROUTES.surveys}/${String(surveyId)}`)
+      if (!mountedRef.current) return
       onClose()
-      navigation.reset({ index: 0, routes: [{ name: 'SurveysAdmin' }] })
+      navigation.navigate('SurveysAdmin')
     } catch (e) {
       console.warn('Delete error:', e)
-      setDeleting(false)
+      if (mountedRef.current) setDeleting(false)
     }
   }
 
   if (!visible) return null
 
   return (
-    <Modal showModal={visible} onClose={onClose}>
+    <Modal showModal={visible} setShowModal={onClose} onClose={onClose}>
       {deleting ? (
         <View style={styles.center}>
           <ActivityIndicator size="large" color={COLORS.primary} />
@@ -59,17 +68,13 @@ export default function DeleteSurveyModal({
               style={[styles.button, styles.cancel]}
               onPress={onClose}
             >
-              <Text style={[styles.btnText, styles.cancelText]}>
-                Cancelar
-              </Text>
+              <Text style={[styles.btnText, styles.cancelText]}>Cancelar</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.button, styles.delete]}
               onPress={handleDelete}
             >
-              <Text style={[styles.btnText, styles.deleteText]}>
-                Eliminar
-              </Text>
+              <Text style={[styles.btnText, styles.deleteText]}>Eliminar</Text>
             </TouchableOpacity>
           </View>
         </View>

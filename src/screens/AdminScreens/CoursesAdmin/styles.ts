@@ -160,7 +160,7 @@ export default StyleSheet.create({
     width: 'auto',
     height: 'auto',
     flex: 1,
-    marginTop: 30,
+    marginTop: 50,
     backgroundColor: COLORS.darkMoreOpaque,
     },
   imageRounded: {

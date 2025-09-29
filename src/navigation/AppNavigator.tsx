@@ -119,7 +119,7 @@ export default function AppNavigator() {
       )}
       </Stack.Screen>
 
-      <Stack.Screen name="Admin">
+      <Stack.Screen name="Admin" options={{ headerShown: false }}>
       {() => (
         <IsAuthorized>
         <HasPermissions role={ROLES.admin}>
@@ -129,9 +129,9 @@ export default function AppNavigator() {
       )}
       </Stack.Screen>
 
-      <Stack.Group screenOptions={{ presentation: 'modal' }}>
+      <Stack.Group screenOptions={{ presentation: 'modal', headerShown: false }}>
       <Stack.Screen name="UsersAdmin" component={UsersAdmin} />
-      <Stack.Screen name="CoursesAdmin" component={CoursesAdmin} options={{ headerShown: false }} />
+      <Stack.Screen name="CoursesAdmin" component={CoursesAdmin} />
       <Stack.Screen name="RecipesAdmin" component={RecipesAdmin} />
       <Stack.Screen name="IngredientsAdmin" component={IngredientsAdmin} />
       <Stack.Screen name="SurveysAdmin" component={SurveysAdmin} />

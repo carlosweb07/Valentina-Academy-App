@@ -35,7 +35,7 @@ export class ApiService {
   // Request principal
   private async request<T>(
     route: string,
-    method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'GET',
+    method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' = 'GET',
     options: RequestOptions = {},
     queryParams?: Record<string, any>,
     isMedia?: boolean
@@ -86,8 +86,6 @@ export class ApiService {
     if(!isMedia) options.headers = {
       "Content-type": "application/json"
     }
-
-    console.log(options);
     
     return this.request<T>(route, 'POST', options, undefined, isMedia)
   }
@@ -103,6 +101,19 @@ export class ApiService {
     }
 
     return this.request<T>(route, 'PUT', options)
+  }
+
+  public patch<T>(route: string, data: any, isMedia = false): Promise<T> {
+    const options = {
+      body: data,
+      headers: {}
+    }
+    
+    if(!isMedia) options.headers = {
+      "Content-type": "application/json"
+    }
+
+    return this.request<T>(route, 'PATCH', options)
   }
 
   public delete<T>(route: string, params?: Record<string, any>): Promise<T> {
