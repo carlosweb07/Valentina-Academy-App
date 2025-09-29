@@ -1,5 +1,5 @@
 // src/modules/admin/components/EditRecipeModal.tsx
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useRef, useState, useCallback } from 'react'
 import {
   View,
   Text,
@@ -8,7 +8,6 @@ import {
   ScrollView,
   ActivityIndicator,
 } from 'react-native'
-import { FontAwesome5 } from '@expo/vector-icons'
 import Modal from '../../../../../components/Modal/Modal'
 import ApiService from '../../../../../services/Api'
 import { BACKEND_ROUTES } from '../../../../../constants/routes'
@@ -30,6 +29,14 @@ export default function EditRecipeModal({
   recipeId,
   ingredients,
 }: Props) {
+  const mountedRef = useRef(true)
+  useEffect(() => {
+    mountedRef.current = true
+    return () => {
+      mountedRef.current = false
+    }
+  }, [])
+
   const [loading, setLoading] = useState(true)
   const [updating, setUpdating] = useState(false)
   const [error, setError] = useState('')
@@ -37,31 +44,49 @@ export default function EditRecipeModal({
   const [description, setDescription] = useState('')
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [steps, setSteps] = useState<string[]>([''])
+  const originalRef = useRef<{
+    name: string
+    description: string
+    ingredient: string[]
+    steps: string[]
+  } | null>(null)
 
-  // load existing recipe
+  const loadRecipe = useCallback(async () => {
+    if (!recipeId) return
+    setLoading(true)
+    setError('')
+    try {
+      const resp = await ApiService.get<any>(`${BACKEND_ROUTES.recipes}/${recipeId}`)
+
+      console.log(resp);
+
+      if (!mountedRef.current) return
+      const loaded = {
+        name: resp.name ?? '',
+        description: resp.description ?? '',
+        ingredient: Array.isArray(resp.ingredients) ? resp.ingredients.map((i: Ingredient) => i.id) : [],
+        steps: Array.isArray(resp.steps) && resp.steps.length > 0 ? resp.steps : [''],
+      }
+
+      console.log(loaded.ingredient);
+
+      originalRef.current = loaded
+      setName(loaded.name)
+      setDescription(loaded.description)
+      setSelected(new Set(loaded.ingredient))
+      setSteps(loaded.steps)
+    } catch (e) {
+      console.error('EditRecipeModal load error', e)
+      setError('Error cargando receta')
+    } finally {
+      if (mountedRef.current) setLoading(false)
+    }
+  }, [recipeId])
+
   useEffect(() => {
     if (!visible || !recipeId) return
-    let mounted = true
-    ;(async () => {
-      try {
-        const resp = await ApiService.get<any>(
-          `${BACKEND_ROUTES.recipes}/${recipeId}`
-        )
-        if (!mounted) return
-        setName(resp.name)
-        setDescription(resp.description)
-        setSelected(new Set(resp.ingredient.map((i: Ingredient) => i.id)))
-        setSteps(resp.steps.length > 0 ? resp.steps : [''])
-      } catch (e) {
-        setError('Error cargando receta')
-      } finally {
-        if (mounted) setLoading(false)
-      }
-    })()
-    return () => {
-      mounted = false
-    }
-  }, [visible, recipeId])
+    loadRecipe()
+  }, [visible, recipeId, loadRecipe])
 
   const toggleIngredient = (id: string) => {
     setSelected(s => {
@@ -80,10 +105,38 @@ export default function EditRecipeModal({
   }
 
   const addStep = () => setSteps(ss => [...ss, ''])
-  const removeStep = () =>
-    setSteps(ss => (ss.length > 1 ? ss.slice(0, -1) : ss))
+  const removeStep = () => setSteps(ss => (ss.length > 1 ? ss.slice(0, -1) : ss))
+
+  const buildPatchPayload = () => {
+    const orig = originalRef.current
+    if (!orig) return null
+    const patch: Record<string, any> = {}
+    if (name.trim() !== orig.name) patch.name = name.trim()
+    if (description.trim() !== orig.description) patch.description = description.trim()
+    // compare ingredient arrays as sets
+    const selectedArr = Array.from(selected)
+    const origIngs = orig.ingredient ?? []
+    const sameIngredients =
+      selectedArr.length === origIngs.length &&
+      selectedArr.every(v => origIngs.includes(v))
+    if (!sameIngredients) patch.ingredient = selectedArr
+    // steps comparison
+    const trimmedSteps = steps.map(s => s.trim())
+    const sameSteps =
+      trimmedSteps.length === orig.steps.length &&
+      trimmedSteps.every((s, i) => s === (orig.steps[i] ?? ''))
+    if (!sameSteps) patch.steps = trimmedSteps
+    return { patch, totalFields: Object.keys(orig).length }
+  }
 
   const onSubmit = async () => {
+    setError('')
+    if (!recipeId) {
+      setError('Receta inválida')
+      return
+    }
+
+    // basic validation
     if (
       !name.trim() ||
       !description.trim() ||
@@ -93,49 +146,62 @@ export default function EditRecipeModal({
       setError('Completa todos los campos')
       return
     }
+
+    const built = buildPatchPayload()
+    if (!built) {
+      setError('No se pudo construir la actualización')
+      return
+    }
+    const { patch, totalFields } = built
+    const changedCount = Object.keys(patch).length
+    if (changedCount === 0) {
+      setError('No hay cambios para guardar')
+      return
+    }
+    if (changedCount === totalFields) {
+      setError('No se permite reemplazar todos los campos desde aquí')
+      return
+    }
+
     setUpdating(true)
-    setError('')
     try {
-      const body = {
-        name: name.trim(),
-        description: description.trim(),
-        ingredient: Array.from(selected),
-        steps: steps.map(s => s.trim()),
+      const resp = await ApiService.patch(`${BACKEND_ROUTES.recipes}/${recipeId}`, patch)
+
+      // handle DRF-style error responses
+      if (resp && typeof resp === 'object' && !('id' in resp) && !('name' in resp)) {
+        const entries = Object.entries(resp)
+        if (entries.length > 0 && Array.isArray(entries[0][1])) {
+          const firstField = entries[0][0]
+          const firstMsgs = entries[0][1] as string[]
+          throw new Error(`${firstField}: ${firstMsgs.join(' ')}`)
+        }
       }
-      const resp = await ApiService.post(
-        `${BACKEND_ROUTES.recipes}/${recipeId}`,
-        body
-      )
-      if ((resp as any).detail) throw new Error('Error actualizando')
+
+      if (!mountedRef.current) return
       onClose()
     } catch (e: any) {
-      setError(e.message || 'Error actualizando receta')
+      console.error('EditRecipeModal submit error', e)
+      setError(e?.message || 'Error actualizando receta')
     } finally {
-      setUpdating(false)
+      if (mountedRef.current) setUpdating(false)
     }
   }
 
   if (!visible) return null
 
   return (
-    <Modal showModal={visible} onClose={onClose}>
-      {(loading || updating) ? (
+    <Modal showModal={visible} setShowModal={onClose} onClose={onClose}>
+      {loading || updating ? (
         <View style={styles.center}>
-          <ActivityIndicator
-            size="large"
-            color={COLORS.primary}
-          />
-          <Text style={styles.status}>
-            {loading ? 'Cargando receta...' : 'Actualizando receta...'}
-          </Text>
+          <ActivityIndicator size="large" color={COLORS.primary} />
+          <Text style={styles.status}>{loading ? 'Cargando receta...' : 'Actualizando receta...'}</Text>
         </View>
       ) : (
-        <ScrollView contentContainerStyle={styles.container}>
+        <ScrollView contentContainerStyle={styles.form}>
           <Text style={styles.header}>Editar receta</Text>
-          {error ? (
-            <Text style={styles.error}>{error}</Text>
-          ) : null}
+          {error ? <Text style={styles.error}>{error}</Text> : null}
 
+          <Text style={styles.tittle}>Nombre</Text>
           <TextInput
             style={styles.input}
             placeholder="Nombre"
@@ -144,6 +210,7 @@ export default function EditRecipeModal({
             onChangeText={setName}
           />
 
+          <Text style={styles.tittle}>Descripción</Text>
           <TextInput
             style={[styles.input, styles.textarea]}
             placeholder="Descripción"
@@ -153,39 +220,26 @@ export default function EditRecipeModal({
             onChangeText={setDescription}
           />
 
-          <Text style={styles.subheading}>Ingredientes</Text>
+          <Text style={styles.tittle}>Ingredientes</Text>
           {ingredients.map(ing => (
             <TouchableOpacity
               key={ing.id}
               style={styles.checkboxContainer}
               onPress={() => toggleIngredient(ing.id)}
             >
-              <View
-                style={[
-                  styles.checkbox,
-                  selected.has(ing.id) && styles.checkboxSelected,
-                ]}
-              />
+              <View style={[styles.checkbox, selected.has(ing.id) && styles.checkboxSelected]} />
               <Text style={styles.checkboxLabel}>{ing.name}</Text>
             </TouchableOpacity>
           ))}
 
           <View style={styles.stepsHeader}>
-            <Text style={styles.subheading}>Pasos</Text>
+            <Text style={styles.tittle}>Pasos</Text>
             <View style={styles.stepButtons}>
               <TouchableOpacity onPress={removeStep}>
-                <FontAwesome5
-                  name="minus"
-                  size={20}
-                  color={COLORS.primary}
-                />
+                <Text style={{ color: COLORS.primary, fontSize: 18 }}>−</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={addStep}>
-                <FontAwesome5
-                  name="plus"
-                  size={20}
-                  color={COLORS.primary}
-                />
+                <Text style={{ color: COLORS.primary, fontSize: 18 }}>+</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -202,10 +256,7 @@ export default function EditRecipeModal({
             />
           ))}
 
-          <TouchableOpacity
-            style={styles.button}
-            onPress={onSubmit}
-          >
+          <TouchableOpacity style={styles.button} onPress={onSubmit} disabled={updating}>
             <Text style={styles.buttonText}>Guardar cambios</Text>
           </TouchableOpacity>
         </ScrollView>

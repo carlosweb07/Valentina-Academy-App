@@ -5,7 +5,7 @@ import { typography } from '../../constants/typography'
 import { metrics } from '../../constants/metrics'
 
 const { width } = Dimensions.get('window')
-const CARD_WIDTH = width * 0.45
+const CARD_WIDTH = width * 0.8
 
 export default StyleSheet.create({
   safeArea: {
@@ -13,7 +13,9 @@ export default StyleSheet.create({
     backgroundColor: COLORS.darkOpaque,
   },
   container: {
+    flex: 1,
     padding: metrics.padding,
+    paddingTop: metrics.padding * 2,
     alignItems: 'center',
   },
   title: {

@@ -23,6 +23,7 @@ export default StyleSheet.create({
     color: COLORS.primary,
     marginBottom: metrics.padding * 1.5,
     textAlign: 'center',
+    fontFamily: typography.fontFamily,
   },
   buttons: {
     flexDirection: 'row',

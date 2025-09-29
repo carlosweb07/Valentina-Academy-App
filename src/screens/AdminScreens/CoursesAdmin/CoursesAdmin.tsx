@@ -8,10 +8,7 @@ import {
   Easing,
   Image,
   TouchableOpacity,
-  ScrollView,
-  FlatList,
-  ListRenderItem,
-  Dimensions,
+  ScrollView
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { FontAwesome5 } from '@expo/vector-icons'
@@ -117,101 +114,6 @@ export default function CoursesAdminScreen({ setCompleted }: Props) {
 
     // recargar datos
     loadData()
-  }
-
-  // Callbacks que pasamos a los modales para que notifiquen al volver
-  const handleSaved = () => {
-    // Después de crear/editar/eliminar recargamos
-    // Si prefieres, aquí se puede actualizar el estado localmente en lugar de recargar todo
-    loadData()
-  }
-
-  // Render item para FlatList
-  const renderItem: ListRenderItem<Course> = ({ item: course }) => {
-    const isExpanded = expanded.has(course.id)
-    const coverUri = course.media?.url_cover ?? null
-    const videoUri = course.media?.url_video ?? ''
-
-    return (
-      <View style={styles.courseItem}>
-        <TouchableOpacity
-          onPress={() => toggleExpand(course.id)}
-          onLongPress={() => {
-            setSelectedId(course.id)
-            setShowEdit(true)
-          }}
-          style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}
-        >
-          <Text style={styles.cardTitle}>{course.title}</Text>
-          <FontAwesome5
-            name={isExpanded ? 'caret-down' : 'caret-right'}
-            size={18}
-            color={COLORS.primary}
-          />
-        </TouchableOpacity>
-
-        {isExpanded && (
-          <View style={styles.courseDetails}>
-            <View style={{ maxHeight: Dimensions.get('window').height * 0.55 }}>
-              <Text style={styles.cardBody}>
-                <Text style={styles.bold}>Descripción:</Text>
-                <Text style={styles.text}> {course.description ?? '-'}</Text>
-              </Text>
-              <Text style={styles.cardBody}>
-                <Text style={styles.bold}>Duración:</Text>
-                <Text style={styles.text}> {course.duration ?? '-'}</Text>
-              </Text>
-              <Text style={styles.cardBody}>
-                <Text style={styles.bold}>Categoría:</Text>
-                <Text style={styles.text}> {course.category?.name ?? '-'}</Text>
-              </Text>
-              <Text style={styles.cardBody}>
-                <Text style={styles.bold}>Autor:</Text>
-                <Text style={styles.text}> {course.user?.username ?? '-'}</Text>
-              </Text>
-              <Text style={styles.cardBody}>
-                <Text style={styles.bold}>Precio:</Text>
-                <Text style={styles.text}> {course.price ?? 0}$</Text>
-              </Text>
-              <Text style={styles.cardBody}>
-                <Text style={styles.bold}>Receta:</Text>
-                <Text style={styles.text}> {course.recipe?.name ?? '-'}</Text>
-              </Text>
-
-              {coverUri ? (
-                <Image source={{ uri: coverUri }} style={styles.imagenrender} resizeMode="cover" />
-              ) : (
-                <View style={[styles.imagenrender, { backgroundColor: '#eee', alignItems: 'center', justifyContent: 'center' }]}>
-                  <Text style={{ color: '#666' }}>No cover</Text>
-                </View>
-              )}
-
-              {/* SoloVideo se monta siempre; le pasamos videoUri (puede ser '') para que sus hooks se ejecuten en orden constante */}
-              <View style={{ width: '100%', height: 300 }}>
-                <SoloVideo
-                  uri={videoUri}
-                  onEnd={() => {
-                    // Navegar primero para evitar potential re-render que desmonte antes de navigate
-                    navigation.navigate('Survey', { course_id: course.id })
-                    setCompleted(true)
-                  }}
-                />
-              </View>
-            </View>
-
-            <TouchableOpacity
-              onPress={() => {
-                setSelectedId(course.id)
-                setShowDelete(true)
-              }}
-              style={{ marginTop: 8 }}
-            >
-              <Text style={{ color: COLORS.error }}>Eliminar</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      </View>
-    )
   }
 
   if (loading) {

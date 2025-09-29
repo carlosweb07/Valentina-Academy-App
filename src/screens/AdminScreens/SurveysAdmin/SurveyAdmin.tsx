@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from 'react'
+// src/screens/SurveysAdminScreen.tsx
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import {
-  ScrollView,
+  ImageBackground,
   View,
+  Animated,
   Text,
+  Easing,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context'
 import { FontAwesome5 } from '@expo/vector-icons'
 import Navbar from '../../../components/Navbar/Navbar'
 import AdminSkeleton from '../skeleton/AdminSkeleton'
@@ -15,6 +19,9 @@ import DeleteSurveyModal from './components/DeleteModal/DeleteModal'
 import ApiService from '../../../services/Api'
 import { BACKEND_ROUTES } from '../../../constants/routes'
 import { Survey, Course } from '../../../interfaces/Models'
+import { COLORS } from '../../../constants/colors'
+
+import fondo from '../../../../assets/background.jpg'
 
 import styles from './styles'
 
@@ -27,112 +34,193 @@ export default function SurveysAdmin() {
   const [showEdit, setShowEdit] = useState(false)
   const [showDelete, setShowDelete] = useState(false)
   const [selectedId, setSelectedId] = useState<string | null>(null)
-  const [refresh, setRefresh] = useState(false)
+
+  // animación reload
+  const spinAnim = useRef(new Animated.Value(0)).current
+  const spin = spinAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg'],
+  })
+
+  // mounted guard
+  const mountedRef = useRef(true)
+  useEffect(() => {
+    mountedRef.current = true
+    return () => {
+      mountedRef.current = false
+    }
+  }, [])
+
+  const loadData = useCallback(async () => {
+    try {
+      if (mountedRef.current) setLoading(true)
+      const [svs, crs] = await Promise.all([
+        ApiService.get<Survey[]>(BACKEND_ROUTES.surveys),
+        ApiService.get<Course[]>(BACKEND_ROUTES.courses),
+      ])
+      console.log(svs);
+      if (!mountedRef.current) return
+      setSurveys(svs ?? [])
+      setCourses(crs ?? [])
+    } catch (e) {
+      console.warn('Error loading surveys', e)
+    } finally {
+      if (mountedRef.current) setLoading(false)
+    }
+  }, [])
 
   useEffect(() => {
-    let mounted = true
-    async function load() {
-      try {
-        const [svs, crs] = await Promise.all([
-          ApiService.get<Survey[]>(BACKEND_ROUTES.surveys),
-          ApiService.get<Course[]>(BACKEND_ROUTES.courses),
-        ])
-        if (!mounted) return
-        setSurveys(svs)
-        setCourses(crs)
-      } catch (e) {
-        console.warn(e)
-      } finally {
-        if (mounted) setLoading(false)
-      }
-    }
-    load()
-    return () => { mounted = false }
-  }, [refresh])
+    loadData()
+  }, [loadData])
 
-  const toggle = (id: string) => {
-    setExpanded(s => {
-      const next = new Set(s)
-      next.has(id) ? next.delete(id) : next.add(id)
-      return next
+  const toggleExpand = (id: string) => {
+    setExpanded(prev => {
+      const copy = new Set(prev)
+      if (copy.has(id)) copy.delete(id)
+      else copy.add(id)
+      return copy
     })
   }
 
-  if (loading) return <AdminSkeleton />
+  const onReload = () => {
+    spinAnim.setValue(0)
+    Animated.timing(spinAnim, {
+      toValue: 1,
+      duration: 500,
+      easing: Easing.linear,
+      useNativeDriver: true,
+    }).start()
+
+    setExpanded(new Set())
+    setSelectedId(null)
+
+    loadData()
+  }
+
+  if (loading) {
+    return <AdminSkeleton />
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <Navbar />
-      <View style={styles.header}>
-        <Text style={styles.title}>Administración de encuestas</Text>
-        <TouchableOpacity onPress={() => setShowCreate(true)}>
-          <FontAwesome5 name="plus" size={24} color={styles.icon.color} />
-        </TouchableOpacity>
-      </View>
-      <ScrollView contentContainerStyle={styles.list}>
-        {surveys.map(s => (
-          <View key={s.id} style={styles.card}>
-            <View style={styles.cardHeader}>
-              <Text style={styles.cardTitle}>{s.title}</Text>
-              <View style={styles.actions}>
+      <ImageBackground
+        source={fondo}
+        style={styles.image}
+        imageStyle={styles.imageRounded}
+        resizeMode="cover"
+      >
+        <View style={styles.header}>
+          <Text style={styles.heading}>Administración de encuestas</Text>
+
+          <Animated.View style={{ transform: [{ rotate: spin }] }}>
+            <TouchableOpacity onPress={onReload}>
+              <FontAwesome5 name="redo-alt" size={20} color={COLORS.primary} />
+            </TouchableOpacity>
+          </Animated.View>
+
+          <TouchableOpacity onPress={() => setShowCreate(true)}>
+            <FontAwesome5 name="plus" size={24} color={COLORS.primary} />
+          </TouchableOpacity>
+        </View>
+
+        <ScrollView contentContainerStyle={styles.list}>
+          {surveys.length === 0 ? (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>No hay encuestas</Text>
+            </View>
+          ) : (
+            surveys.map(s => (
+              <View key={s.id} style={styles.courseItem}>
                 <TouchableOpacity
-                  onPress={() => { setSelectedId(s.id); setShowEdit(true) }}
+                  onPress={() => toggleExpand(s.id)}
+                  onLongPress={() => {
+                    setSelectedId(s.id)
+                    setShowEdit(true)
+                  }}
+                  style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}
                 >
-                  <FontAwesome5 name="pen-to-square" size={20} color={styles.icon.color} />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => { setSelectedId(s.id); setShowDelete(true) }}
-                  style={styles.deleteIcon}
-                >
-                  <FontAwesome5 name="trash" size={20} color={styles.deleteIcon.color} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => toggle(s.id)}>
+                  <Text style={styles.cardTitle}>{s.title}</Text>
                   <FontAwesome5
-                    name="caret-right"
-                    size={20}
-                    color={styles.icon.color}
-                    style={expanded.has(s.id) ? styles.caretOpen : undefined}
+                    name={expanded.has(s.id) ? 'caret-down' : 'caret-right'}
+                    size={18}
+                    color={COLORS.primary}
                   />
                 </TouchableOpacity>
-              </View>
-            </View>
-            {expanded.has(s.id) && (
-              <View style={styles.cardBody}>
-                <Text style={styles.subheading}>Descripción</Text>
-                <Text style={styles.text}>{s.description}</Text>
-                <Text style={styles.subheading}>Preguntas</Text>
-                {s.questions.map(q => (
-                  <View key={q.id} style={styles.questionBlock}>
-                    <Text style={styles.questionText}>• {q.question}</Text>
-                    {q.answers.map(a => (
-                      <Text key={a.id} style={styles.answerText}>
-                        – {a.answer} ({a.is_correct ? '✓' : '✗'})
-                      </Text>
-                    ))}
-                  </View>
-                ))}
-              </View>
-            )}
-          </View>
-        ))}
-      </ScrollView>
 
-      <CreateSurveyModal
-        visible={showCreate}
-        onClose={() => { setShowCreate(false); setRefresh(r => !r) }}
-        courses={courses}
-      />
-      <EditSurveyModal
-        visible={showEdit}
-        onClose={() => { setShowEdit(false); setRefresh(r => !r) }}
-        surveyId={selectedId}
-        courses={courses}
-      />
-      <DeleteSurveyModal
-        visible={showDelete}
-        onClose={() => { setShowDelete(false); setRefresh(r => !r) }}
-        surveyId={selectedId}
-      />
+                {expanded.has(s.id) && (
+                  <View style={styles.courseDetails}>
+                    <Text style={styles.cardBody}>
+                      <Text style={styles.subheading}>Descripción:</Text>
+                      <Text style={styles.text}> {s.description}</Text>
+                    </Text>
+
+                    <View style={styles.questionsList}>
+                      <Text style={styles.subheading}>Preguntas</Text>
+                      {s.questions.map(q => (
+                        <View key={q.id} style={styles.questionBlock}>
+                          <Text style={styles.questionText}>• {q.question}</Text>
+                          {q.answers.map(a => (
+                            <Text
+                              key={a.id}
+                              style={[
+                                styles.answerText,
+                                a.is_correct ? styles.answerCorrect : styles.answerIncorrect,
+                              ]}
+                            >
+                              – {a.answer}
+                            </Text>
+                          ))}
+                        </View>
+                      ))}
+                    </View>
+
+                    <TouchableOpacity
+                      onPress={() => {
+                        setSelectedId(s.id)
+                        setShowDelete(true)
+                      }}
+                      style={{ marginTop: 8 }}
+                    >
+                      <Text style={styles.deleteButton}>Eliminar</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
+            ))
+          )}
+        </ScrollView>
+
+        <CreateSurveyModal
+          visible={showCreate}
+          onClose={() => {
+            setShowCreate(false)
+            loadData()
+          }}
+          courses={courses}
+        />
+
+        <EditSurveyModal
+          visible={showEdit}
+          surveyId={selectedId}
+          onClose={() => {
+            setShowEdit(false)
+            setSelectedId(null)
+            loadData()
+          }}
+          courses={courses}
+        />
+
+        <DeleteSurveyModal
+          visible={showDelete}
+          surveyId={selectedId}
+          onClose={() => {
+            setShowDelete(false)
+            setSelectedId(null)
+            loadData()
+          }}
+        />
+      </ImageBackground>
     </SafeAreaView>
   )
 }

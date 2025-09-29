@@ -1,12 +1,14 @@
-// src/screens/IngredientsAdminScreen.tsx
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import {
-  ScrollView,
+  ImageBackground,
   View,
+  Animated,
   Text,
+  Easing,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context'
 import { FontAwesome5 } from '@expo/vector-icons'
 import Navbar from '../../../components/Navbar/Navbar'
 import AdminSkeleton from '../skeleton/AdminSkeleton'
@@ -16,6 +18,9 @@ import DeleteIngredientModal from './components/DeleteModal/DeleteModal'
 import ApiService from '../../../services/Api'
 import { BACKEND_ROUTES } from '../../../constants/routes'
 import { Ingredient } from '../../../interfaces/Models'
+import { COLORS } from '../../../constants/colors'
+import fondo from '../../../../assets/background.jpg'
+
 import styles from './styles'
 
 export default function IngredientsAdmin() {
@@ -26,35 +31,62 @@ export default function IngredientsAdmin() {
   const [showEdit, setShowEdit] = useState(false)
   const [showDelete, setShowDelete] = useState(false)
   const [selectedId, setSelectedId] = useState<string | null>(null)
-  const [refreshToggle, setRefreshToggle] = useState(false)
+
+  // animación reload
+  const spinAnim = useRef(new Animated.Value(0)).current
+  const spin = spinAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg'],
+  })
+
+  // mounted guard
+  const mountedRef = useRef(true)
+  useEffect(() => {
+    mountedRef.current = true
+    return () => {
+      mountedRef.current = false
+    }
+  }, [])
+
+  const loadData = useCallback(async () => {
+    try {
+      if (mountedRef.current) setLoading(true)
+      const resp = await ApiService.get<Ingredient[]>(BACKEND_ROUTES.ingredients)
+      if (!mountedRef.current) return
+      setIngredients(resp ?? [])
+    } catch (e) {
+      console.warn('Error loading ingredients', e)
+    } finally {
+      if (mountedRef.current) setLoading(false)
+    }
+  }, [])
 
   useEffect(() => {
-    let mounted = true
-    async function load() {
-      try {
-        const resp = await ApiService.get<Ingredient[]>(
-          BACKEND_ROUTES.ingredients
-        )
-        if (!mounted) return
-        setIngredients(resp)
-      } catch (e) {
-        console.warn('Error loading ingredients', e)
-      } finally {
-        if (mounted) setLoading(false)
-      }
-    }
-    load()
-    return () => {
-      mounted = false
-    }
-  }, [refreshToggle])
+    loadData()
+  }, [loadData])
 
-  const toggle = (id: string) => {
+  const toggleExpand = (id: string) => {
     setExpanded(prev => {
-      const next = new Set(prev)
-      next.has(id) ? next.delete(id) : next.add(id)
-      return next
+      const copy = new Set(prev)
+      if (copy.has(id)) copy.delete(id)
+      else copy.add(id)
+      return copy
     })
+  }
+
+  const onReload = () => {
+    spinAnim.setValue(0)
+    Animated.timing(spinAnim, {
+      toValue: 1,
+      duration: 500,
+      easing: Easing.linear,
+      useNativeDriver: true,
+    }).start()
+
+    setExpanded(new Set())
+    setSelectedId(null)
+
+    loadData()
   }
 
   if (loading) return <AdminSkeleton />
@@ -62,84 +94,101 @@ export default function IngredientsAdmin() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <Navbar />
-      <View style={styles.header}>
-        <Text style={styles.title}>Administración de ingredientes</Text>
-        <TouchableOpacity onPress={() => setShowCreate(true)}>
-          <FontAwesome5 name="plus" size={24} color="#EDD153" />
-        </TouchableOpacity>
-      </View>
-      <ScrollView contentContainerStyle={styles.list}>
-        {ingredients.map(ing => (
-          <View key={ing.id} style={styles.card}>
-            <View style={styles.cardHeader}>
-              <Text style={styles.cardTitle}>{ing.name}</Text>
-              <View style={styles.actions}>
+      <ImageBackground
+        source={fondo}
+        style={styles.image}
+        imageStyle={styles.imageRounded}
+        resizeMode="cover"
+      >
+        <View style={styles.header}>
+          <Text style={styles.heading}>Administración de ingredientes</Text>
+
+          <Animated.View style={{ transform: [{ rotate: spin }] }}>
+            <TouchableOpacity onPress={onReload}>
+              <FontAwesome5 name="redo-alt" size={20} color={COLORS.primary} />
+            </TouchableOpacity>
+          </Animated.View>
+
+          <TouchableOpacity onPress={() => setShowCreate(true)}>
+            <FontAwesome5 name="plus" size={24} color={COLORS.primary} />
+          </TouchableOpacity>
+        </View>
+
+        <ScrollView contentContainerStyle={styles.list}>
+          {ingredients.length === 0 ? (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>No hay ingredientes</Text>
+            </View>
+          ) : (
+            ingredients.map(ing => (
+              <View key={ing.id} style={styles.courseItem}>
                 <TouchableOpacity
-                  onPress={() => {
+                  onPress={() => toggleExpand(ing.id)}
+                  onLongPress={() => {
                     setSelectedId(ing.id)
                     setShowEdit(true)
                   }}
+                  style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}
                 >
+                  <Text style={styles.cardTitle}>{ing.name}</Text>
                   <FontAwesome5
-                    name="pen-to-square"
-                    size={20}
-                    color="#EDD153"
+                    name={expanded.has(ing.id) ? 'caret-down' : 'caret-right'}
+                    size={18}
+                    color={COLORS.primary}
                   />
                 </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => {
-                    setSelectedId(ing.id)
-                    setShowDelete(true)
-                  }}
-                  style={styles.deleteIcon}
-                >
-                  <FontAwesome5 name="trash" size={20} color="#F04343" />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => toggle(ing.id)}>
-                  <FontAwesome5
-                    name="caret-right"
-                    size={20}
-                    color="#EDD153"
-                    style={
-                      expanded.has(ing.id) ? styles.caretOpen : undefined
-                    }
-                  />
-                </TouchableOpacity>
-              </View>
-            </View>
-            {expanded.has(ing.id) && (
-              <View style={styles.cardBody}>
-                <Text style={styles.detailLabel}>Detalle del ingrediente:</Text>
-                <Text style={styles.detailText}>{ing.name}</Text>
-              </View>
-            )}
-          </View>
-        ))}
-      </ScrollView>
 
-      <CreateIngredientModal
-        visible={showCreate}
-        onClose={() => {
-          setShowCreate(false)
-          setRefreshToggle(t => !t)
-        }}
-      />
-      <EditIngredientModal
-        visible={showEdit}
-        onClose={() => {
-          setShowEdit(false)
-          setRefreshToggle(t => !t)
-        }}
-        ingredientId={selectedId}
-      />
-      <DeleteIngredientModal
-        visible={showDelete}
-        onClose={() => {
-          setShowDelete(false)
-          setRefreshToggle(t => !t)
-        }}
-        ingredientId={selectedId}
-      />
+                {expanded.has(ing.id) && (
+                  <View style={styles.courseDetails}>
+                    <Text style={styles.cardBody}>
+                      <Text style={styles.bold}>Detalle:</Text>
+                      <Text style={styles.text}> {ing.name}</Text>
+                    </Text>
+
+                    <TouchableOpacity
+                      onPress={() => {
+                        setSelectedId(ing.id)
+                        setShowDelete(true)
+                      }}
+                      style={{ marginTop: 8 }}
+                    >
+                      <Text style={styles.deleteButton}>Eliminar</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
+            ))
+          )}
+        </ScrollView>
+
+        <CreateIngredientModal
+          visible={showCreate}
+          onClose={() => {
+            setShowCreate(false)
+            loadData()
+          }}
+        />
+
+        <EditIngredientModal
+          visible={showEdit}
+          ingredientId={selectedId}
+          onClose={() => {
+            setShowEdit(false)
+            setSelectedId(null)
+            loadData()
+          }}
+        />
+
+        <DeleteIngredientModal
+          visible={showDelete}
+          ingredientId={selectedId}
+          onClose={() => {
+            setShowDelete(false)
+            setSelectedId(null)
+            loadData()
+          }}
+        />
+      </ImageBackground>
     </SafeAreaView>
   )
 }

@@ -5,7 +5,7 @@ export interface Category { id: number; name: string }
 export interface Media { url_cover: string; url_video: string }
 
 export interface User {
-  id: string;
+  id: number;
   email: string;
   first_name: string;
   last_name: string;

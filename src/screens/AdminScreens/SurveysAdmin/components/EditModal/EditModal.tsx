@@ -1,5 +1,5 @@
 // src/modules/admin/components/EditSurveyModal.tsx
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   View,
   Text,
@@ -40,6 +40,14 @@ export default function EditSurveyModal({
   surveyId,
   courses,
 }: Props) {
+  const mountedRef = useRef(true)
+  useEffect(() => {
+    mountedRef.current = true
+    return () => {
+      mountedRef.current = false
+    }
+  }, [])
+
   const [loading, setLoading] = useState(true)
   const [updating, setUpdating] = useState(false)
   const [error, setError] = useState('')
@@ -51,45 +59,52 @@ export default function EditSurveyModal({
   // load survey
   useEffect(() => {
     if (!visible || !surveyId) return
-    let mounted = true
+    let cancelled = false
     ;(async () => {
+      if (mountedRef.current) setLoading(true)
+      setError('')
       try {
         const s: Survey = await ApiService.get(
           `${BACKEND_ROUTES.surveys}/${surveyId}`
         )
-        if (!mounted) return
-        setTitle(s.title)
-        setDescription(s.description)
-        setCourseId(String(s.course.id))
+        if (cancelled || !mountedRef.current) return
+        setTitle(s.title ?? '')
+        setDescription(s.description ?? '')
+        setCourseId(String(s.course?.id ?? ''))
         setQuestions(
-          s.questions.map(q => ({
-            id: q.id,
-            question: q.question,
-            answers: q.answers.map(a => ({
-              id: a.id,
-              answer: a.answer,
-              is_correct: a.is_correct,
+          (s.questions ?? []).map(q => ({
+            id: q.id ?? '',
+            question: q.question ?? '',
+            answers: (q.answers ?? []).map(a => ({
+              id: a.id ?? '',
+              answer: a.answer ?? '',
+              is_correct: Boolean(a.is_correct),
             })),
           }))
         )
       } catch (e) {
-        setError('Error cargando encuesta')
+        console.error('EditSurveyModal load error', e)
+        if (mountedRef.current) setError('Error cargando encuesta')
       } finally {
-        if (mounted) setLoading(false)
+        if (mountedRef.current) setLoading(false)
       }
     })()
     return () => {
-      mounted = false
+      cancelled = true
     }
   }, [visible, surveyId])
 
   const addQuestion = () =>
     setQuestions(qs => [
       ...qs,
-      { id: '', question: '', answers: [
-        { id: '', answer: '', is_correct: true },
-        { id: '', answer: '', is_correct: false },
-      ] },
+      {
+        id: '',
+        question: '',
+        answers: [
+          { id: '', answer: '', is_correct: true },
+          { id: '', answer: '', is_correct: false },
+        ],
+      },
     ])
   const removeQuestion = () =>
     setQuestions(qs => (qs.length > 1 ? qs.slice(0, -1) : qs))
@@ -97,19 +112,19 @@ export default function EditSurveyModal({
   const onQuestionChange = (idx: number, text: string) =>
     setQuestions(qs => {
       const c = [...qs]
-      c[idx].question = text
+      c[idx] = { ...c[idx], question: text }
       return c
     })
 
   const addAnswer = (qidx: number) =>
     setQuestions(qs => {
-      const c = [...qs]
+      const c = qs.map(q => ({ ...q, answers: [...q.answers] }))
       c[qidx].answers.push({ id: '', answer: '', is_correct: false })
       return c
     })
   const removeAnswer = (qidx: number) =>
     setQuestions(qs => {
-      const c = [...qs]
+      const c = qs.map(q => ({ ...q, answers: [...q.answers] }))
       if (c[qidx].answers.length > 2) c[qidx].answers.pop()
       return c
     })
@@ -120,90 +135,99 @@ export default function EditSurveyModal({
     text: string
   ) =>
     setQuestions(qs => {
-      const c = [...qs]
-      c[qidx].answers[aidx].answer = text
+      const c = qs.map(q => ({ ...q, answers: [...q.answers] }))
+      c[qidx].answers[aidx] = { ...c[qidx].answers[aidx], answer: text }
       return c
     })
 
+  // toggleCorrect: only update the targeted question so each question keeps its own correct answer
   const toggleCorrect = (qidx: number, aidx: number) =>
     setQuestions(qs =>
-      qs.map((q, i) => ({
-        ...q,
-        answers: q.answers.map((a, j) => ({
-          ...a,
-          is_correct: i === qidx && j === aidx,
-        })),
-      }))
+      qs.map((q, i) => {
+        if (i !== qidx) return q
+        return {
+          ...q,
+          answers: q.answers.map((a, j) => ({
+            ...a,
+            is_correct: j === aidx,
+          })),
+        }
+      })
+    )
+
+  const validate = () =>
+    courseId &&
+    title.trim().length > 0 &&
+    description.trim().length > 0 &&
+    questions.length > 0 &&
+    questions.every(
+      q =>
+        q.question.trim().length > 0 &&
+        q.answers.length >= 2 &&
+        q.answers.every(a => a.answer.trim().length > 0) &&
+        q.answers.some(a => a.is_correct)
     )
 
   const onSubmit = async () => {
-    if (
-      !courseId ||
-      !title.trim() ||
-      !description.trim() ||
-      questions.some(
-        q =>
-          !q.question.trim() ||
-          q.answers.some(a => !a.answer.trim()) ||
-          !q.answers.some(a => a.is_correct)
-      )
-    ) {
+    setError('')
+    if (!validate()) {
       setError(
         'Completa todos los campos y marca una respuesta correcta por pregunta'
       )
       return
     }
+    if (!surveyId) {
+      setError('Encuesta inválida')
+      return
+    }
     setUpdating(true)
-    setError('')
     try {
-      // update answers
       const questionIds: string[] = []
       for (const q of questions) {
         const answerIds: string[] = []
         for (const a of q.answers) {
-          // patch existing or create if no id
           const respA: { id: string } = a.id
             ? await ApiService.put(
                 `${BACKEND_ROUTES.answers}/${a.id}`,
-                { answer: a.answer, is_correct: a.is_correct }
+                { answer: a.answer.trim(), is_correct: Boolean(a.is_correct) }
               )
             : await ApiService.post(BACKEND_ROUTES.answers, {
-                answer: a.answer,
-                is_correct: a.is_correct,
+                answer: a.answer.trim(),
+                is_correct: Boolean(a.is_correct),
               })
           answerIds.push(respA.id)
         }
-        // patch question
         const respQ: { id: string } = q.id
           ? await ApiService.put(
               `${BACKEND_ROUTES.questions}/${q.id}`,
-              { question: q.question, answers_id: answerIds }
+              { question: q.question.trim(), answers_id: answerIds }
             )
           : await ApiService.post(BACKEND_ROUTES.questions, {
-              question: q.question,
+              question: q.question.trim(),
               answers_id: answerIds,
             })
         questionIds.push(respQ.id)
       }
-      // patch survey
       await ApiService.put(`${BACKEND_ROUTES.surveys}/${surveyId}`, {
         title: title.trim(),
         description: description.trim(),
         course_id: Number(courseId),
         question_id: questionIds,
       })
+      if (!mountedRef.current) return
       onClose()
     } catch (e: any) {
-      setError(e.message || 'Error actualizando encuesta')
+      console.error('EditSurveyModal submit error', e)
+      if (mountedRef.current) setError(e?.message || 'Error actualizando encuesta')
     } finally {
-      setUpdating(false)
+      if (mountedRef.current) setUpdating(false)
     }
   }
 
   if (!visible) return null
 
   return (
-    <Modal showModal={visible} onClose={onClose}>
+    <Modal showModal={visible} setShowModal={onClose} onClose={onClose}>
       {(loading || updating) ? (
         <View style={styles.center}>
           <ActivityIndicator size="large" color={COLORS.primary} />
@@ -309,7 +333,7 @@ export default function EditSurveyModal({
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity style={styles.button} onPress={onSubmit}>
+          <TouchableOpacity style={styles.button} onPress={onSubmit} disabled={updating}>
             <Text style={styles.buttonText}>Guardar cambios</Text>
           </TouchableOpacity>
         </ScrollView>

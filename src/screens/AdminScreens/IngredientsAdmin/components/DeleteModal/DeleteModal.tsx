@@ -18,7 +18,7 @@ import styles from './style'
 interface Props {
   visible: boolean
   onClose: () => void
-  ingredientId: string | null
+  ingredientId: string | number | null
 }
 
 export default function DeleteIngredientModal({
@@ -30,12 +30,12 @@ export default function DeleteIngredientModal({
   const navigation = useNavigation<NavigationProp<RootStackParamList>>()
 
   const handleDelete = async () => {
-    if (!ingredientId) return
+    if (ingredientId == null) return
     setDeleting(true)
     try {
-      await ApiService.delete(`${BACKEND_ROUTES.ingredients}/${ingredientId}`)
+      await ApiService.delete(`${BACKEND_ROUTES.ingredients}/${String(ingredientId)}`)
       onClose()
-      navigation.reset({ index: 0, routes: [{ name: 'IngredientsAdmin' }] })
+      navigation.navigate('IngredientsAdmin')
     } catch (e) {
       console.warn('Delete error:', e)
       setDeleting(false)
@@ -45,7 +45,7 @@ export default function DeleteIngredientModal({
   if (!visible) return null
 
   return (
-    <Modal showModal={visible} onClose={onClose}>
+    <Modal showModal={visible} setShowModal={onClose} onClose={onClose}>
       {deleting ? (
         <View style={styles.center}>
           <ActivityIndicator size="large" color={COLORS.primary} />

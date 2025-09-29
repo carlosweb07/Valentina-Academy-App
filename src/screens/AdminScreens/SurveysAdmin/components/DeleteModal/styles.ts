@@ -13,6 +13,7 @@ export default StyleSheet.create({
     marginTop: metrics.padding,
     color: COLORS.primary,
     fontSize: typography.fontSize.normal,
+    fontFamily: typography.fontFamily,
   },
   container: {
     alignItems: 'center',
@@ -23,6 +24,7 @@ export default StyleSheet.create({
     color: COLORS.primary,
     marginBottom: metrics.padding * 1.5,
     textAlign: 'center',
+    fontFamily: typography.fontFamily,
   },
   buttons: {
     flexDirection: 'row',
@@ -51,6 +53,6 @@ export default StyleSheet.create({
     color: COLORS.primary,
   },
   deleteText: {
-    color: COLORS.light,
+    color: COLORS.white,
   },
 })

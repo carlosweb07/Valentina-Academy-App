@@ -1,5 +1,5 @@
 // src/modules/admin/components/CreateSurveyModal.tsx
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import {
   View,
   Text,
@@ -38,13 +38,21 @@ export default function CreateModal({
   onClose,
   courses,
 }: Props) {
+  const mountedRef = useRef(true)
+  React.useEffect(() => {
+    mountedRef.current = true
+    return () => {
+      mountedRef.current = false
+    }
+  }, [])
+
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [courseId, setCourseId] = useState<string>('')
   const [questions, setQuestions] = useState<QuestionInput[]>([
     { question: '', answers: [{ answer: '', is_correct: true }, { answer: '', is_correct: false }] },
   ])
-  const [loading, setLoading] = useState(false)
+  const [creating, setCreating] = useState(false)
   const [error, setError] = useState('')
 
   const addQuestion = () =>
@@ -85,54 +93,56 @@ export default function CreateModal({
     })
 
   const toggleCorrect = (qidx: number, aidx: number) =>
-    setQuestions(qs => {
-      return qs.map((q, i) => ({
-        ...q,
-        answers: q.answers.map((a, j) => ({
-          ...a,
-          is_correct: i === qidx && j === aidx,
-        })),
-      }))
-    })
+    setQuestions(qs =>
+      qs.map((q, i) => {
+        if (i !== qidx) return q
+        return {
+          ...q,
+          answers: q.answers.map((a, j) => ({
+            ...a,
+            is_correct: j === aidx,
+          })),
+        }
+      })
+    )
+
+  const validate = () =>
+    courseId &&
+    title.trim().length > 0 &&
+    description.trim().length > 0 &&
+    questions.every(
+      q =>
+        q.question.trim().length > 0 &&
+        q.answers.every(a => a.answer.trim().length > 0) &&
+        q.answers.some(a => a.is_correct)
+    )
 
   const onSubmit = async () => {
-    if (
-      !courseId ||
-      !title.trim() ||
-      !description.trim() ||
-      questions.some(
-        q =>
-          !q.question.trim() ||
-          q.answers.some(a => !a.answer.trim()) ||
-          !q.answers.some(a => a.is_correct)
-      )
-    ) {
+    setError('')
+    if (!validate()) {
       setError('Completa todos los campos y marca una respuesta correcta por pregunta')
       return
     }
 
-    setLoading(true)
-    setError('')
+    setCreating(true)
     try {
-      // 1) Crear answers y obtener sus IDs
       const questionIds: string[] = []
       for (const q of questions) {
         const answerIds: string[] = []
         for (const a of q.answers) {
           const respA: { id: string } = await ApiService.post(
             BACKEND_ROUTES.answers,
-            a
+            { answer: a.answer.trim(), is_correct: Boolean(a.is_correct) }
           )
           answerIds.push(respA.id)
         }
-        // 2) Crear pregunta con esos answerIds
         const respQ: { id: string } = await ApiService.post(
           BACKEND_ROUTES.questions,
-          { question: q.question, answers_id: answerIds }
+          { question: q.question.trim(), answers_id: answerIds }
         )
         questionIds.push(respQ.id)
       }
-      // 3) Crear encuesta referenciando course y questions
+
       await ApiService.post(BACKEND_ROUTES.surveys, {
         title: title.trim(),
         description: description.trim(),
@@ -140,19 +150,26 @@ export default function CreateModal({
         question_id: questionIds,
       })
 
+      if (!mountedRef.current) return
+      // limpiar formulario
+      setTitle('')
+      setDescription('')
+      setCourseId('')
+      setQuestions([{ question: '', answers: [{ answer: '', is_correct: true }, { answer: '', is_correct: false }] }])
       onClose()
     } catch (e: any) {
-      setError(e.message || 'Error creando encuesta')
+      console.error('CreateSurveyModal error', e)
+      setError(e?.message || 'Error creando encuesta')
     } finally {
-      setLoading(false)
+      if (mountedRef.current) setCreating(false)
     }
   }
 
   if (!visible) return null
 
   return (
-    <Modal showModal={visible} onClose={onClose}>
-      {loading ? (
+    <Modal showModal={visible} setShowModal={onClose} onClose={onClose}>
+      {creating ? (
         <View style={styles.center}>
           <ActivityIndicator size="large" color={COLORS.primary} />
           <Text style={styles.status}>Creando encuesta...</Text>
@@ -185,6 +202,7 @@ export default function CreateModal({
             ))}
           </ScrollView>
 
+          <Text style={styles.title}>Título</Text>
           <TextInput
             style={styles.input}
             placeholder="Título"
@@ -192,6 +210,8 @@ export default function CreateModal({
             value={title}
             onChangeText={setTitle}
           />
+
+          <Text style={styles.title}>Descripción</Text>
           <TextInput
             style={[styles.input, styles.textarea]}
             placeholder="Descripción"
@@ -201,6 +221,7 @@ export default function CreateModal({
             onChangeText={setDescription}
           />
 
+          <Text style={styles.title}>Preguntas</Text>
           {questions.map((q, qi) => (
             <View key={qi} style={styles.questionBlock}>
               <View style={styles.questionHeader}>
@@ -251,7 +272,7 @@ export default function CreateModal({
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity style={styles.button} onPress={onSubmit}>
+          <TouchableOpacity style={styles.button} onPress={onSubmit} disabled={creating}>
             <Text style={styles.buttonText}>Crear encuesta</Text>
           </TouchableOpacity>
         </ScrollView>

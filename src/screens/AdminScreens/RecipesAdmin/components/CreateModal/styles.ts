@@ -5,29 +5,39 @@ import { typography } from '../../../../../constants/typography'
 import { metrics } from '../../../../../constants/metrics'
 
 const { width, height } = Dimensions.get('window')
-const INPUT_WIDTH = width * 0.85
+const INPUT_WIDTH = width * 0.77
 
 export default StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    padding: metrics.padding,
-  },
   header: {
     fontSize: typography.fontSize.large,
     color: COLORS.primary,
+    fontFamily: typography.fontFamily,
     marginBottom: metrics.padding,
     textAlign: 'center',
+  },
+  tittle: {
+    fontSize: typography.fontSize.large,
+    color: COLORS.primary,
+    marginTop: metrics.padding,
+    paddingBottom: 10,
+  },
+  form: {
+    paddingBottom: metrics.padding,
   },
   input: {
     width: INPUT_WIDTH,
     backgroundColor: COLORS.darkMoreOpaque,
     color: COLORS.primary,
-    padding: metrics.padding,
+    padding: metrics.padding * 0.5,
     borderRadius: metrics.borderRadius,
     marginVertical: metrics.padding * 0.5,
+    borderColor: COLORS.primaryMoreOpaque,
+    borderWidth: 1,
+    fontSize: typography.fontSize.normal,
+    fontFamily: typography.fontFamily,
   },
   textarea: {
-    height: height * 0.1,
+    height: height * 0.12,
     textAlignVertical: 'top',
   },
   subheading: {
@@ -86,6 +96,15 @@ export default StyleSheet.create({
   error: {
     color: COLORS.error,
     marginBottom: metrics.padding,
+  },
+  loading: {
+    alignItems: 'center',
+    padding: metrics.padding,
+  },
+  loadingText: {
+    color: COLORS.primary,
+    marginTop: metrics.padding,
+    fontSize: typography.fontSize.normal,
   },
   center: {
     alignItems: 'center',

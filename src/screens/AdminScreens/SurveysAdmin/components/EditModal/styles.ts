@@ -1,26 +1,37 @@
-// src/modules/admin/components/EditSurveyModal/styles.ts
 import { StyleSheet, Dimensions } from 'react-native'
 import { COLORS } from '../../../../../constants/colors'
 import { typography } from '../../../../../constants/typography'
 import { metrics } from '../../../../../constants/metrics'
 
 const { width, height } = Dimensions.get('window')
-const INPUT_W = width * 0.9
+const INPUT_W = width * 0.75
 
 export default StyleSheet.create({
   container: {
-    alignItems: 'center',
     padding: metrics.padding,
+    paddingLeft: metrics.padding * 0.3,
+  },
+  title: {
+    fontSize: typography.fontSize.large,
+    color: COLORS.primary,
+    marginTop: metrics.padding,
+    paddingBottom: 10,
   },
   header: {
     fontSize: typography.fontSize.large,
     color: COLORS.primary,
     marginBottom: metrics.padding,
+    fontFamily: typography.fontFamily,
+    textAlign: 'center',
   },
+
+  /* Curso selector */
   label: {
     alignSelf: 'flex-start',
     color: COLORS.primary,
     marginBottom: metrics.padding * 0.3,
+    fontSize: typography.fontSize.normal,
+    fontFamily: typography.fontFamily,
   },
   pickerContainer: {
     flexDirection: 'row',
@@ -39,10 +50,15 @@ export default StyleSheet.create({
   courseBtnText: {
     color: COLORS.white,
     fontSize: typography.fontSize.normal,
+    fontFamily: typography.fontFamily,
   },
   courseBtnTextSelected: {
     color: COLORS.dark,
+    fontSize: typography.fontSize.normal,
+    fontFamily: typography.fontFamily,
   },
+
+  /* Inputs */
   input: {
     width: INPUT_W,
     backgroundColor: COLORS.darkMoreOpaque,
@@ -50,17 +66,24 @@ export default StyleSheet.create({
     padding: metrics.padding,
     borderRadius: metrics.borderRadius,
     marginVertical: metrics.padding * 0.5,
+    borderColor: COLORS.primaryMoreOpaque,
+    borderWidth: 1,
+    fontSize: typography.fontSize.normal,
+    fontFamily: typography.fontFamily,
   },
   textarea: {
     height: height * 0.08,
     textAlignVertical: 'top',
   },
+
+  /* Preguntas */
   questionBlock: {
     width: INPUT_W,
     backgroundColor: COLORS.darkOpaque,
     padding: metrics.padding,
     borderRadius: metrics.borderRadius,
     marginVertical: metrics.padding,
+    paddingLeft: metrics.padding * 0.3,
   },
   questionHeader: {
     flexDirection: 'row',
@@ -71,12 +94,15 @@ export default StyleSheet.create({
   subheading: {
     fontSize: typography.fontSize.large,
     color: COLORS.primary,
+    fontFamily: typography.fontFamily,
   },
   questionBtns: {
     flexDirection: 'row',
     width: 50,
     justifyContent: 'space-between',
   },
+
+  /* Respuestas */
   answerRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -98,7 +124,13 @@ export default StyleSheet.create({
     backgroundColor: COLORS.darkMoreOpaque,
     padding: metrics.padding * 0.5,
     borderRadius: metrics.borderRadius,
+    borderColor: COLORS.primaryMoreOpaque,
+    borderWidth: 1,
+    fontSize: typography.fontSize.normal,
+    fontFamily: typography.fontFamily,
   },
+
+  /* Controls */
   addRemove: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -116,7 +148,10 @@ export default StyleSheet.create({
   buttonText: {
     color: COLORS.dark,
     fontSize: typography.fontSize.normal,
+    fontFamily: typography.fontFamily,
   },
+
+  /* Loading / status / errors */
   center: {
     alignItems: 'center',
     padding: metrics.padding,
@@ -124,10 +159,14 @@ export default StyleSheet.create({
   status: {
     marginTop: metrics.padding,
     color: COLORS.primary,
+    fontSize: typography.fontSize.normal,
+    fontFamily: typography.fontFamily,
   },
   error: {
     color: COLORS.error,
     marginBottom: metrics.padding,
     textAlign: 'center',
+    fontSize: typography.fontSize.normal,
+    fontFamily: typography.fontFamily,
   },
 })

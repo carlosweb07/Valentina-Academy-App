@@ -1,50 +1,85 @@
+// src/screens/UsersAdmin/components/EditModal/styles.ts
 import { StyleSheet, Dimensions } from 'react-native'
 import { COLORS } from '../../../../../constants/colors'
 import { typography } from '../../../../../constants/typography'
 import { metrics } from '../../../../../constants/metrics'
+
 const { width } = Dimensions.get('window')
-const INPUT_W = width * 0.85
+const INPUT_WIDTH = width * 0.85
 
 export default StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    padding: metrics.padding,
-  },
   header: {
     fontSize: typography.fontSize.large,
     color: COLORS.primary,
+    fontFamily: typography.fontFamily,
     marginBottom: metrics.padding,
+    textAlign: 'center',
+  },
+  tittle: {
+    fontSize: typography.fontSize.large,
+    color: COLORS.primary,
+    marginTop: metrics.padding * 1,
+    paddingBottom: 10
+  },
+  center: {
+    padding: metrics.padding,
+    alignItems: 'center',
+  },
+  statusText: {
+    marginTop: metrics.padding,
+    color: COLORS.primary,
+    fontSize: typography.fontSize.normal,
+  },
+  form: {
+    paddingBottom: metrics.padding,
   },
   input: {
-    width: INPUT_W,
+    width: '100%',
     backgroundColor: COLORS.darkMoreOpaque,
-    color: COLORS.white,
-    padding: metrics.padding,
+    color: COLORS.primary,
     borderRadius: metrics.borderRadius,
-    marginVertical: metrics.padding * 0.5,
-  },
-  button: {
-    width: INPUT_W,
-    backgroundColor: COLORS.primary,
-    padding: metrics.padding,
-    borderRadius: metrics.borderRadius,
-    alignItems: 'center',
-    marginTop: metrics.padding,
-  },
-  btnText: {
-    color: COLORS.dark,
+    marginVertical: metrics.padding * 0.10,
+    borderColor: COLORS.primaryMoreOpaque,
+    borderWidth: 1,
     fontSize: typography.fontSize.normal,
+    fontFamily: typography.fontFamily,
+    padding: metrics.padding,
+  },
+  textarea: {
+    height: metrics.screenHeight * 0.15,
+    textAlignVertical: 'top',
+  },
+  picker: {
+    width: '100%',
+    backgroundColor: COLORS.darkMoreOpaque,
+    color: COLORS.primary,
+    marginVertical: metrics.padding * 0.1,
+  },
+  Viewpicker: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    backgroundColor: COLORS.darkMoreOpaque,
+    color: COLORS.primary,
+    borderColor: COLORS.primaryMoreOpaque,
+    borderWidth: 1,
+    borderRadius: metrics.borderRadius,
   },
   error: {
     color: COLORS.error,
+    fontSize: typography.fontSize.normal,
     marginBottom: metrics.padding,
   },
-  center: {
+  button: {
+    width: INPUT_WIDTH,
+    padding: metrics.padding * 0.5,
+    marginVertical: metrics.padding * 0.5,
+    backgroundColor: COLORS.primary,
+    borderRadius: metrics.borderRadius,
     alignItems: 'center',
-    padding: metrics.padding,
   },
-  status: {
-    marginTop: metrics.padding,
-    color: COLORS.primary,
+  buttonText: {
+    color: COLORS.dark,
+    fontSize: typography.fontSize.normal,
+    fontFamily: typography.fontFamily,
   },
 })

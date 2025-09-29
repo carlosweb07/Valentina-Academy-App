@@ -30,12 +30,12 @@ export default function DeleteRecipeModal({
   const navigation = useNavigation<NavigationProp<RootStackParamList>>()
 
   const handleDelete = async () => {
-    if (!recipeId) return
+    if (recipeId == null) return
     setDeleting(true)
     try {
-      await ApiService.delete(`${BACKEND_ROUTES.recipes}/${recipeId}`)
+      await ApiService.delete(`${BACKEND_ROUTES.recipes}/${String(recipeId)}`)
       onClose()
-      navigation.reset({ index: 0, routes: [{ name: 'RecipesAdmin' }] })
+      navigation.navigate('RecipesAdmin')
     } catch (e) {
       console.warn('Delete error:', e)
       setDeleting(false)
@@ -45,7 +45,7 @@ export default function DeleteRecipeModal({
   if (!visible) return null
 
   return (
-    <Modal showModal={visible} onClose={onClose}>
+    <Modal showModal={visible} setShowModal={onClose} onClose={onClose}>
       {deleting ? (
         <View style={styles.center}>
           <ActivityIndicator size="large" color={COLORS.primary} />

@@ -33,7 +33,7 @@ const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
         <VideoView
           style={{ width: '100%', height: 290 }}
           player={player}
-          allowsFullscreen
+          fullscreenOptions={{ enable: true, orientation: "landscape" }}
           allowsPictureInPicture
         />
       </View>
